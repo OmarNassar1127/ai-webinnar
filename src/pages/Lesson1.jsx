@@ -1,4 +1,4 @@
-import { useEffect, useCallback } from 'react'
+import { useEffect, useCallback, useRef } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { Sparkles, Brain, Users, FileText, MessageSquare, MousePointer, HelpCircle, Trophy } from 'lucide-react'
 
@@ -41,6 +41,16 @@ const sectionComponents = {
 
 function Lesson1({ onBack }) {
   const { currentSection, sectionCompletion, goToSection, completeSection } = useLesson()
+  const contentRef = useRef(null)
+
+  // Scroll to top when section changes
+  useEffect(() => {
+    if (contentRef.current) {
+      contentRef.current.scrollTo({ top: 0, behavior: 'smooth' })
+    }
+    // Also scroll window to top
+    window.scrollTo({ top: 0, behavior: 'smooth' })
+  }, [currentSection])
 
   const handleSectionClick = useCallback((sectionId) => {
     goToSection(sectionId)
@@ -119,7 +129,7 @@ function Lesson1({ onBack }) {
         </div>
 
         {/* Main content - 75% width */}
-        <div className="flex-1 overflow-y-auto">
+        <div ref={contentRef} className="flex-1 overflow-y-auto">
           <AnimatePresence mode="wait">
             <motion.div
               key={currentSection}

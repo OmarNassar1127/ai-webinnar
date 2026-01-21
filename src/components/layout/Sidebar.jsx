@@ -75,13 +75,13 @@ export default function Sidebar({
           <ul className="space-y-2">
             {sections.map((section, index) => {
               const Icon = sectionIcons[index] || FileText;
-              const isActive = currentSection === index;
+              const isActive = currentSection === section.id;
               const isCompleted = completedSections[index];
 
               return (
                 <motion.li key={index} variants={itemVariants}>
                   <motion.button
-                    onClick={() => onSectionClick?.(index)}
+                    onClick={() => onSectionClick?.(section.id)}
                     className={`
                       w-full flex items-center gap-3 px-4 py-3 rounded-xl text-left
                       transition-colors duration-200 relative overflow-hidden
