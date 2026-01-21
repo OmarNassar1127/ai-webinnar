@@ -71,7 +71,7 @@ const ConfettiParticle = ({ delay }) => {
   );
 };
 
-const Completion = ({ onComplete }) => {
+const Completion = ({ onComplete, onBack }) => {
   const [showConfetti, setShowConfetti] = useState(true);
   const [confettiParticles] = useState(() =>
     Array.from({ length: 60 }, (_, i) => ({
@@ -259,7 +259,7 @@ const Completion = ({ onComplete }) => {
           <motion.button
             whileHover={{ scale: 1.02, boxShadow: '0 0 40px rgba(124, 58, 237, 0.5)' }}
             whileTap={{ scale: 0.98 }}
-            onClick={onComplete}
+            onClick={onBack}
             className="group px-10 py-5 rounded-xl bg-gradient-to-r from-violet-600 to-cyan-600 text-white font-bold text-lg shadow-2xl transition-all duration-300 flex items-center gap-3"
           >
             <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">

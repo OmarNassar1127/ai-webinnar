@@ -141,7 +141,10 @@ function Lesson1({ onBack }) {
               className="h-full"
             >
               {CurrentSectionComponent && (
-                <CurrentSectionComponent onComplete={handleComplete} />
+                <CurrentSectionComponent
+                  onComplete={handleComplete}
+                  onBack={onBack}
+                />
               )}
             </motion.div>
           </AnimatePresence>
