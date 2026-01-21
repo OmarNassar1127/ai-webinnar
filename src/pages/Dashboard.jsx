@@ -371,7 +371,7 @@ export default function Dashboard({ onStartLesson }) {
               transition={{ delay: 0.5 }}
             >
               Transform how you work with artificial intelligence. Learn to leverage AI tools
-              to boost productivity and streamline your daily operations.
+              to boost productivity and streamline your daily operations. Created by Omar and his AI agents.
             </motion.p>
 
             <motion.div
@@ -388,15 +388,7 @@ export default function Dashboard({ onStartLesson }) {
               >
                 {lesson1Progress.progress > 0 ? 'Continue Learning' : 'Start Learning'}
               </Button>
-              <Button
-                variant="secondary"
-                size="lg"
-                icon={<ChevronRight className="w-5 h-5" />}
-                iconPosition="right"
-              >
-                View Curriculum
-              </Button>
-            </motion.div>
+                          </motion.div>
           </div>
 
           {/* Floating AI Graphic */}
