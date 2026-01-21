@@ -8,6 +8,11 @@ import AnimatedBackground from './components/layout/AnimatedBackground'
 function App() {
   const [currentPage, setCurrentPage] = useState('dashboard')
 
+  // Scroll to top when page changes
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: 'smooth' })
+  }, [currentPage])
+
   // Handle keyboard navigation
   useEffect(() => {
     const handleKeyPress = (e) => {
