@@ -127,3 +127,35 @@ Started: 2026-01-22
   - The frameworkParts array defines all metadata (colors, gradients, placeholders) for the 4 components
   - Build passes successfully
 ---
+
+## 2026-01-22 - US-008
+- What was implemented: Created Lesson 2 Section 6 - Label the Parts with interactive labeling exercises
+- Files changed:
+  - src/sections/lesson2/LabelTheParts.jsx (updated from stub to full implementation)
+- **Learnings for future iterations:**
+  - ExerciseSection pattern: collapsible card exercises with score tracking, similar to previous sections
+  - MockupDisplay component: renders different mockup UIs based on type (login, newsfeed, booking)
+  - Mock screenshots are simple React components (LoginMockup, NewsfeedMockup, BookingMockup) that render styled UI representations
+  - QuestionCard component: renders question with 4 component option buttons (Frontend/Backend/Database/API)
+  - ComponentButton component: handles selection state, correct/wrong highlighting, and disabled state after reveal
+  - Questions use format: { id, question (description), correctAnswer (component id), explanation }
+  - Feedback pattern: show "Correct!" with explanation or "Not quite. The correct answer is X" with explanation
+  - Score tracking: answers state object with questionId keys, reveal all answers at once with Check Answers button
+  - completedExercises state array tracks which exercises user has completed
+  - Color-coded components consistent across app: purple=frontend, cyan=backend, emerald=database, orange=api
+  - Build passes successfully
+---
+
+## 2026-01-22 - US-009
+- What was implemented: Created Lesson 2 quiz data with 6 questions
+- Files changed:
+  - src/data/quiz2Questions.js (new - quiz data file)
+- **Learnings for future iterations:**
+  - Quiz data files follow pattern from quizQuestions.js (Lesson 1)
+  - Each question has: id, question, options (4), correctIndex, feedback.correct, feedback.incorrect
+  - Export quiz2Questions as named export and default export
+  - Include helper functions: isAnswerCorrect, getFeedback, calculateQuizScore, isQuizPassed
+  - Export correctAnswers array, passingScore, totalQuestions constants
+  - Questions should reference lesson content (restaurant analogy, Vloto examples, component roles)
+  - Build passes successfully
+---
