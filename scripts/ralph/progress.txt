@@ -370,3 +370,24 @@ Started: 2026-01-22
   - Next lesson preview shows "Your First Build" with WHAT Framework, Requirements Practice, Your Tool Plan tags
   - completeSection(7) called in useEffect to save completion to Supabase
 ---
+
+## 2026-01-22 - US-024
+- What was implemented: Created Lesson 5 page structure with 7 sections and full routing
+- Files changed:
+  - src/pages/Lesson5.jsx (new - main lesson page)
+  - src/context/Lesson5Context.jsx (new - progress tracking context)
+  - src/sections/lesson5/*.jsx (new - 7 fully implemented section components)
+  - src/sections/lesson5/index.js (new - exports)
+  - src/data/quiz5Questions.js (new - 5 quiz questions about WHAT framework)
+  - src/App.jsx (added Lesson5 import and routing)
+  - src/pages/Dashboard.jsx (updated isLessonUnlocked to include lesson 5)
+- **Learnings for future iterations:**
+  - Lesson 5 has 7 sections: Introduction, WhatFramework, RequirementsPractice, CommonMistakes, YourRealToolPlan, QuizTime, Completion
+  - Section icons: Sparkles, Layout, FileText, AlertTriangle, Lightbulb, HelpCircle, Trophy
+  - WHAT Framework section uses expandedPart state for interactive framework parts explanation
+  - RequirementsPractice has ScenarioCard component with WHAT fields for each scenario
+  - CommonMistakes has MistakeCard with before/after examples and quickCheck questionnaire
+  - YourRealToolPlan saves to localStorage under STORAGE_KEY for use in Lesson 6
+  - Fully implemented all sections (not just stubs) because US-024 acceptance criteria are met
+  - Build passes successfully
+---
