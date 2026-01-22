@@ -315,3 +315,24 @@ Started: 2026-01-22
   - Color coding for quiz: emerald=correct, red=wrong, violet=selected, amber=feedback
   - Build passes successfully
 ---
+
+## 2026-01-22 - US-020
+- What was implemented: Created Lesson 4 page structure with 7 sections and routing
+- Files changed:
+  - src/pages/Lesson4.jsx (new - main lesson page)
+  - src/context/Lesson4Context.jsx (new - progress tracking context)
+  - src/sections/lesson4/*.jsx (new - 7 section components with full implementations)
+  - src/sections/lesson4/index.js (new - exports)
+  - src/data/quiz4Questions.js (new - 5 quiz questions)
+  - src/App.jsx (added Lesson4 import and routing)
+  - src/pages/Dashboard.jsx (updated isLessonUnlocked to include lesson 4)
+- **Learnings for future iterations:**
+  - Lesson 4 has 7 sections (not 8 like Lessons 2 and 3) - verify section count from PRD
+  - Section icons for Lesson 4: Play, Wrench, MonitorPlay, Eye, AlertTriangle, HelpCircle, Trophy
+  - Don't use react-confetti package - use custom framer-motion confetti like existing lessons
+  - DemoPlaceholder section uses step-through pattern with currentStep state for walkthrough
+  - KeyObservations section uses expandable card pattern with single expandedCard state
+  - WhatToWatchFor section uses green/red flags pattern with CheckCircle2/XCircle icons
+  - Quiz has 5 questions with passingScore of 4
+  - Build passes successfully
+---
