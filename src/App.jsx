@@ -6,6 +6,7 @@ import Dashboard from './pages/Dashboard'
 import Lesson1 from './pages/Lesson1'
 import Lesson2 from './pages/Lesson2'
 import Lesson3 from './pages/Lesson3'
+import Lesson4 from './pages/Lesson4'
 import AnimatedBackground from './components/layout/AnimatedBackground'
 import AuthModal from './components/auth/AuthModal'
 
@@ -65,6 +66,12 @@ function AppContent() {
             {currentPage === 'lesson3' && (
               <Lesson3
                 key="lesson3"
+                onBack={() => setCurrentPage('dashboard')}
+              />
+            )}
+            {currentPage === 'lesson4' && (
+              <Lesson4
+                key="lesson4"
                 onBack={() => setCurrentPage('dashboard')}
               />
             )}
