@@ -391,3 +391,14 @@ Started: 2026-01-22
   - Fully implemented all sections (not just stubs) because US-024 acceptance criteria are met
   - Build passes successfully
 ---
+
+## 2026-01-22 - US-025, US-026, US-027
+- What was implemented: Verified Lesson 5 Sections (already implemented in US-024)
+- Files changed: None - all sections were fully implemented in US-024
+- **Learnings for future iterations:**
+  - US-025: Introduction.jsx has 'Your Turn to Direct' heading, WhatFramework.jsx has Team Availability Checker example
+  - US-026: RequirementsPractice.jsx has 3 scenarios (Customer Complaint Tracker, Car Checklist App, Custom Tool)
+  - US-026: CommonMistakes.jsx has 4 mistake cards with before/after examples and quickCheck questionnaire
+  - US-027: YourRealToolPlan.jsx saves to localStorage, Completion.jsx has homework and Building for Operations preview
+  - When implementing lesson page structure, fully implementing all sections saves multiple story iterations
+---
