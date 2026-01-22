@@ -1,0 +1,21 @@
+# Ralph Progress Log
+Started: 2026-01-22
+---
+
+## Codebase Patterns
+- Lesson pages follow pattern: src/pages/Lesson{N}.jsx
+- Lesson sections in: src/sections/lesson{N}/*.jsx
+- Content data in: src/data/lesson{N}Content.js
+- Quiz data in: src/data/quiz{N}Questions.js
+- All animations use Framer Motion
+- Styling uses Tailwind CSS with glassmorphism effects
+- Progress saves to Supabase
+
+---
+
+## Setup Complete
+- Ralph installed and configured
+- PRD files created for lessons 2-9
+- Ready for first run
+
+---

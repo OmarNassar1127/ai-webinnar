@@ -8,13 +8,13 @@ import { FloatingAIGraphic, TimelineNode, CircuitPattern } from '../components/d
 
 const lessons = [
   { id: 1, title: 'AI Thinking Foundations', duration: '1 hour' },
-  { id: 2, title: 'Prompt Engineering', duration: '1 hour' },
-  { id: 3, title: 'ChatGPT Mastery', duration: '1 hour' },
-  { id: 4, title: 'Claude & Competitors', duration: '1 hour' },
-  { id: 5, title: 'AI for Email & Docs', duration: '1 hour' },
-  { id: 6, title: 'AI for Data Analysis', duration: '1 hour' },
-  { id: 7, title: 'AI for Customer Service', duration: '1 hour' },
-  { id: 8, title: 'AI Workflows', duration: '1 hour' },
+  { id: 2, title: 'How Software Works', duration: '1 hour' },
+  { id: 3, title: 'The AI Tools Landscape', duration: '1 hour' },
+  { id: 4, title: 'AI in Action', duration: '1 hour' },
+  { id: 5, title: 'Your First Build', duration: '1 hour' },
+  { id: 6, title: 'Building for Operations', duration: '1 hour' },
+  { id: 7, title: 'Data & AI', duration: '1 hour' },
+  { id: 8, title: '???', duration: '1 hour', locked: true },
   { id: 9, title: 'Final Project', duration: '1 hour' },
 ];
 
@@ -32,7 +32,12 @@ export default function Dashboard({ onStartLesson }) {
   const { lessonProgress, quizScore, sectionCompletion } = useLesson();
   const { user, profile, openAuthModal } = useAuth();
 
-  const isLessonUnlocked = (id) => id === 1;
+  const isLessonUnlocked = (lessonId) => {
+    // Lesson 8 is always locked unless explicitly unlocked (future feature)
+    if (lessonId === 8) return false;
+    // For now, only lesson 1 is unlocked
+    return lessonId === 1;
+  };
   const isLessonCompleted = sectionCompletion?.every(Boolean) || false;
   const completedSections = sectionCompletion?.filter(Boolean).length || 0;
 
