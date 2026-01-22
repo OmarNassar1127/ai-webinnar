@@ -11,6 +11,14 @@ Started: 2026-01-22
 - Styling uses Tailwind CSS with glassmorphism effects
 - Progress saves to Supabase
 
+- Dashboard lesson titles are in the `lessons` array in Dashboard.jsx
+- `isLessonUnlocked` function controls which lessons are clickable
+- TimelineNode component in DashboardGraphics.jsx handles lock icons automatically based on isUnlocked prop
+- Each lesson needs its own Context for progress tracking (e.g., Lesson2Context.jsx)
+- App.jsx uses state-based navigation (`currentPage` state), not React Router
+- Section components receive `onComplete` and `onBack` props
+- Export sections via index.js for cleaner imports
+
 ---
 
 ## Setup Complete
@@ -18,4 +26,104 @@ Started: 2026-01-22
 - PRD files created for lessons 2-9
 - Ready for first run
 
+---
+
+## 2026-01-22 - US-001
+- What was implemented: Updated Dashboard lesson titles and locked Lesson 8
+- Files changed: src/pages/Dashboard.jsx
+- **Learnings for future iterations:**
+  - The `lessons` array at the top of Dashboard.jsx defines all lesson titles shown in the timeline
+  - The `isLessonUnlocked(lessonId)` function controls which lessons show as locked/unlocked
+  - TimelineNode component automatically shows Lock icon when isUnlocked=false
+  - Build passes, no typecheck script exists - use `npm run build` to verify
+---
+
+## 2026-01-22 - US-002
+- What was implemented: Created Lesson 2 page structure with 8 sections and routing
+- Files changed:
+  - src/pages/Lesson2.jsx (new - main lesson page)
+  - src/context/Lesson2Context.jsx (new - progress tracking context)
+  - src/sections/lesson2/*.jsx (new - 8 stub section components)
+  - src/sections/lesson2/index.js (new - exports)
+  - src/App.jsx (added Lesson2 import and routing)
+  - src/pages/Dashboard.jsx (updated isLessonUnlocked to include lesson 2, added onClick handler)
+  - src/components/dashboard/DashboardGraphics.jsx (added onClick prop to TimelineNode)
+- **Learnings for future iterations:**
+  - Each lesson needs its own LessonXContext with LESSON_ID and STORAGE_KEY constants
+  - The LessonXProvider wraps the LessonXContent component inside LessonX.jsx
+  - TimelineNode now accepts an onClick prop for navigation
+  - handleStartLesson in App.jsx now accepts a lessonId parameter
+  - Stub section components should have basic structure with onComplete button so navigation works
+  - Build and dev server both work after changes
+---
+
+## 2026-01-22 - US-003
+- What was implemented: Created full Lesson 2 Introduction section
+- Files changed:
+  - src/sections/lesson2/Introduction.jsx (updated from stub to full implementation)
+- **Learnings for future iterations:**
+  - Introduction sections follow a consistent pattern: welcome header, typewriter text, learning objectives cards, motivational note, begin button
+  - Use useState + useEffect for progressive reveal animations (showObjectives, showNote, showButton)
+  - Learning objective cards use the Card component with glowColor prop
+  - Motivational/instructor note uses amber/orange gradient styling with Lightbulb icon
+  - The Lesson 1 sections in src/sections/*.jsx (not in lesson1 folder) serve as the pattern reference
+---
+
+## 2026-01-22 - US-004
+- What was implemented: Created Lesson 2 Section 2 - Restaurant Analogy with full interactivity
+- Files changed:
+  - src/sections/lesson2/RestaurantAnalogy.jsx (updated from stub to full implementation)
+- **Learnings for future iterations:**
+  - Interactive expandable cards pattern: use state object like `expandedCards = {}` with card ID keys
+  - ComponentCard sub-component handles individual card rendering with expand/collapse
+  - Use Lucide icons like Monitor, Server, HardDrive, ArrowLeftRight for software components
+  - Flow animation pattern: array of steps with setInterval in useEffect, controlled by isPlaying state
+  - Color coding by component: purple=frontend, cyan=backend, emerald=database, orange=api
+  - Key Insight Box uses gradient background `from-purple-900/40 via-orange-900/30 to-cyan-900/40`
+  - MentalModel.jsx and InteractiveExamples.jsx from Lesson 1 are good references for interactive content
+---
+
+## 2026-01-22 - US-005
+- What was implemented: Created Lesson 2 Section 3 - Real Examples with interactive Vloto mockup
+- Files changed:
+  - src/sections/lesson2/RealExamples.jsx (updated from stub to full implementation)
+- **Learnings for future iterations:**
+  - Tab navigation pattern: TabButton component with activeTab state, use layoutId for smooth transitions
+  - Interactive phone mockup pattern: VlotoMockup component with clickable overlay divs positioned with percentage-based coordinates
+  - mockupParts data structure: { id, label, x, y, width, height, component, description }
+  - PartExplanation component shows context when user clicks mockup areas
+  - ComponentDiagram component creates 4-column grid showing Frontend/API/Backend/Database for each app
+  - ComparisonTable component with grid layout and alternating row colors
+  - Key Insight Box pattern consistent: gradient background, pulsing icon, centered text
+  - Color coding maintained: purple=frontend, cyan=backend, emerald=database, orange=api, pink=instagram, blue=google
+---
+
+## 2026-01-22 - US-006
+- What was implemented: Created Lesson 2 Section 4 - Why This Matters for AI with full implementation
+- Files changed:
+  - src/sections/lesson2/WhyThisMatters.jsx (updated from stub to full implementation)
+- **Learnings for future iterations:**
+  - OldVsNewDiagram component: animated flow diagram showing old (You→Developer→Months) vs new (You→AI→Hours) ways
+  - TheCatchCard component: warning-style card with amber/orange gradient and AlertTriangle icon
+  - BeforeAfterExample component: side-by-side comparison of vague vs clear AI requests with toggle to reveal AI response
+  - BenefitCard pattern: uses Card with glowColor prop, similar to learning objectives
+  - Color coding for old/new: red/slate for old way, purple/cyan/green for new way
+  - Use conditional animations based on state (animationComplete) for pulsing/glowing effects
+  - Build passes successfully
+---
+
+## 2026-01-22 - US-007
+- What was implemented: Created Lesson 2 Section 5 - Technical Describing Practice with full implementation
+- Files changed:
+  - src/sections/lesson2/TechnicalDescribing.jsx (updated from stub to full implementation)
+- **Learnings for future iterations:**
+  - FrameworkVisual component: 2x2 grid showing the 4-part framework (What users SEE, What system DOES, What's REMEMBERED, What CONNECTS)
+  - ExerciseCard pattern: collapsible card with isActive state, expands to show interactive content
+  - Tab navigation within exercises for switching between Frontend/Backend/Database/API inputs
+  - userAnswers state object stores all component answers: { frontend: '', backend: '', database: '', api: '' }
+  - showComparison state triggers side-by-side comparison of user answers vs good examples
+  - ProTipBox component: amber/orange gradient, similar to instructor notes
+  - Icon mapping: Eye=Frontend, Cog=Backend, DatabaseIcon=Database, Link=API
+  - The frameworkParts array defines all metadata (colors, gradients, placeholders) for the 4 components
+  - Build passes successfully
 ---
