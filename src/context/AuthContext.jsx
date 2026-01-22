@@ -4,6 +4,7 @@ import { supabase } from '../lib/supabase'
 const AuthContext = createContext(null)
 
 const STORAGE_KEY = 'vloto-ai-academy-progress'
+const ALLOWED_DOMAINS = ['vloto.nl', 'knsf.nl']
 
 export function AuthProvider({ children }) {
   const [user, setUser] = useState(null)
@@ -12,6 +13,7 @@ export function AuthProvider({ children }) {
   const [error, setError] = useState(null)
   const [showAuthModal, setShowAuthModal] = useState(false)
   const [authModalMode, setAuthModalMode] = useState('login')
+  const [authSuccess, setAuthSuccess] = useState(false)
 
   // Fetch user profile from database
   const fetchProfile = useCallback(async (userId) => {
@@ -38,8 +40,16 @@ export function AuthProvider({ children }) {
         const { data: { session } } = await supabase.auth.getSession()
 
         if (session?.user) {
-          setUser(session.user)
-          await fetchProfile(session.user.id)
+          const profileData = await fetchProfile(session.user.id)
+          // Only set user if profile is active
+          if (profileData?.is_active) {
+            setUser(session.user)
+          } else if (profileData) {
+            // User exists but not active - sign them out
+            await supabase.auth.signOut()
+            setUser(null)
+            setProfile(null)
+          }
         }
       } catch (err) {
         console.error('Error initializing auth:', err)
@@ -54,8 +64,13 @@ export function AuthProvider({ children }) {
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
       async (event, session) => {
         if (session?.user) {
-          setUser(session.user)
-          await fetchProfile(session.user.id)
+          const profileData = await fetchProfile(session.user.id)
+          if (profileData?.is_active) {
+            setUser(session.user)
+          } else {
+            setUser(null)
+            setProfile(null)
+          }
         } else {
           setUser(null)
           setProfile(null)
@@ -67,9 +82,23 @@ export function AuthProvider({ children }) {
     return () => subscription.unsubscribe()
   }, [fetchProfile])
 
+  // Validate email domain
+  const isEmailAllowed = (email) => {
+    const domain = email.split('@')[1]?.toLowerCase()
+    return ALLOWED_DOMAINS.includes(domain)
+  }
+
   // Sign up with email and password
   const signUp = async (email, password, fullName) => {
     setError(null)
+
+    // Check email domain
+    if (!isEmailAllowed(email)) {
+      const err = new Error(`Only @${ALLOWED_DOMAINS.join(' and @')} email addresses are allowed`)
+      setError(err.message)
+      return { data: null, error: err }
+    }
+
     try {
       const { data, error } = await supabase.auth.signUp({
         email,
@@ -81,12 +110,8 @@ export function AuthProvider({ children }) {
 
       if (error) throw error
 
-      // Check for existing localStorage progress to migrate
-      if (data.user) {
-        await migrateLocalStorageProgress(data.user.id)
-      }
-
-      return { data, error: null }
+      // Don't set user - they need to be activated first
+      return { data, error: null, needsActivation: true }
     } catch (err) {
       setError(err.message)
       return { data: null, error: err }
@@ -96,6 +121,8 @@ export function AuthProvider({ children }) {
   // Sign in with email and password
   const signIn = async (email, password) => {
     setError(null)
+    setAuthSuccess(false)
+
     try {
       const { data, error } = await supabase.auth.signInWithPassword({
         email,
@@ -104,10 +131,24 @@ export function AuthProvider({ children }) {
 
       if (error) throw error
 
-      // Check for existing localStorage progress to migrate
-      if (data.user) {
-        await checkAndOfferMigration(data.user.id)
+      // Check if user is active
+      const profileData = await fetchProfile(data.user.id)
+      if (!profileData?.is_active) {
+        await supabase.auth.signOut()
+        throw new Error('Your account is pending activation. Please contact an administrator.')
       }
+
+      // Check for existing localStorage progress to migrate
+      await checkAndOfferMigration(data.user.id)
+
+      setUser(data.user)
+      setAuthSuccess(true)
+
+      // Close modal after short delay to show success
+      setTimeout(() => {
+        setShowAuthModal(false)
+        setAuthSuccess(false)
+      }, 1500)
 
       return { data, error: null }
     } catch (err) {
@@ -178,7 +219,6 @@ export function AuthProvider({ children }) {
                          progress.quizScore !== null
 
       if (hasProgress) {
-        // Check if user already has progress in database
         const { data: existingProgress } = await supabase
           .from('lesson_progress')
           .select('id')
@@ -187,7 +227,6 @@ export function AuthProvider({ children }) {
           .single()
 
         if (!existingProgress) {
-          // Migrate the data
           await migrateLocalStorageProgress(userId)
         }
       }
@@ -209,7 +248,6 @@ export function AuthProvider({ children }) {
 
       if (completedSections.length === 0 && progress.quizScore === null) return
 
-      // Insert lesson progress
       await supabase.from('lesson_progress').upsert({
         user_id: userId,
         lesson_id: 1,
@@ -219,7 +257,6 @@ export function AuthProvider({ children }) {
         completed_at: completedSections.length === 8 ? new Date().toISOString() : null
       })
 
-      // Insert quiz results if exists
       if (progress.quizScore !== null && progress.quizAnswers?.length > 0) {
         await supabase.from('quiz_results').upsert({
           user_id: userId,
@@ -230,7 +267,6 @@ export function AuthProvider({ children }) {
         })
       }
 
-      // Clear localStorage after successful migration
       localStorage.removeItem(STORAGE_KEY)
     } catch (err) {
       console.error('Error migrating progress:', err)
@@ -242,11 +278,13 @@ export function AuthProvider({ children }) {
     setAuthModalMode(mode)
     setShowAuthModal(true)
     setError(null)
+    setAuthSuccess(false)
   }
 
   const closeAuthModal = () => {
     setShowAuthModal(false)
     setError(null)
+    setAuthSuccess(false)
   }
 
   const value = {
@@ -256,6 +294,8 @@ export function AuthProvider({ children }) {
     error,
     showAuthModal,
     authModalMode,
+    authSuccess,
+    isEmailAllowed,
     signUp,
     signIn,
     signOut,

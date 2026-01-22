@@ -1,10 +1,10 @@
 import { useState } from 'react'
 import { motion } from 'framer-motion'
-import { Mail, Lock, Eye, EyeOff, Loader2, AlertCircle } from 'lucide-react'
+import { Mail, Lock, Eye, EyeOff, Loader2, AlertCircle, CheckCircle } from 'lucide-react'
 import { useAuth } from '../../context/AuthContext'
 
 export default function LoginForm({ onForgotPassword }) {
-  const { signIn, error, clearError } = useAuth()
+  const { signIn, error, clearError, authSuccess } = useAuth()
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [showPassword, setShowPassword] = useState(false)
@@ -31,6 +31,30 @@ export default function LoginForm({ onForgotPassword }) {
   }
 
   const displayError = localError || error
+
+  // Show success state
+  if (authSuccess) {
+    return (
+      <motion.div
+        initial={{ opacity: 0, scale: 0.95 }}
+        animate={{ opacity: 1, scale: 1 }}
+        className="text-center py-8"
+      >
+        <motion.div
+          initial={{ scale: 0 }}
+          animate={{ scale: 1 }}
+          transition={{ delay: 0.2, type: 'spring', stiffness: 200 }}
+          className="w-16 h-16 mx-auto mb-4 rounded-full bg-emerald-500/20 flex items-center justify-center"
+        >
+          <CheckCircle className="w-8 h-8 text-emerald-400" />
+        </motion.div>
+        <h3 className="text-xl font-semibold text-white mb-2">Welcome back!</h3>
+        <p className="text-slate-400">
+          Successfully signed in. Redirecting...
+        </p>
+      </motion.div>
+    )
+  }
 
   return (
     <motion.form
@@ -60,7 +84,7 @@ export default function LoginForm({ onForgotPassword }) {
             type="email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
-            placeholder="you@example.com"
+            placeholder="you@vloto.nl"
             className="w-full pl-12 pr-4 py-3.5 bg-slate-800/50 border border-white/10 rounded-xl
                      text-white placeholder:text-slate-500 focus:outline-none focus:border-purple-500
                      focus:ring-2 focus:ring-purple-500/20 transition-all duration-200"

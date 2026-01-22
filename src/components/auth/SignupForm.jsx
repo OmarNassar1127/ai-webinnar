@@ -1,10 +1,10 @@
 import { useState } from 'react'
 import { motion } from 'framer-motion'
-import { Mail, Lock, User, Eye, EyeOff, Loader2, AlertCircle, CheckCircle } from 'lucide-react'
+import { Mail, Lock, User, Eye, EyeOff, Loader2, AlertCircle, CheckCircle, Clock } from 'lucide-react'
 import { useAuth } from '../../context/AuthContext'
 
 export default function SignupForm() {
-  const { signUp, error, clearError } = useAuth()
+  const { signUp, error, clearError, isEmailAllowed } = useAuth()
   const [fullName, setFullName] = useState('')
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
@@ -12,11 +12,15 @@ export default function SignupForm() {
   const [showPassword, setShowPassword] = useState(false)
   const [loading, setLoading] = useState(false)
   const [localError, setLocalError] = useState('')
-  const [success, setSuccess] = useState(false)
+  const [pendingActivation, setPendingActivation] = useState(false)
 
   const validateForm = () => {
     if (!fullName || !email || !password || !confirmPassword) {
       setLocalError('Please fill in all fields')
+      return false
+    }
+    if (!isEmailAllowed(email)) {
+      setLocalError('Only @vloto.nl and @knsf.nl email addresses are allowed')
       return false
     }
     if (password.length < 6) {
@@ -38,19 +42,19 @@ export default function SignupForm() {
     if (!validateForm()) return
 
     setLoading(true)
-    const { error } = await signUp(email, password, fullName)
+    const { error, needsActivation } = await signUp(email, password, fullName)
     setLoading(false)
 
     if (error) {
       setLocalError(error.message)
-    } else {
-      setSuccess(true)
+    } else if (needsActivation) {
+      setPendingActivation(true)
     }
   }
 
   const displayError = localError || error
 
-  if (success) {
+  if (pendingActivation) {
     return (
       <motion.div
         initial={{ opacity: 0, scale: 0.95 }}
@@ -61,13 +65,16 @@ export default function SignupForm() {
           initial={{ scale: 0 }}
           animate={{ scale: 1 }}
           transition={{ delay: 0.2, type: 'spring', stiffness: 200 }}
-          className="w-16 h-16 mx-auto mb-4 rounded-full bg-emerald-500/20 flex items-center justify-center"
+          className="w-16 h-16 mx-auto mb-4 rounded-full bg-amber-500/20 flex items-center justify-center"
         >
-          <CheckCircle className="w-8 h-8 text-emerald-400" />
+          <Clock className="w-8 h-8 text-amber-400" />
         </motion.div>
         <h3 className="text-xl font-semibold text-white mb-2">Account Created!</h3>
-        <p className="text-slate-400">
-          Welcome to Vloto AI Academy. You're now signed in and ready to start learning.
+        <p className="text-slate-400 mb-4">
+          Your account is pending activation. An administrator will review and activate your account shortly.
+        </p>
+        <p className="text-sm text-slate-500">
+          You'll be able to log in once your account has been activated.
         </p>
       </motion.div>
     )
@@ -93,6 +100,12 @@ export default function SignupForm() {
         </motion.div>
       )}
 
+      <div className="p-3 rounded-xl bg-blue-500/10 border border-blue-500/30">
+        <p className="text-xs text-blue-300">
+          Only @vloto.nl and @knsf.nl email addresses can register
+        </p>
+      </div>
+
       <div className="space-y-2">
         <label className="text-sm font-medium text-slate-300">Full Name</label>
         <div className="relative">
@@ -110,14 +123,14 @@ export default function SignupForm() {
       </div>
 
       <div className="space-y-2">
-        <label className="text-sm font-medium text-slate-300">Email</label>
+        <label className="text-sm font-medium text-slate-300">Work Email</label>
         <div className="relative">
           <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" />
           <input
             type="email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
-            placeholder="you@example.com"
+            placeholder="you@vloto.nl"
             className="w-full pl-12 pr-4 py-3.5 bg-slate-800/50 border border-white/10 rounded-xl
                      text-white placeholder:text-slate-500 focus:outline-none focus:border-purple-500
                      focus:ring-2 focus:ring-purple-500/20 transition-all duration-200"
@@ -181,12 +194,12 @@ export default function SignupForm() {
             Creating account...
           </>
         ) : (
-          'Create Account'
+          'Request Account'
         )}
       </motion.button>
 
       <p className="text-center text-xs text-slate-500 mt-4">
-        By signing up, you agree to our Terms of Service and Privacy Policy
+        Your account will need to be activated by an administrator before you can log in
       </p>
     </motion.form>
   )
