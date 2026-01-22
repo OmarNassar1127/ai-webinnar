@@ -4,6 +4,7 @@ import { AuthProvider, useAuth } from './context/AuthContext'
 import { LessonProvider } from './context/LessonContext'
 import Dashboard from './pages/Dashboard'
 import Lesson1 from './pages/Lesson1'
+import Lesson2 from './pages/Lesson2'
 import AnimatedBackground from './components/layout/AnimatedBackground'
 import AuthModal from './components/auth/AuthModal'
 
@@ -28,12 +29,12 @@ function AppContent() {
   }, [currentPage])
 
   // Handle start lesson - require login
-  const handleStartLesson = () => {
+  const handleStartLesson = (lessonId = 1) => {
     if (!user) {
       openAuthModal('login')
       return
     }
-    setCurrentPage('lesson1')
+    setCurrentPage(`lesson${lessonId}`)
   }
 
   return (
@@ -51,6 +52,12 @@ function AppContent() {
             {currentPage === 'lesson1' && (
               <Lesson1
                 key="lesson1"
+                onBack={() => setCurrentPage('dashboard')}
+              />
+            )}
+            {currentPage === 'lesson2' && (
+              <Lesson2
+                key="lesson2"
                 onBack={() => setCurrentPage('dashboard')}
               />
             )}

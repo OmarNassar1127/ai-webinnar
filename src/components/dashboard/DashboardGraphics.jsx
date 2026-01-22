@@ -99,13 +99,20 @@ export const FloatingAIGraphic = () => {
   );
 };
 
-export const TimelineNode = ({ lesson, index, isUnlocked, isActive, isCompleted }) => {
+export const TimelineNode = ({ lesson, index, isUnlocked, isActive, isCompleted, onClick }) => {
+  const handleClick = () => {
+    if (isUnlocked && onClick) {
+      onClick(lesson.id);
+    }
+  };
+
   return (
     <motion.div
-      className="flex flex-col items-center relative"
+      className={`flex flex-col items-center relative ${isUnlocked ? 'cursor-pointer' : 'cursor-not-allowed'}`}
       initial={{ opacity: 0, scale: 0.8 }}
       animate={{ opacity: 1, scale: 1 }}
       transition={{ delay: 0.3 + index * 0.1, duration: 0.5 }}
+      onClick={handleClick}
     >
       {index < 8 && (
         <motion.div

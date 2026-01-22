@@ -35,8 +35,8 @@ export default function Dashboard({ onStartLesson }) {
   const isLessonUnlocked = (lessonId) => {
     // Lesson 8 is always locked unless explicitly unlocked (future feature)
     if (lessonId === 8) return false;
-    // For now, only lesson 1 is unlocked
-    return lessonId === 1;
+    // Lessons 1 and 2 are unlocked
+    return lessonId === 1 || lessonId === 2;
   };
   const isLessonCompleted = sectionCompletion?.every(Boolean) || false;
   const completedSections = sectionCompletion?.filter(Boolean).length || 0;
@@ -106,7 +106,7 @@ export default function Dashboard({ onStartLesson }) {
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.6 }}
             >
-              <Button variant="primary" size="lg" icon={<Play className="w-5 h-5" />} onClick={onStartLesson}>
+              <Button variant="primary" size="lg" icon={<Play className="w-5 h-5" />} onClick={() => onStartLesson(1)}>
                 {lessonProgress > 0 ? 'Continue Learning' : 'Start Learning'}
               </Button>
               {!user && (
@@ -197,6 +197,7 @@ export default function Dashboard({ onStartLesson }) {
                   isUnlocked={isLessonUnlocked(lesson.id)}
                   isActive={lesson.id === 1 && !isLessonCompleted}
                   isCompleted={lesson.id === 1 && isLessonCompleted}
+                  onClick={(lessonId) => onStartLesson(lessonId)}
                 />
               ))}
             </div>
@@ -260,7 +261,7 @@ export default function Dashboard({ onStartLesson }) {
                     variant="primary"
                     size="lg"
                     icon={<Play className="w-5 h-5" />}
-                    onClick={onStartLesson}
+                    onClick={() => onStartLesson(1)}
                     className="w-full md:w-auto"
                   >
                     {isLessonCompleted ? 'Review Lesson' : lessonProgress > 0 ? 'Continue Lesson' : 'Start Lesson'}
