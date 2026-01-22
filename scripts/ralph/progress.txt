@@ -336,3 +336,14 @@ Started: 2026-01-22
   - Quiz has 5 questions with passingScore of 4
   - Build passes successfully
 ---
+
+## 2026-01-22 - US-021
+- What was implemented: Verified Lesson 4 Sections 1-3 (already implemented in US-020)
+- Files changed: None - sections were already complete
+- **Learnings for future iterations:**
+  - When creating lesson page structure (US-020), all section components may be fully implemented
+  - Always verify existing sections before implementing - they may already be done
+  - Introduction.jsx has 'Time to See the Magic' heading with learning objectives
+  - WhatWereBuilding.jsx shows Quick Feedback Collector project card with features and components used
+  - DemoPlaceholder.jsx has 6-step walkthrough with screenshot placeholders and key points
+---
