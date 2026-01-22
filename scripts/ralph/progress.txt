@@ -347,3 +347,15 @@ Started: 2026-01-22
   - WhatWereBuilding.jsx shows Quick Feedback Collector project card with features and components used
   - DemoPlaceholder.jsx has 6-step walkthrough with screenshot placeholders and key points
 ---
+
+## 2026-01-22 - US-022
+- What was implemented: Verified Lesson 4 Sections 4-5 (already implemented in US-020)
+- Files changed: None - sections were already complete
+- **Learnings for future iterations:**
+  - KeyObservations.jsx has 5 expandable observation cards with single expandedCard state for accordion behavior
+  - Observations: It's a Conversation, Mistakes are Normal, Clear Description = Better Results, Don't Need to Understand Code, Speed is Incredible
+  - Each card has summary, details array, and example from the demo
+  - WhatToWatchFor.jsx has greenFlags (5 items) and redFlags (5 items) with CheckCircle2/XCircle icons
+  - Also has bestPractices array (5 items) displayed in 2-column grid
+  - Both sections include Key Insight/Honest Truth boxes with amber or purple gradients
+---
