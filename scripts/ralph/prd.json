@@ -587,8 +587,8 @@
         "Typecheck passes"
       ],
       "priority": 35,
-      "passes": false,
-      "notes": "This lesson is hidden until unlocked"
+      "passes": true,
+      "notes": "Fully implemented with all 8 section components and unlock mechanism"
     },
     {
       "id": "US-036",
@@ -606,8 +606,8 @@
         "Typecheck passes"
       ],
       "priority": 36,
-      "passes": false,
-      "notes": ""
+      "passes": true,
+      "notes": "Implemented as part of US-035"
     },
     {
       "id": "US-037",
@@ -624,8 +624,8 @@
         "Typecheck passes"
       ],
       "priority": 37,
-      "passes": false,
-      "notes": ""
+      "passes": true,
+      "notes": "Implemented as part of US-035"
     },
     {
       "id": "US-038",
