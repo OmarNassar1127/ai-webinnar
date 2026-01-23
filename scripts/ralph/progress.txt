@@ -548,3 +548,18 @@ Started: 2026-01-22
   - All sections use Framer Motion for animations and follow design system
   - Build passes successfully - all section components compile without errors
 ---
+
+## 2026-01-23 - US-041
+- What was implemented: Added unlock mechanism for Lesson 8 with secret code entry and reveal animation
+- Files changed:
+  - src/pages/Lesson8.jsx (added UnlockRevealAnimation, enhanced LockedMessage with code entry)
+  - src/App.jsx (added URL-based unlock via ?unlock=RALPH query parameter)
+- **Learnings for future iterations:**
+  - UNLOCK_CODE constant in Lesson8.jsx defines the secret unlock code (currently 'RALPH')
+  - LockedMessage component has two states: initial locked view and code entry form
+  - UnlockRevealAnimation has 4 phases (0-3) with progressive reveal using setTimeout
+  - Sparkle burst effect creates particles emanating from center using Math.random() for positions
+  - URL unlock in App.jsx uses URLSearchParams and window.history.replaceState to clean URL
+  - The justUnlocked state in Lesson8Content handles transition after unlock animation completes
+  - Build passes successfully
+---

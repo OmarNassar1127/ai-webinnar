@@ -695,8 +695,8 @@
         "Typecheck passes"
       ],
       "priority": 41,
-      "passes": false,
-      "notes": "Could be a special code entry or admin toggle"
+      "passes": true,
+      "notes": "Secret code entry (RALPH) and URL-based unlock (?unlock=RALPH)"
     },
     {
       "id": "US-042",
