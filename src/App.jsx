@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import { AnimatePresence } from 'framer-motion'
 import { AuthProvider, useAuth } from './context/AuthContext'
 import { LessonProvider } from './context/LessonContext'
+import { unlockLesson8 } from './context/Lesson8Context'
 import Dashboard from './pages/Dashboard'
 import Lesson1 from './pages/Lesson1'
 import Lesson2 from './pages/Lesson2'
@@ -18,6 +19,17 @@ import AuthModal from './components/auth/AuthModal'
 function AppContent() {
   const [currentPage, setCurrentPage] = useState('dashboard')
   const { user, openAuthModal } = useAuth()
+
+  // Check for URL-based unlock on mount
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search)
+    const unlockCode = params.get('unlock')
+    if (unlockCode?.toUpperCase() === 'RALPH') {
+      unlockLesson8()
+      // Clean up URL
+      window.history.replaceState({}, '', window.location.pathname)
+    }
+  }, [])
 
   // Scroll to top when page changes
   useEffect(() => {
