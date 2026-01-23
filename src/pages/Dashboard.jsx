@@ -5,6 +5,7 @@ import { Card, Button, Badge, ProgressBar } from '../components/common/';
 import { useLesson } from '../context/LessonContext';
 import { useAuth } from '../context/AuthContext';
 import { FloatingAIGraphic, TimelineNode, CircuitPattern } from '../components/dashboard/DashboardGraphics';
+import { isLesson8Unlocked } from '../context/Lesson8Context';
 
 const lessons = [
   { id: 1, title: 'AI Thinking Foundations', duration: '1 hour' },
@@ -33,10 +34,10 @@ export default function Dashboard({ onStartLesson }) {
   const { user, profile, openAuthModal } = useAuth();
 
   const isLessonUnlocked = (lessonId) => {
-    // Lesson 8 is always locked unless explicitly unlocked (future feature)
-    if (lessonId === 8) return false;
-    // Lessons 1, 2, 3, 4, 5, 6, and 7 are unlocked
-    return lessonId === 1 || lessonId === 2 || lessonId === 3 || lessonId === 4 || lessonId === 5 || lessonId === 6 || lessonId === 7;
+    // Lesson 8 checks the unlock flag from localStorage
+    if (lessonId === 8) return isLesson8Unlocked();
+    // Lessons 1-7 and 9 are unlocked by default
+    return lessonId === 1 || lessonId === 2 || lessonId === 3 || lessonId === 4 || lessonId === 5 || lessonId === 6 || lessonId === 7 || lessonId === 9;
   };
   const isLessonCompleted = sectionCompletion?.every(Boolean) || false;
   const completedSections = sectionCompletion?.filter(Boolean).length || 0;
