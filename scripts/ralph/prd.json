@@ -638,8 +638,8 @@
         "Typecheck passes"
       ],
       "priority": 38,
-      "passes": false,
-      "notes": ""
+      "passes": true,
+      "notes": "Fully implemented with all 6 section components"
     },
     {
       "id": "US-039",
@@ -658,8 +658,8 @@
         "Typecheck passes"
       ],
       "priority": 39,
-      "passes": false,
-      "notes": ""
+      "passes": true,
+      "notes": "Implemented as part of US-038"
     },
     {
       "id": "US-040",
@@ -679,8 +679,8 @@
         "Typecheck passes"
       ],
       "priority": 40,
-      "passes": false,
-      "notes": ""
+      "passes": true,
+      "notes": "Implemented as part of US-038"
     },
     {
       "id": "US-041",
