@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Table, MessageSquare, ArrowRight, Lightbulb, Zap, Clock } from 'lucide-react';
+import { Table, MessageSquare, ArrowRight, Lightbulb, Zap, Clock, PenLine, CheckCircle2 } from 'lucide-react';
 import { Card, Button } from '../../components/common';
 
 const sampleData = [
@@ -113,6 +113,7 @@ function QuestionCard({ question, isExpanded, onClick }) {
 
 function SpreadsheetAnalysis({ onComplete }) {
   const [expandedQuestion, setExpandedQuestion] = useState(null);
+  const [userQuestions, setUserQuestions] = useState(['', '', '']);
 
   return (
     <div className="max-w-4xl mx-auto px-6 py-12">
@@ -211,6 +212,57 @@ function SpreadsheetAnalysis({ onComplete }) {
             />
           ))}
         </div>
+      </motion.div>
+
+      {/* Practice Exercise */}
+      <motion.div
+        className="mb-10"
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.45 }}
+      >
+        <div className="flex items-center gap-3 mb-4">
+          <div className="p-2 rounded-lg bg-emerald-500/20">
+            <PenLine className="w-5 h-5 text-emerald-400" />
+          </div>
+          <h2 className="text-xl font-semibold text-white">Your Turn: Write 3 Questions</h2>
+        </div>
+        <Card className="p-6">
+          <p className="text-slate-300 mb-4">
+            Looking at the sample data above, write 3 questions you'd want AI to answer:
+          </p>
+          {userQuestions.map((q, idx) => (
+            <div key={idx} className="mb-3">
+              <label className="text-slate-400 text-sm mb-1 block">Question {idx + 1}:</label>
+              <input
+                type="text"
+                value={q}
+                onChange={(e) => {
+                  const updated = [...userQuestions];
+                  updated[idx] = e.target.value;
+                  setUserQuestions(updated);
+                }}
+                placeholder={idx === 0 ? "e.g., What's the average revenue per booking?" : "Type your question..."}
+                className="w-full px-4 py-3 bg-slate-800/50 border border-slate-700 rounded-xl text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent"
+              />
+            </div>
+          ))}
+          {userQuestions.filter(q => q.trim().length > 5).length >= 3 && (
+            <motion.div
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="mt-4 p-4 rounded-lg bg-emerald-900/20 border border-emerald-500/30"
+            >
+              <div className="flex items-start gap-2">
+                <CheckCircle2 className="w-5 h-5 text-emerald-400 mt-0.5" />
+                <p className="text-emerald-300 text-sm">
+                  Great questions! Notice how natural language queries let you focus on
+                  what you want to know, not how to calculate it.
+                </p>
+              </div>
+            </motion.div>
+          )}
+        </Card>
       </motion.div>
 
       {/* Key Insight */}
