@@ -35,8 +35,8 @@ export default function Dashboard({ onStartLesson }) {
   const isLessonUnlocked = (lessonId) => {
     // Lesson 8 is always locked unless explicitly unlocked (future feature)
     if (lessonId === 8) return false;
-    // Lessons 1, 2, 3, 4, and 5 are unlocked
-    return lessonId === 1 || lessonId === 2 || lessonId === 3 || lessonId === 4 || lessonId === 5;
+    // Lessons 1, 2, 3, 4, 5, and 6 are unlocked
+    return lessonId === 1 || lessonId === 2 || lessonId === 3 || lessonId === 4 || lessonId === 5 || lessonId === 6;
   };
   const isLessonCompleted = sectionCompletion?.every(Boolean) || false;
   const completedSections = sectionCompletion?.filter(Boolean).length || 0;
