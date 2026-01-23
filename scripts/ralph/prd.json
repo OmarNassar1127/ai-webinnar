@@ -497,8 +497,8 @@
         "Typecheck passes"
       ],
       "priority": 30,
-      "passes": false,
-      "notes": ""
+      "passes": true,
+      "notes": "Already implemented as part of US-028"
     },
     {
       "id": "US-031",
@@ -516,8 +516,8 @@
         "Typecheck passes"
       ],
       "priority": 31,
-      "passes": false,
-      "notes": ""
+      "passes": true,
+      "notes": "Already implemented as part of US-028"
     },
     {
       "id": "US-032",
