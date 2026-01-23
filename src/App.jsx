@@ -11,6 +11,7 @@ import Lesson5 from './pages/Lesson5'
 import Lesson6 from './pages/Lesson6'
 import Lesson7 from './pages/Lesson7'
 import Lesson8 from './pages/Lesson8'
+import Lesson9 from './pages/Lesson9'
 import AnimatedBackground from './components/layout/AnimatedBackground'
 import AuthModal from './components/auth/AuthModal'
 
@@ -100,6 +101,12 @@ function AppContent() {
             {currentPage === 'lesson8' && (
               <Lesson8
                 key="lesson8"
+                onBack={() => setCurrentPage('dashboard')}
+              />
+            )}
+            {currentPage === 'lesson9' && (
+              <Lesson9
+                key="lesson9"
                 onBack={() => setCurrentPage('dashboard')}
               />
             )}
