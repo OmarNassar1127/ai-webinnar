@@ -66,8 +66,12 @@ function Lesson1({ onBack }) {
     if (currentSection < sections.length) {
       completeSection(currentSection)
       goToSection(currentSection + 1)
+    } else if (currentSection === sections.length) {
+      // On last section - complete and go back to dashboard
+      completeSection(currentSection)
+      onBack()
     }
-  }, [currentSection, completeSection, goToSection])
+  }, [currentSection, completeSection, goToSection, onBack])
 
   const handleComplete = useCallback(() => {
     completeSection(currentSection)
@@ -75,6 +79,8 @@ function Lesson1({ onBack }) {
       goToSection(currentSection + 1)
     }
   }, [currentSection, completeSection, goToSection])
+
+  const isLastSection = currentSection === sections.length
 
   // Keyboard navigation
   useEffect(() => {
@@ -158,7 +164,8 @@ function Lesson1({ onBack }) {
         onPrevious={handlePrevious}
         onNext={handleNext}
         canGoPrevious={currentSection > 1}
-        canGoNext={currentSection < sections.length}
+        canGoNext={true}
+        showComplete={isLastSection}
       />
     </motion.div>
   )

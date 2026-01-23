@@ -1,7 +1,8 @@
 import { useState, useEffect } from 'react'
 import { AnimatePresence } from 'framer-motion'
 import { AuthProvider, useAuth } from './context/AuthContext'
-import { LessonProvider } from './context/LessonContext'
+import { LessonProvider, useLesson } from './context/LessonContext'
+import { GlobalProgressProvider, useGlobalProgress } from './context/GlobalProgressContext'
 import { unlockLesson8 } from './context/Lesson8Context'
 import Dashboard from './pages/Dashboard'
 import Lesson1 from './pages/Lesson1'
@@ -19,6 +20,18 @@ import AuthModal from './components/auth/AuthModal'
 function AppContent() {
   const [currentPage, setCurrentPage] = useState('dashboard')
   const { user, openAuthModal } = useAuth()
+  const { isLessonUnlocked } = useGlobalProgress()
+  const { sectionCompletion } = useLesson()
+
+  // Check if Lesson 1 is completed locally
+  const isLesson1Completed = sectionCompletion?.every(Boolean) || false
+
+  // Combined unlock check that uses local state for immediate feedback
+  const isLessonReallyUnlocked = (lessonId) => {
+    if (lessonId === 1) return true
+    if (lessonId === 2) return isLesson1Completed // Use local state
+    return isLessonUnlocked(lessonId)
+  }
 
   // Check for URL-based unlock on mount
   useEffect(() => {
@@ -47,19 +60,23 @@ function AppContent() {
     return () => window.removeEventListener('keydown', handleKeyPress)
   }, [currentPage])
 
-  // Handle start lesson - require login
+  // Handle start lesson - require login and check if lesson is unlocked
   const handleStartLesson = (lessonId = 1) => {
     if (!user) {
       openAuthModal('login')
+      return
+    }
+    // Check if the lesson is unlocked
+    if (!isLessonReallyUnlocked(lessonId)) {
+      // Don't navigate to locked lessons
       return
     }
     setCurrentPage(`lesson${lessonId}`)
   }
 
   return (
-    <LessonProvider>
-      <div className="min-h-screen relative overflow-hidden">
-        <AnimatedBackground />
+    <div className="min-h-screen relative overflow-hidden">
+      <AnimatedBackground />
         <div className="relative z-10">
           <AnimatePresence mode="wait">
             {currentPage === 'dashboard' && (
@@ -125,17 +142,20 @@ function AppContent() {
           </AnimatePresence>
         </div>
 
-        {/* Auth Modal - rendered at app level for global access */}
-        <AuthModal />
-      </div>
-    </LessonProvider>
+      {/* Auth Modal - rendered at app level for global access */}
+      <AuthModal />
+    </div>
   )
 }
 
 function App() {
   return (
     <AuthProvider>
-      <AppContent />
+      <GlobalProgressProvider>
+        <LessonProvider>
+          <AppContent />
+        </LessonProvider>
+      </GlobalProgressProvider>
     </AuthProvider>
   )
 }

@@ -4,7 +4,7 @@ import { User, LogOut, ChevronDown, BarChart3 } from 'lucide-react'
 import { useAuth } from '../../context/AuthContext'
 
 export default function UserMenu() {
-  const { user, profile, signOut, openAuthModal } = useAuth()
+  const { user, profile, loading, signOut, openAuthModal } = useAuth()
   const [isOpen, setIsOpen] = useState(false)
   const menuRef = useRef(null)
 
@@ -38,6 +38,13 @@ export default function UserMenu() {
 
   const displayName = profile?.full_name || user?.email?.split('@')[0] || 'User'
   const initials = getInitials(profile?.full_name)
+
+  // Show loading state while checking auth
+  if (loading) {
+    return (
+      <div className="w-9 h-9 rounded-full bg-slate-700 animate-pulse" />
+    )
+  }
 
   if (!user) {
     return (

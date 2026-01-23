@@ -1,11 +1,12 @@
+import { useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { Brain, Clock, Unlock, ChevronRight, Sparkles, Play, Trophy, Target } from 'lucide-react';
+import { Brain, Clock, Unlock, ChevronRight, Sparkles, Play, Trophy, Target, Lock } from 'lucide-react';
 import Header from '../components/layout/Header';
 import { Card, Button, Badge, ProgressBar } from '../components/common/';
 import { useLesson } from '../context/LessonContext';
 import { useAuth } from '../context/AuthContext';
+import { useGlobalProgress } from '../context/GlobalProgressContext';
 import { FloatingAIGraphic, TimelineNode, CircuitPattern } from '../components/dashboard/DashboardGraphics';
-import { isLesson8Unlocked } from '../context/Lesson8Context';
 
 const lessons = [
   { id: 1, title: 'AI Thinking Foundations', duration: '1 hour' },
@@ -32,21 +33,49 @@ const itemVariants = {
 export default function Dashboard({ onStartLesson }) {
   const { lessonProgress, quizScore, sectionCompletion } = useLesson();
   const { user, profile, openAuthModal } = useAuth();
+  const { isLessonUnlocked, isLessonCompleted: checkLessonCompleted, getOverallProgress, refetch } = useGlobalProgress();
 
-  const isLessonUnlocked = (lessonId) => {
-    // Lesson 8 checks the unlock flag from localStorage
-    if (lessonId === 8) return isLesson8Unlocked();
-    // Lessons 1-7 and 9 are unlocked by default
-    return lessonId === 1 || lessonId === 2 || lessonId === 3 || lessonId === 4 || lessonId === 5 || lessonId === 6 || lessonId === 7 || lessonId === 9;
-  };
-  const isLessonCompleted = sectionCompletion?.every(Boolean) || false;
+  const isLesson1Completed = sectionCompletion?.every(Boolean) || false;
   const completedSections = sectionCompletion?.filter(Boolean).length || 0;
+  const overallProgress = getOverallProgress();
+
+  // Refetch global progress when dashboard mounts to pick up any lesson completions
+  useEffect(() => {
+    refetch();
+  }, [refetch]);
+
+  // Use local state for lesson 1 completion check since we have it from LessonContext
+  const isLessonReallyCompleted = (lessonId) => {
+    if (lessonId === 1) return isLesson1Completed;
+    return checkLessonCompleted(lessonId);
+  };
+
+  // Use combined unlock check - for lesson 2, check if lesson 1 is locally complete
+  const isLessonReallyUnlocked = (lessonId) => {
+    if (lessonId === 1) return true;
+    if (lessonId === 2) return isLesson1Completed;
+    return isLessonUnlocked(lessonId);
+  };
 
   const getGreeting = () => {
     if (!user) return 'Welcome, Learner';
     const firstName = profile?.full_name?.split(' ')[0] || user.email?.split('@')[0] || 'Learner';
     return `Welcome back, ${firstName}!`;
   };
+
+  // Find the next lesson to show (first unlocked but not completed, or first lesson)
+  const getNextLesson = () => {
+    for (const lesson of lessons) {
+      if (isLessonReallyUnlocked(lesson.id) && !isLessonReallyCompleted(lesson.id)) {
+        return lesson;
+      }
+    }
+    // All completed - return the first lesson as a fallback
+    return lessons[0];
+  };
+
+  const nextLesson = getNextLesson();
+  const isNextLessonCompleted = nextLesson ? isLessonReallyCompleted(nextLesson.id) : false;
 
   return (
     <motion.div className="min-h-screen" initial="hidden" animate="visible" variants={containerVariants}>
@@ -141,19 +170,19 @@ export default function Dashboard({ onStartLesson }) {
 
               <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                 <div className="text-center p-4 rounded-xl bg-slate-800/50">
-                  <p className="text-2xl font-bold text-white">{isLessonCompleted ? 1 : 0}/9</p>
+                  <p className="text-2xl font-bold text-white">{overallProgress.completed}/9</p>
                   <p className="text-sm text-slate-400">Lessons Completed</p>
                 </div>
                 <div className="text-center p-4 rounded-xl bg-slate-800/50">
                   <p className="text-2xl font-bold text-white">{completedSections}/8</p>
-                  <p className="text-sm text-slate-400">Sections Done</p>
+                  <p className="text-sm text-slate-400">L1 Sections</p>
                 </div>
                 <div className="text-center p-4 rounded-xl bg-slate-800/50">
                   <p className="text-2xl font-bold text-white">{quizScore !== null ? `${quizScore}/6` : '-'}</p>
-                  <p className="text-sm text-slate-400">Quiz Score</p>
+                  <p className="text-sm text-slate-400">L1 Quiz Score</p>
                 </div>
                 <div className="text-center p-4 rounded-xl bg-slate-800/50">
-                  <p className="text-2xl font-bold text-white">{lessonProgress}%</p>
+                  <p className="text-2xl font-bold text-white">{overallProgress.percentage}%</p>
                   <p className="text-sm text-slate-400">Overall Progress</p>
                 </div>
               </div>
@@ -195,9 +224,9 @@ export default function Dashboard({ onStartLesson }) {
                   key={lesson.id}
                   lesson={lesson}
                   index={index}
-                  isUnlocked={isLessonUnlocked(lesson.id)}
-                  isActive={lesson.id === 1 && !isLessonCompleted}
-                  isCompleted={lesson.id === 1 && isLessonCompleted}
+                  isUnlocked={isLessonReallyUnlocked(lesson.id)}
+                  isActive={isLessonReallyUnlocked(lesson.id) && !isLessonReallyCompleted(lesson.id)}
+                  isCompleted={isLessonReallyCompleted(lesson.id)}
                   onClick={(lessonId) => onStartLesson(lessonId)}
                 />
               ))}
@@ -227,25 +256,32 @@ export default function Dashboard({ onStartLesson }) {
               <div className="relative z-10">
                 <div className="flex items-center gap-3 mb-6">
                   <Badge variant="active" pulse icon={<Sparkles className="w-3 h-3" />}>
-                    Lesson 1
+                    Lesson {nextLesson.id}
                   </Badge>
                   <Badge variant="success" icon={<Unlock className="w-3 h-3" />}>
-                    {isLessonCompleted ? 'Completed' : 'Unlocked'}
+                    {isNextLessonCompleted ? 'Completed' : 'Unlocked'}
                   </Badge>
                 </div>
 
                 <h3 className="text-2xl md:text-3xl font-bold text-white mb-3">
-                  AI Thinking Foundations
+                  {nextLesson.title}
                 </h3>
                 <p className="text-slate-400 text-lg mb-6">
-                  Understand how AI really works and why your input matters. Build a solid
-                  foundation for effective AI collaboration.
+                  {nextLesson.id === 1 && 'Understand how AI really works and why your input matters. Build a solid foundation for effective AI collaboration.'}
+                  {nextLesson.id === 2 && 'Learn the basics of how software works, so you can communicate effectively with developers and AI tools.'}
+                  {nextLesson.id === 3 && 'Explore the landscape of AI tools and understand when to use each type.'}
+                  {nextLesson.id === 4 && 'See AI in action with real-world examples and hands-on exercises.'}
+                  {nextLesson.id === 5 && 'Build your first AI-powered tool from scratch.'}
+                  {nextLesson.id === 6 && 'Learn to build AI tools specifically for operations workflows.'}
+                  {nextLesson.id === 7 && 'Master data analysis and reporting with AI assistance.'}
+                  {nextLesson.id === 8 && 'Discover the secret lesson and advanced AI techniques.'}
+                  {nextLesson.id === 9 && 'Complete your final project and showcase your AI skills.'}
                 </p>
 
                 <div className="flex items-center gap-6 mb-8">
                   <div className="flex items-center gap-2 text-slate-300">
                     <Clock className="w-5 h-5 text-cyan-400" />
-                    <span>60 minutes</span>
+                    <span>{nextLesson.duration}</span>
                   </div>
                   <div className="flex items-center gap-2 text-slate-300">
                     <Brain className="w-5 h-5 text-purple-400" />
@@ -253,19 +289,15 @@ export default function Dashboard({ onStartLesson }) {
                   </div>
                 </div>
 
-                <div className="mb-8">
-                  <ProgressBar value={lessonProgress} showLabel size="md" glow />
-                </div>
-
                 <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
                   <Button
                     variant="primary"
                     size="lg"
                     icon={<Play className="w-5 h-5" />}
-                    onClick={() => onStartLesson(1)}
+                    onClick={() => onStartLesson(nextLesson.id)}
                     className="w-full md:w-auto"
                   >
-                    {isLessonCompleted ? 'Review Lesson' : lessonProgress > 0 ? 'Continue Lesson' : 'Start Lesson'}
+                    {isNextLessonCompleted ? 'Review Lesson' : 'Start Lesson'}
                     <ChevronRight className="w-5 h-5 ml-1" />
                   </Button>
                 </motion.div>

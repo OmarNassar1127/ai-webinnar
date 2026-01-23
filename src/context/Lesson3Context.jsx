@@ -52,7 +52,7 @@ export function Lesson3Provider({ children }) {
           .select('*')
           .eq('user_id', user.id)
           .eq('lesson_id', LESSON_ID)
-          .single();
+          .maybeSingle();
 
         // Fetch quiz results
         const { data: quizData } = await supabase
@@ -60,7 +60,7 @@ export function Lesson3Provider({ children }) {
           .select('*')
           .eq('user_id', user.id)
           .eq('lesson_id', LESSON_ID)
-          .single();
+          .maybeSingle();
 
         if (progressData) {
           setCurrentSection(progressData.current_section || 1);
@@ -139,7 +139,7 @@ export function Lesson3Provider({ children }) {
             is_completed: completedSections.length === TOTAL_SECTIONS,
             completed_at: completedSections.length === TOTAL_SECTIONS ? new Date().toISOString() : null,
             updated_at: new Date().toISOString()
-          });
+          }, { onConflict: 'user_id,lesson_id' });
         } catch (err) {
           console.error('Error saving progress to Supabase:', err);
         } finally {
@@ -214,7 +214,7 @@ export function Lesson3Provider({ children }) {
           total_questions: quizAnswers.length,
           answers: quizAnswers,
           completed_at: new Date().toISOString()
-        });
+        }, { onConflict: 'user_id,lesson_id' });
       } catch (err) {
         console.error('Error saving quiz results:', err);
       }
