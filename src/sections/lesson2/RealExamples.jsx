@@ -159,26 +159,33 @@ const comparisonData = [
 const TabButton = ({ app, isActive, onClick }) => {
   const IconComponent = app.icon;
 
+  // Define gradient colors explicitly for each app
+  const gradientStyles = {
+    vloto: 'from-purple-500 to-violet-600',
+    instagram: 'from-pink-500 to-rose-600',
+    google: 'from-blue-500 to-cyan-600'
+  };
+
   return (
     <motion.button
       whileHover={{ scale: 1.02 }}
       whileTap={{ scale: 0.98 }}
       onClick={onClick}
-      className={`relative flex items-center gap-3 px-6 py-4 rounded-xl font-medium transition-all ${
+      className={`relative flex items-center gap-3 px-6 py-4 rounded-xl font-medium transition-all overflow-hidden ${
         isActive
-          ? `bg-gradient-to-r ${app.gradient} text-white shadow-lg`
+          ? 'text-white shadow-lg'
           : 'bg-slate-800/50 text-gray-400 hover:bg-slate-700/50 hover:text-gray-300'
       }`}
+      style={isActive ? {
+        background: app.color === 'purple'
+          ? 'linear-gradient(to right, rgb(168, 85, 247), rgb(124, 58, 237))'
+          : app.color === 'pink'
+          ? 'linear-gradient(to right, rgb(236, 72, 153), rgb(225, 29, 72))'
+          : 'linear-gradient(to right, rgb(59, 130, 246), rgb(6, 182, 212))'
+      } : {}}
     >
-      <IconComponent className="w-5 h-5" />
-      <span>{app.name}</span>
-      {isActive && (
-        <motion.div
-          layoutId="activeTab"
-          className="absolute inset-0 rounded-xl bg-gradient-to-r opacity-20"
-          style={{ background: `linear-gradient(to right, var(--tw-gradient-stops))` }}
-        />
-      )}
+      <IconComponent className="w-5 h-5 relative z-10" />
+      <span className="relative z-10">{app.name}</span>
     </motion.button>
   );
 };
@@ -305,39 +312,64 @@ const VlotoMockup = ({ parts, onPartClick, selectedPart }) => {
               </motion.div>
             </div>
 
-            {/* Interactive Parts */}
-            {parts.map((part) => (
-              <motion.div
-                key={part.id}
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-                onClick={() => onPartClick(part)}
-                className={`absolute cursor-pointer rounded-lg border-2 transition-all ${
-                  selectedPart?.id === part.id
-                    ? 'border-white bg-white/20 shadow-lg shadow-white/30'
-                    : 'border-transparent hover:border-white/50 hover:bg-white/10'
-                }`}
-                style={{
-                  left: `${part.x}%`,
-                  top: `${part.y}%`,
-                  width: `${part.width}%`,
-                  height: `${part.height}%`
-                }}
-              >
-                {/* Part highlight indicator */}
-                {selectedPart?.id === part.id && (
+            {/* Interactive Parts - Always visible with pulsing effect */}
+            {parts.map((part, index) => {
+              const componentColors = {
+                frontend: 'border-purple-400 bg-purple-500/20',
+                backend: 'border-cyan-400 bg-cyan-500/20',
+                database: 'border-emerald-400 bg-emerald-500/20',
+                api: 'border-orange-400 bg-orange-500/20'
+              };
+              const pulseColors = {
+                frontend: 'bg-purple-400',
+                backend: 'bg-cyan-400',
+                database: 'bg-emerald-400',
+                api: 'bg-orange-400'
+              };
+
+              return (
+                <motion.div
+                  key={part.id}
+                  initial={{ opacity: 0, scale: 0.8 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  transition={{ delay: 0.3 + index * 0.1 }}
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                  onClick={() => onPartClick(part)}
+                  className={`absolute cursor-pointer rounded-lg border-2 transition-all ${
+                    selectedPart?.id === part.id
+                      ? 'border-white bg-white/30 shadow-lg shadow-white/30 z-20'
+                      : `${componentColors[part.component]} hover:bg-white/20`
+                  }`}
+                  style={{
+                    left: `${part.x}%`,
+                    top: `${part.y}%`,
+                    width: `${part.width}%`,
+                    height: `${part.height}%`
+                  }}
+                >
+                  {/* Pulsing indicator dot */}
                   <motion.div
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    className="absolute -top-6 left-1/2 -translate-x-1/2 whitespace-nowrap"
-                  >
-                    <span className="px-2 py-1 rounded bg-white text-slate-900 text-xs font-medium">
-                      {part.label}
-                    </span>
-                  </motion.div>
-                )}
-              </motion.div>
-            ))}
+                    className={`absolute -top-1 -right-1 w-3 h-3 rounded-full ${pulseColors[part.component]}`}
+                    animate={{ scale: [1, 1.3, 1], opacity: [1, 0.5, 1] }}
+                    transition={{ duration: 1.5, repeat: Infinity, delay: index * 0.2 }}
+                  />
+
+                  {/* Part highlight indicator */}
+                  {selectedPart?.id === part.id && (
+                    <motion.div
+                      initial={{ opacity: 0, y: 5 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      className="absolute -top-7 left-1/2 -translate-x-1/2 whitespace-nowrap z-30"
+                    >
+                      <span className="px-2 py-1 rounded bg-white text-slate-900 text-xs font-medium shadow-lg">
+                        {part.label}
+                      </span>
+                    </motion.div>
+                  )}
+                </motion.div>
+              );
+            })}
 
             {/* Bottom Card */}
             <div className="absolute bottom-0 left-0 right-0 bg-slate-900/95 rounded-t-3xl p-4 space-y-3">
@@ -403,6 +435,327 @@ const PartExplanation = ({ part }) => {
         </div>
       </Card>
     </motion.div>
+  );
+};
+
+// Interactive Booking Flow with Visual Diagram
+const BookingFlowAnimation = () => {
+  const [activeScenario, setActiveScenario] = useState(null);
+  const [currentStepIndex, setCurrentStepIndex] = useState(-1);
+  const [completedSteps, setCompletedSteps] = useState([]);
+  const [isAnimating, setIsAnimating] = useState(false);
+
+  const scenarios = [
+    {
+      id: 'find-cars',
+      label: 'Find Nearby Cars',
+      icon: Search,
+      color: 'purple',
+      gradient: 'from-purple-500 to-violet-600',
+      description: 'When you open the app and look for available cars',
+      steps: [
+        { from: 'user', to: 'frontend', message: 'Opens the Vloto app', icon: Smartphone },
+        { from: 'frontend', to: 'backend', message: 'GET /api/cars/nearby?lat=52.3&lon=4.9', icon: Globe },
+        { from: 'backend', to: 'database', message: 'SELECT * FROM cars WHERE available=true', icon: HardDrive },
+        { from: 'database', to: 'backend', message: '3 cars found nearby', icon: Server },
+        { from: 'backend', to: 'frontend', message: 'JSON: [{car1}, {car2}, {car3}]', icon: Smartphone },
+        { from: 'frontend', to: 'user', message: 'Map shows 3 car markers', icon: User }
+      ]
+    },
+    {
+      id: 'book-car',
+      label: 'Book a Car',
+      icon: CreditCard,
+      color: 'cyan',
+      gradient: 'from-cyan-500 to-blue-600',
+      description: 'When you tap "Book Now" to reserve a car',
+      steps: [
+        { from: 'user', to: 'frontend', message: 'Taps "Book Now" button', icon: Smartphone },
+        { from: 'frontend', to: 'backend', message: 'POST /api/bookings {carId: 42}', icon: Server },
+        { from: 'backend', to: 'database', message: 'Check: Is car #42 still available?', icon: HardDrive },
+        { from: 'database', to: 'backend', message: 'Yes! Car #42 is available', icon: Server },
+        { from: 'backend', to: 'database', message: 'INSERT booking (user, car, time)', icon: HardDrive },
+        { from: 'database', to: 'backend', message: 'Created: Booking #12345', icon: Server },
+        { from: 'backend', to: 'frontend', message: 'Success! Booking confirmed', icon: Smartphone },
+        { from: 'frontend', to: 'user', message: 'Shows confirmation screen', icon: User }
+      ]
+    },
+    {
+      id: 'unlock-car',
+      label: 'Unlock the Car',
+      icon: Zap,
+      color: 'emerald',
+      gradient: 'from-emerald-500 to-green-600',
+      description: 'When you tap unlock to start your trip',
+      steps: [
+        { from: 'user', to: 'frontend', message: 'Taps "Unlock Car" button', icon: Smartphone },
+        { from: 'frontend', to: 'backend', message: 'POST /api/car/42/unlock', icon: Server },
+        { from: 'backend', to: 'database', message: 'Verify: Does user have valid booking?', icon: HardDrive },
+        { from: 'database', to: 'backend', message: 'Authorized: Booking #12345', icon: Server },
+        { from: 'backend', to: 'car', message: 'IoT Command: UNLOCK_DOORS', icon: Car },
+        { from: 'car', to: 'backend', message: 'Confirmed: Doors unlocked!', icon: Server },
+        { from: 'backend', to: 'database', message: 'UPDATE: trip_started=NOW()', icon: HardDrive },
+        { from: 'backend', to: 'frontend', message: 'Success: Car is unlocked!', icon: Smartphone },
+        { from: 'frontend', to: 'user', message: 'Shows "Car Unlocked" + trip timer', icon: User }
+      ]
+    }
+  ];
+
+  const componentConfig = {
+    user: { label: 'You', sublabel: 'User', icon: User, color: 'from-slate-500 to-slate-600', position: 0 },
+    frontend: { label: 'App', sublabel: 'Frontend', icon: Smartphone, color: 'from-purple-500 to-violet-600', position: 1 },
+    backend: { label: 'Server', sublabel: 'Backend', icon: Server, color: 'from-cyan-500 to-blue-600', position: 2 },
+    database: { label: 'Database', sublabel: 'Storage', icon: HardDrive, color: 'from-emerald-500 to-green-600', position: 3 },
+    car: { label: 'Car', sublabel: 'IoT Device', icon: Car, color: 'from-green-500 to-teal-600', position: 4 }
+  };
+
+  const runScenario = (scenario) => {
+    if (isAnimating) return;
+
+    setActiveScenario(scenario);
+    setCurrentStepIndex(-1);
+    setCompletedSteps([]);
+    setIsAnimating(true);
+
+    // Animate through steps
+    scenario.steps.forEach((_, index) => {
+      setTimeout(() => {
+        setCurrentStepIndex(index);
+        setCompletedSteps(prev => [...prev, index]);
+
+        if (index === scenario.steps.length - 1) {
+          setIsAnimating(false);
+        }
+      }, (index + 1) * 800);
+    });
+  };
+
+  const getComponentsInvolved = () => {
+    if (!activeScenario) return ['user', 'frontend', 'backend', 'database'];
+    if (activeScenario.id === 'unlock-car') return ['user', 'frontend', 'backend', 'database', 'car'];
+    return ['user', 'frontend', 'backend', 'database'];
+  };
+
+  const componentsToShow = getComponentsInvolved();
+
+  return (
+    <div className="space-y-6">
+      {/* Scenario Buttons */}
+      <div className="text-center space-y-4">
+        <h3 className="text-xl font-semibold text-white">What happens when you...</h3>
+        <p className="text-gray-400 text-sm">Click a scenario to see how data flows through the Vloto system</p>
+
+        <div className="flex flex-wrap justify-center gap-3">
+          {scenarios.map((scenario) => {
+            const IconComponent = scenario.icon;
+            const isActive = activeScenario?.id === scenario.id;
+
+            return (
+              <motion.button
+                key={scenario.id}
+                whileHover={{ scale: 1.03 }}
+                whileTap={{ scale: 0.97 }}
+                onClick={() => runScenario(scenario)}
+                disabled={isAnimating}
+                className={`flex items-center gap-2 px-5 py-3 rounded-xl font-medium transition-all ${
+                  isActive
+                    ? `bg-gradient-to-r ${scenario.gradient} text-white shadow-lg shadow-${scenario.color}-500/30`
+                    : 'bg-slate-800 text-gray-300 hover:bg-slate-700 disabled:opacity-50'
+                }`}
+              >
+                <IconComponent className="w-5 h-5" />
+                {scenario.label}
+              </motion.button>
+            );
+          })}
+        </div>
+      </div>
+
+      {/* Flow Diagram Container */}
+      <div className="relative bg-gradient-to-br from-slate-900 via-slate-900 to-slate-800 rounded-2xl border border-white/10 p-6 md:p-8 overflow-hidden">
+        {/* Background grid pattern */}
+        <div className="absolute inset-0 opacity-5">
+          <div className="absolute inset-0" style={{
+            backgroundImage: 'radial-gradient(circle at 1px 1px, white 1px, transparent 0)',
+            backgroundSize: '24px 24px'
+          }} />
+        </div>
+
+        {/* Component Nodes Row */}
+        <div className="relative flex justify-between items-start gap-2 mb-8">
+          {componentsToShow.map((id, index) => {
+            const comp = componentConfig[id];
+            const IconComponent = comp.icon;
+            const isActive = activeScenario && completedSteps.length > 0 && (
+              activeScenario.steps.slice(0, completedSteps.length).some(
+                step => step.from === id || step.to === id
+              )
+            );
+            const isCurrentFrom = activeScenario && currentStepIndex >= 0 &&
+              activeScenario.steps[currentStepIndex]?.from === id;
+            const isCurrentTo = activeScenario && currentStepIndex >= 0 &&
+              activeScenario.steps[currentStepIndex]?.to === id;
+
+            return (
+              <div key={id} className="flex flex-col items-center flex-1 min-w-0">
+                {/* Connection line to next node */}
+                {index < componentsToShow.length - 1 && (
+                  <div className="absolute top-8 h-1 bg-slate-700/50 rounded-full"
+                    style={{
+                      left: `calc(${(index + 0.5) * (100 / componentsToShow.length)}% + 24px)`,
+                      width: `calc(${100 / componentsToShow.length}% - 48px)`
+                    }}
+                  />
+                )}
+
+                <motion.div
+                  animate={{
+                    scale: isCurrentFrom || isCurrentTo ? 1.15 : 1,
+                    y: isCurrentFrom || isCurrentTo ? -4 : 0
+                  }}
+                  transition={{ type: 'spring', stiffness: 300, damping: 20 }}
+                  className="relative z-10"
+                >
+                  <div className={`relative w-14 h-14 md:w-16 md:h-16 rounded-2xl bg-gradient-to-br ${comp.color} flex items-center justify-center shadow-xl transition-all duration-300 ${
+                    isCurrentFrom || isCurrentTo
+                      ? 'ring-4 ring-white/50 shadow-2xl'
+                      : isActive
+                        ? 'ring-2 ring-white/30'
+                        : ''
+                  }`}>
+                    <IconComponent className="w-7 h-7 md:w-8 md:h-8 text-white" />
+
+                    {/* Pulse effect for current node */}
+                    {(isCurrentFrom || isCurrentTo) && (
+                      <motion.div
+                        className={`absolute inset-0 rounded-2xl bg-gradient-to-br ${comp.color}`}
+                        initial={{ opacity: 0.5, scale: 1 }}
+                        animate={{ opacity: 0, scale: 1.5 }}
+                        transition={{ duration: 0.8, repeat: Infinity }}
+                      />
+                    )}
+                  </div>
+                </motion.div>
+
+                <span className="text-white text-xs md:text-sm font-semibold mt-2 text-center">{comp.label}</span>
+                <span className="text-gray-500 text-[10px] md:text-xs">{comp.sublabel}</span>
+              </div>
+            );
+          })}
+        </div>
+
+        {/* Current Step Message */}
+        <AnimatePresence mode="wait">
+          {activeScenario && currentStepIndex >= 0 ? (
+            <motion.div
+              key={currentStepIndex}
+              initial={{ opacity: 0, y: 20, scale: 0.95 }}
+              animate={{ opacity: 1, y: 0, scale: 1 }}
+              exit={{ opacity: 0, y: -10, scale: 0.95 }}
+              transition={{ type: 'spring', stiffness: 300, damping: 25 }}
+              className="relative"
+            >
+              <div className={`p-4 md:p-5 rounded-xl bg-gradient-to-r ${activeScenario.gradient} shadow-xl`}>
+                <div className="flex items-center gap-3">
+                  <div className="flex-shrink-0 w-10 h-10 rounded-lg bg-white/20 flex items-center justify-center">
+                    <span className="text-white font-bold">{currentStepIndex + 1}</span>
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-center gap-2 text-white/80 text-sm mb-1">
+                      <span className="font-medium">{componentConfig[activeScenario.steps[currentStepIndex].from].label}</span>
+                      <ArrowRight className="w-4 h-4" />
+                      <span className="font-medium">{componentConfig[activeScenario.steps[currentStepIndex].to].label}</span>
+                    </div>
+                    <p className="text-white font-medium text-sm md:text-base truncate">
+                      {activeScenario.steps[currentStepIndex].message}
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              {/* Step progress dots */}
+              <div className="flex justify-center gap-1.5 mt-4">
+                {activeScenario.steps.map((_, idx) => (
+                  <motion.div
+                    key={idx}
+                    initial={false}
+                    animate={{
+                      scale: idx === currentStepIndex ? 1.3 : 1,
+                      backgroundColor: idx <= currentStepIndex ? '#8B5CF6' : '#334155'
+                    }}
+                    className="w-2 h-2 rounded-full"
+                  />
+                ))}
+              </div>
+            </motion.div>
+          ) : (
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              className="text-center py-8"
+            >
+              <motion.div
+                animate={{ y: [0, -8, 0] }}
+                transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' }}
+                className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-gradient-to-br from-purple-500/20 to-cyan-500/20 border border-purple-500/30 mb-4"
+              >
+                <Zap className="w-8 h-8 text-purple-400" />
+              </motion.div>
+              <p className="text-gray-300 font-medium">Select a scenario above</p>
+              <p className="text-gray-500 text-sm mt-1">Watch data flow through the system step by step</p>
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </div>
+
+      {/* Scenario Description Card */}
+      <AnimatePresence>
+        {activeScenario && (
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -20 }}
+            className="p-4 rounded-xl bg-slate-800/50 border border-white/10"
+          >
+            <div className="flex items-start gap-4">
+              <div className={`p-3 rounded-xl bg-gradient-to-br ${activeScenario.gradient} flex-shrink-0`}>
+                {(() => {
+                  const IconComponent = activeScenario.icon;
+                  return <IconComponent className="w-6 h-6 text-white" />;
+                })()}
+              </div>
+              <div className="flex-1 min-w-0">
+                <h4 className="text-lg font-semibold text-white">{activeScenario.label}</h4>
+                <p className="text-gray-400 text-sm">{activeScenario.description}</p>
+                <div className="flex items-center gap-2 mt-2">
+                  <div className={`h-1.5 flex-1 rounded-full bg-slate-700 overflow-hidden`}>
+                    <motion.div
+                      className={`h-full bg-gradient-to-r ${activeScenario.gradient}`}
+                      initial={{ width: '0%' }}
+                      animate={{ width: `${((currentStepIndex + 1) / activeScenario.steps.length) * 100}%` }}
+                      transition={{ duration: 0.3 }}
+                    />
+                  </div>
+                  <span className="text-sm text-gray-400 flex-shrink-0">
+                    {currentStepIndex + 1}/{activeScenario.steps.length}
+                  </span>
+                </div>
+              </div>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* Key insight */}
+      <div className="flex items-start gap-3 p-4 rounded-xl bg-purple-500/10 border border-purple-500/30">
+        <Lightbulb className="w-5 h-5 text-purple-400 flex-shrink-0 mt-0.5" />
+        <p className="text-sm text-gray-300">
+          <span className="text-purple-400 font-medium">Key Insight:</span> The car is just another computer that receives commands!
+          When you tap "Unlock", your phone talks to Vloto's servers, which then sends a message to the car's onboard computer.
+        </p>
+      </div>
+    </div>
   );
 };
 
@@ -569,64 +922,9 @@ const RealExamples = ({ onComplete }) => {
                 <p className="text-gray-400">{currentApp.description}</p>
               </div>
 
-              {/* Vloto Interactive Mockup */}
+              {/* Vloto Interactive Flow Animation */}
               {activeTab === 'vloto' && (
-                <div className="space-y-6">
-                  <div className="text-center">
-                    <p className="text-gray-300">
-                      <span className="text-purple-400 font-medium">Click on different parts</span> of the app to see which component handles them
-                    </p>
-                  </div>
-
-                  <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-start">
-                    <VlotoMockup
-                      parts={currentApp.mockupParts}
-                      onPartClick={setSelectedPart}
-                      selectedPart={selectedPart}
-                    />
-
-                    <div className="space-y-4">
-                      <div className="text-center lg:text-left">
-                        <h3 className="text-lg font-semibold text-white mb-2">What happens behind the scenes?</h3>
-                        <p className="text-gray-400 text-sm">
-                          {selectedPart
-                            ? 'You selected an element! Here\'s what component handles it:'
-                            : 'Tap any highlighted area on the phone to learn which component handles it'}
-                        </p>
-                      </div>
-
-                      <AnimatePresence mode="wait">
-                        {selectedPart ? (
-                          <PartExplanation key={selectedPart.id} part={selectedPart} />
-                        ) : (
-                          <motion.div
-                            initial={{ opacity: 0 }}
-                            animate={{ opacity: 1 }}
-                            className="p-8 rounded-xl bg-slate-800/50 border border-white/10 border-dashed text-center"
-                          >
-                            <Zap className="w-8 h-8 text-gray-600 mx-auto mb-3" />
-                            <p className="text-gray-500">Click an area on the mockup to explore</p>
-                          </motion.div>
-                        )}
-                      </AnimatePresence>
-
-                      {/* Quick Legend */}
-                      <div className="grid grid-cols-2 gap-2 mt-4">
-                        {[
-                          { label: 'Frontend', color: 'bg-purple-500' },
-                          { label: 'Backend', color: 'bg-cyan-500' },
-                          { label: 'Database', color: 'bg-emerald-500' },
-                          { label: 'API', color: 'bg-orange-500' }
-                        ].map((item) => (
-                          <div key={item.label} className="flex items-center gap-2 text-sm text-gray-400">
-                            <div className={`w-3 h-3 rounded-full ${item.color}`} />
-                            {item.label}
-                          </div>
-                        ))}
-                      </div>
-                    </div>
-                  </div>
-                </div>
+                <BookingFlowAnimation />
               )}
 
               {/* Component Diagram for all apps */}

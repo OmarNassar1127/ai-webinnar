@@ -31,18 +31,30 @@ const getLocalState = () => {
 
 export function Lesson7Provider({ children }) {
   const { user } = useAuth();
-  const [currentSection, setCurrentSection] = useState(1);
-  const [sectionCompletion, setSectionCompletion] = useState(Array(TOTAL_SECTIONS).fill(false));
-  const [quizAnswers, setQuizAnswers] = useState([]);
-  const [quizScore, setQuizScore] = useState(null);
+  // Initialize from localStorage immediately to prevent flash of empty state
+  const initialState = getLocalState();
+  const [currentSection, setCurrentSection] = useState(initialState.currentSection);
+  const [sectionCompletion, setSectionCompletion] = useState(initialState.sectionCompletion);
+  const [quizAnswers, setQuizAnswers] = useState(initialState.quizAnswers);
+  const [quizScore, setQuizScore] = useState(initialState.quizScore);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const saveTimeoutRef = useRef(null);
   const initializedRef = useRef(false);
+  const lastUserIdRef = useRef(null);
 
   // Fetch progress from Supabase or localStorage
   const fetchProgress = useCallback(async () => {
+    // Skip fetch if user hasn't changed and we're already initialized
+    if (initializedRef.current && lastUserIdRef.current === (user?.id || null)) {
+      return;
+    }
+
     setLoading(true);
+    lastUserIdRef.current = user?.id || null;
+
+    // Always get local state as fallback
+    const localState = getLocalState();
 
     if (user) {
       try {
@@ -69,29 +81,33 @@ export function Lesson7Provider({ children }) {
             if (s >= 1 && s <= TOTAL_SECTIONS) completion[s - 1] = true;
           });
           setSectionCompletion(completion);
-        } else {
-          const defaultState = getDefaultState();
-          setCurrentSection(defaultState.currentSection);
-          setSectionCompletion(defaultState.sectionCompletion);
+        } else if (localState.sectionCompletion.some(Boolean)) {
+          // No Supabase data but we have local progress - keep it
+          setCurrentSection(localState.currentSection);
+          setSectionCompletion(localState.sectionCompletion);
         }
+        // If neither has data, keep current state (don't reset)
 
         if (quizData) {
           setQuizAnswers(quizData.answers || []);
           setQuizScore(quizData.score);
-        } else {
-          setQuizAnswers([]);
-          setQuizScore(null);
+        } else if (localState.quizScore !== null) {
+          // Keep local quiz data
+          setQuizAnswers(localState.quizAnswers);
+          setQuizScore(localState.quizScore);
         }
       } catch (err) {
         console.error('Error fetching progress:', err);
-        const localState = getLocalState();
-        setCurrentSection(localState.currentSection);
-        setSectionCompletion(localState.sectionCompletion);
-        setQuizAnswers(localState.quizAnswers);
-        setQuizScore(localState.quizScore);
+        // On error, preserve local state - don't reset
+        if (localState.sectionCompletion.some(Boolean)) {
+          setCurrentSection(localState.currentSection);
+          setSectionCompletion(localState.sectionCompletion);
+          setQuizAnswers(localState.quizAnswers);
+          setQuizScore(localState.quizScore);
+        }
       }
-    } else {
-      const localState = getLocalState();
+    } else if (localState.sectionCompletion.some(Boolean)) {
+      // Not logged in but have local progress - use it
       setCurrentSection(localState.currentSection);
       setSectionCompletion(localState.sectionCompletion);
       setQuizAnswers(localState.quizAnswers);

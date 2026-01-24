@@ -1,4 +1,4 @@
-import { createContext, useContext, useState, useEffect, useCallback } from 'react'
+import { createContext, useContext, useState, useEffect, useCallback, useRef } from 'react'
 import { supabase } from '../lib/supabase'
 import { useAuth } from './AuthContext'
 import { isLesson8Unlocked } from './Lesson8Context'
@@ -8,14 +8,39 @@ const GlobalProgressContext = createContext(null)
 const STORAGE_KEY = 'vloto-ai-academy-global-progress'
 const TOTAL_LESSONS = 9
 
+// Get initial state from localStorage
+const getInitialCompletions = () => {
+  try {
+    const cached = localStorage.getItem(STORAGE_KEY)
+    if (cached) {
+      return JSON.parse(cached)
+    }
+  } catch (e) {
+    console.error('Error reading cached progress:', e)
+  }
+  return {}
+}
+
 export function GlobalProgressProvider({ children }) {
   const { user } = useAuth()
-  const [lessonCompletions, setLessonCompletions] = useState({})
+  // Initialize from localStorage immediately
+  const [lessonCompletions, setLessonCompletions] = useState(getInitialCompletions)
   const [loading, setLoading] = useState(true)
+  const lastUserIdRef = useRef(null)
+  const initializedRef = useRef(false)
 
   // Fetch all lesson progress from Supabase
   const fetchAllProgress = useCallback(async () => {
+    // Skip if user hasn't changed and already initialized
+    if (initializedRef.current && lastUserIdRef.current === (user?.id || null)) {
+      return
+    }
+
     setLoading(true)
+    lastUserIdRef.current = user?.id || null
+
+    // Get current local cache
+    const localCompletions = getInitialCompletions()
 
     if (user) {
       try {
@@ -26,39 +51,31 @@ export function GlobalProgressProvider({ children }) {
 
         if (error) throw error
 
-        const completions = {}
-        data?.forEach(row => {
-          completions[row.lesson_id] = row.is_completed
-        })
-        setLessonCompletions(completions)
-
-        // Also save to localStorage as cache
-        localStorage.setItem(STORAGE_KEY, JSON.stringify(completions))
+        if (data && data.length > 0) {
+          const completions = {}
+          data.forEach(row => {
+            completions[row.lesson_id] = row.is_completed
+          })
+          setLessonCompletions(completions)
+          localStorage.setItem(STORAGE_KEY, JSON.stringify(completions))
+        } else if (Object.keys(localCompletions).length > 0) {
+          // No Supabase data but we have local - keep local
+          setLessonCompletions(localCompletions)
+        }
       } catch (err) {
         console.error('Error fetching global progress:', err)
-        // Fall back to localStorage
-        try {
-          const cached = localStorage.getItem(STORAGE_KEY)
-          if (cached) {
-            setLessonCompletions(JSON.parse(cached))
-          }
-        } catch (e) {
-          console.error('Error reading cached progress:', e)
+        // On error, preserve local state
+        if (Object.keys(localCompletions).length > 0) {
+          setLessonCompletions(localCompletions)
         }
       }
-    } else {
-      // Not logged in - use localStorage
-      try {
-        const cached = localStorage.getItem(STORAGE_KEY)
-        if (cached) {
-          setLessonCompletions(JSON.parse(cached))
-        }
-      } catch (e) {
-        console.error('Error reading cached progress:', e)
-      }
+    } else if (Object.keys(localCompletions).length > 0) {
+      // Not logged in but have local - use it
+      setLessonCompletions(localCompletions)
     }
 
     setLoading(false)
+    initializedRef.current = true
   }, [user])
 
   useEffect(() => {
