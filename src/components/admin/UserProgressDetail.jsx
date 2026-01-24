@@ -335,10 +335,10 @@ export default function UserProgressDetail({ user, isExpanded, onToggle, onToggl
                 </div>
               </div>
 
-              {/* Lessons List */}
+              {/* Lessons Grid */}
               <div>
                 <h4 className="text-sm font-medium text-slate-300 mb-3">Lesson Progress</h4>
-                <div className="space-y-1.5">
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-2">
                   {lessons.map(lesson => (
                     <LessonRow
                       key={lesson.id}
