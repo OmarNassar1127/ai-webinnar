@@ -183,7 +183,7 @@
         "Verify in browser using dev-browser skill"
       ],
       "priority": 11,
-      "passes": false,
+      "passes": true,
       "notes": "New file: src/components/progress/LessonProgressCard.jsx"
     },
     {
@@ -199,7 +199,7 @@
         "Verify in browser using dev-browser skill"
       ],
       "priority": 12,
-      "passes": false,
+      "passes": true,
       "notes": "New file: src/components/progress/QuizHistory.jsx"
     },
     {

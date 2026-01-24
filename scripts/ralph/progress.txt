@@ -111,3 +111,30 @@ Started: Sat Jan 24 13:44:04 CET 2026
 - Accessible for all authenticated users via UserMenu dropdown
 - Uses existing design system (purple/blue gradients, glassmorphism cards, cyan accents)
 - Build passes successfully
+
+## US-011: Create LessonProgressCard component - COMPLETED
+- Created src/components/progress/LessonProgressCard.jsx (130 lines, under 150 limit)
+- Created src/data/lessonTakeaways.js with key takeaways for all 9 lessons
+- Each completed lesson shows key takeaways when expanded
+- Quiz score displayed per lesson with progress bar and percentage
+- 'Review Lesson' button to go back to that lesson (or 'Start Lesson' for unlocked but not completed)
+- Locked/incomplete lessons shown with different styling (opacity-60, slate colors)
+- Expandable/collapsible cards - clicking expands to show details
+- Uses existing design system components (Button, Badge, ProgressBar)
+- Matches glassmorphism style with green gradient for completed, purple for unlocked
+- Build passes successfully
+
+## US-012: Create QuizHistory component - COMPLETED
+- Created src/components/progress/QuizHistory.jsx (148 lines, under 150 limit)
+- Shows all quiz attempts from quiz_results table ordered by completed_at descending
+- Each entry shows: lesson title, score (X/Y format), percentage, date with time, pass/fail status
+- Pass/fail determined by 70% threshold - green badge for passed, amber badge for retry
+- Fetches data from Supabase quiz_results using user.id
+- Includes loading state with spinner animation
+- Includes error state with message display
+- Shows empty state with message when no quiz attempts
+- Optional props: showTitle (default true), maxItems (0 for unlimited), className
+- Shows "+N more attempts" when maxItems limits display
+- Reusable component that can be used anywhere in the app
+- Uses existing design system (Card, Badge, motion animations)
+- Build passes successfully
