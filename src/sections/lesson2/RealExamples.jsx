@@ -438,11 +438,10 @@ const PartExplanation = ({ part }) => {
   );
 };
 
-// Interactive Booking Flow with Visual Diagram
+// Simple Interactive Booking Flow
 const BookingFlowAnimation = () => {
   const [activeScenario, setActiveScenario] = useState(null);
   const [currentStepIndex, setCurrentStepIndex] = useState(-1);
-  const [completedSteps, setCompletedSteps] = useState([]);
   const [isAnimating, setIsAnimating] = useState(false);
 
   const scenarios = [
@@ -450,63 +449,62 @@ const BookingFlowAnimation = () => {
       id: 'find-cars',
       label: 'Find Nearby Cars',
       icon: Search,
-      color: 'purple',
+      color: '#8B5CF6',
       gradient: 'from-purple-500 to-violet-600',
       description: 'When you open the app and look for available cars',
       steps: [
-        { from: 'user', to: 'frontend', message: 'Opens the Vloto app', icon: Smartphone },
-        { from: 'frontend', to: 'backend', message: 'GET /api/cars/nearby?lat=52.3&lon=4.9', icon: Globe },
-        { from: 'backend', to: 'database', message: 'SELECT * FROM cars WHERE available=true', icon: HardDrive },
-        { from: 'database', to: 'backend', message: '3 cars found nearby', icon: Server },
-        { from: 'backend', to: 'frontend', message: 'JSON: [{car1}, {car2}, {car3}]', icon: Smartphone },
-        { from: 'frontend', to: 'user', message: 'Map shows 3 car markers', icon: User }
+        { from: 'user', to: 'app', message: 'You open the Vloto app' },
+        { from: 'app', to: 'server', message: 'App requests nearby cars' },
+        { from: 'server', to: 'database', message: 'Server queries database' },
+        { from: 'database', to: 'server', message: '3 cars found!' },
+        { from: 'server', to: 'app', message: 'Server sends car data' },
+        { from: 'app', to: 'user', message: 'Map shows available cars!' }
       ]
     },
     {
       id: 'book-car',
       label: 'Book a Car',
       icon: CreditCard,
-      color: 'cyan',
+      color: '#06B6D4',
       gradient: 'from-cyan-500 to-blue-600',
       description: 'When you tap "Book Now" to reserve a car',
       steps: [
-        { from: 'user', to: 'frontend', message: 'Taps "Book Now" button', icon: Smartphone },
-        { from: 'frontend', to: 'backend', message: 'POST /api/bookings {carId: 42}', icon: Server },
-        { from: 'backend', to: 'database', message: 'Check: Is car #42 still available?', icon: HardDrive },
-        { from: 'database', to: 'backend', message: 'Yes! Car #42 is available', icon: Server },
-        { from: 'backend', to: 'database', message: 'INSERT booking (user, car, time)', icon: HardDrive },
-        { from: 'database', to: 'backend', message: 'Created: Booking #12345', icon: Server },
-        { from: 'backend', to: 'frontend', message: 'Success! Booking confirmed', icon: Smartphone },
-        { from: 'frontend', to: 'user', message: 'Shows confirmation screen', icon: User }
+        { from: 'user', to: 'app', message: 'You tap "Book Now"' },
+        { from: 'app', to: 'server', message: 'App sends booking request' },
+        { from: 'server', to: 'database', message: 'Check car availability' },
+        { from: 'database', to: 'server', message: 'Car is available!' },
+        { from: 'server', to: 'database', message: 'Save booking record' },
+        { from: 'database', to: 'server', message: 'Booking #12345 created' },
+        { from: 'server', to: 'app', message: 'Booking confirmed!' },
+        { from: 'app', to: 'user', message: 'Shows confirmation screen' }
       ]
     },
     {
       id: 'unlock-car',
       label: 'Unlock the Car',
       icon: Zap,
-      color: 'emerald',
+      color: '#10B981',
       gradient: 'from-emerald-500 to-green-600',
       description: 'When you tap unlock to start your trip',
       steps: [
-        { from: 'user', to: 'frontend', message: 'Taps "Unlock Car" button', icon: Smartphone },
-        { from: 'frontend', to: 'backend', message: 'POST /api/car/42/unlock', icon: Server },
-        { from: 'backend', to: 'database', message: 'Verify: Does user have valid booking?', icon: HardDrive },
-        { from: 'database', to: 'backend', message: 'Authorized: Booking #12345', icon: Server },
-        { from: 'backend', to: 'car', message: 'IoT Command: UNLOCK_DOORS', icon: Car },
-        { from: 'car', to: 'backend', message: 'Confirmed: Doors unlocked!', icon: Server },
-        { from: 'backend', to: 'database', message: 'UPDATE: trip_started=NOW()', icon: HardDrive },
-        { from: 'backend', to: 'frontend', message: 'Success: Car is unlocked!', icon: Smartphone },
-        { from: 'frontend', to: 'user', message: 'Shows "Car Unlocked" + trip timer', icon: User }
+        { from: 'user', to: 'app', message: 'You tap "Unlock"' },
+        { from: 'app', to: 'server', message: 'App sends unlock request' },
+        { from: 'server', to: 'database', message: 'Verify your booking' },
+        { from: 'database', to: 'server', message: 'Booking valid!' },
+        { from: 'server', to: 'car', message: 'Send unlock command' },
+        { from: 'car', to: 'server', message: 'Doors unlocked!' },
+        { from: 'server', to: 'app', message: 'Success!' },
+        { from: 'app', to: 'user', message: 'Car is unlocked!' }
       ]
     }
   ];
 
-  const componentConfig = {
-    user: { label: 'You', sublabel: 'User', icon: User, color: 'from-slate-500 to-slate-600', position: 0 },
-    frontend: { label: 'App', sublabel: 'Frontend', icon: Smartphone, color: 'from-purple-500 to-violet-600', position: 1 },
-    backend: { label: 'Server', sublabel: 'Backend', icon: Server, color: 'from-cyan-500 to-blue-600', position: 2 },
-    database: { label: 'Database', sublabel: 'Storage', icon: HardDrive, color: 'from-emerald-500 to-green-600', position: 3 },
-    car: { label: 'Car', sublabel: 'IoT Device', icon: Car, color: 'from-green-500 to-teal-600', position: 4 }
+  const nodeConfig = {
+    user: { label: 'You', sublabel: 'User', icon: User, gradient: 'from-slate-500 to-slate-600', glow: 'rgba(100,116,139,0.5)' },
+    app: { label: 'App', sublabel: 'Frontend', icon: Smartphone, gradient: 'from-purple-500 to-violet-600', glow: 'rgba(139,92,246,0.5)' },
+    server: { label: 'Server', sublabel: 'Backend', icon: Server, gradient: 'from-cyan-500 to-blue-600', glow: 'rgba(6,182,212,0.5)' },
+    database: { label: 'Database', sublabel: 'Storage', icon: HardDrive, gradient: 'from-emerald-500 to-green-600', glow: 'rgba(16,185,129,0.5)' },
+    car: { label: 'Car', sublabel: 'IoT Device', icon: Car, gradient: 'from-orange-500 to-amber-600', glow: 'rgba(249,115,22,0.5)' }
   };
 
   const runScenario = (scenario) => {
@@ -514,36 +512,183 @@ const BookingFlowAnimation = () => {
 
     setActiveScenario(scenario);
     setCurrentStepIndex(-1);
-    setCompletedSteps([]);
     setIsAnimating(true);
 
-    // Animate through steps
+    const stepDuration = 2000; // 2 seconds per step - nice and slow
+
     scenario.steps.forEach((_, index) => {
       setTimeout(() => {
         setCurrentStepIndex(index);
-        setCompletedSteps(prev => [...prev, index]);
-
-        if (index === scenario.steps.length - 1) {
-          setIsAnimating(false);
-        }
-      }, (index + 1) * 800);
+      }, (index + 1) * stepDuration);
     });
+
+    setTimeout(() => {
+      setIsAnimating(false);
+    }, (scenario.steps.length + 1) * stepDuration);
   };
 
-  const getComponentsInvolved = () => {
-    if (!activeScenario) return ['user', 'frontend', 'backend', 'database'];
-    if (activeScenario.id === 'unlock-car') return ['user', 'frontend', 'backend', 'database', 'car'];
-    return ['user', 'frontend', 'backend', 'database'];
+  const currentStep = activeScenario && currentStepIndex >= 0
+    ? activeScenario.steps[currentStepIndex]
+    : null;
+
+  // Check if a specific node is the SOURCE (from) in current step
+  const isNodeSource = (nodeId) => currentStep?.from === nodeId;
+
+  // Check if a specific node is the DESTINATION (to) in current step
+  const isNodeDestination = (nodeId) => currentStep?.to === nodeId;
+
+  // Check if node is involved in current step
+  const isNodeActive = (nodeId) => isNodeSource(nodeId) || isNodeDestination(nodeId);
+
+  // Check if a specific connection is active and get its direction
+  // Returns: null (not active), 'forward', or 'reverse'
+  const getConnectionState = (nodeA, nodeB) => {
+    if (!currentStep) return null;
+    if (currentStep.from === nodeA && currentStep.to === nodeB) return 'forward';
+    if (currentStep.from === nodeB && currentStep.to === nodeA) return 'reverse';
+    return null;
   };
 
-  const componentsToShow = getComponentsInvolved();
+  const showCar = activeScenario?.id === 'unlock-car';
+  const color = activeScenario?.color || '#8B5CF6';
+
+  // Render a single node
+  const renderNode = (nodeId) => {
+    const config = nodeConfig[nodeId];
+    const IconComponent = config.icon;
+    const isSource = isNodeSource(nodeId);
+    const isDest = isNodeDestination(nodeId);
+    const active = isSource || isDest;
+
+    return (
+      <div key={nodeId} className="flex flex-col items-center">
+        <motion.div
+          animate={{
+            scale: active ? 1.15 : 1,
+            y: active ? -6 : 0
+          }}
+          transition={{ type: 'spring', stiffness: 300, damping: 20 }}
+          className="relative"
+        >
+          {/* Glow effect - pulses when destination, steady when source */}
+          {active && (
+            <motion.div
+              className={`absolute -inset-3 rounded-2xl bg-gradient-to-br ${config.gradient}`}
+              initial={{ opacity: 0 }}
+              animate={{ opacity: isDest ? [0.4, 0.7, 0.4] : 0.5 }}
+              transition={{ duration: isDest ? 1 : 0.3, repeat: isDest ? Infinity : 0 }}
+              style={{ filter: 'blur(12px)' }}
+            />
+          )}
+          <div
+            className={`relative w-16 h-16 md:w-20 md:h-20 rounded-2xl bg-gradient-to-br ${config.gradient} flex items-center justify-center shadow-xl transition-all duration-300`}
+            style={{
+              boxShadow: active
+                ? `0 0 ${isDest ? '45px' : '30px'} ${config.glow}`
+                : '0 8px 24px rgba(0,0,0,0.4)'
+            }}
+          >
+            <IconComponent className="w-8 h-8 md:w-10 md:h-10 text-white" />
+          </div>
+        </motion.div>
+        <p className="text-white font-semibold mt-2 text-sm">{config.label}</p>
+        <p className="text-gray-500 text-xs">{config.sublabel}</p>
+      </div>
+    );
+  };
+
+  // Render horizontal connection arrow between nodes (direction-aware)
+  const renderHorizontalArrow = (leftNode, rightNode) => {
+    const state = getConnectionState(leftNode, rightNode);
+    const isForward = state === 'forward';
+    const isReverse = state === 'reverse';
+    const isActive = isForward || isReverse;
+
+    return (
+      <div className="flex-1 flex items-center justify-center px-2 min-w-[50px] max-w-[100px]">
+        <div className="relative w-full h-8 flex items-center">
+          {/* Base line */}
+          <div className="absolute inset-x-0 top-1/2 h-0.5 bg-slate-700 -translate-y-1/2" />
+
+          {/* Animated glow line - direction aware */}
+          {isActive && (
+            <motion.div
+              key={`${leftNode}-${rightNode}-${currentStepIndex}`}
+              className="absolute top-1/2 -translate-y-1/2 h-1 rounded-full"
+              style={{ backgroundColor: color, boxShadow: `0 0 12px ${color}` }}
+              initial={isReverse ? { right: 0, left: 'auto', width: 0 } : { left: 0, right: 'auto', width: 0 }}
+              animate={{ width: '100%' }}
+              transition={{ duration: 0.8, ease: 'easeOut' }}
+            />
+          )}
+
+          {/* Arrow heads on both ends - light up based on direction */}
+          <ArrowRight
+            className={`absolute left-0 w-4 h-4 rotate-180 transition-all duration-300 ${
+              isReverse ? 'opacity-100' : 'opacity-30'
+            }`}
+            style={{ color: isReverse ? color : '#475569' }}
+          />
+          <ArrowRight
+            className={`absolute right-0 w-4 h-4 transition-all duration-300 ${
+              isForward ? 'opacity-100' : 'opacity-30'
+            }`}
+            style={{ color: isForward ? color : '#475569' }}
+          />
+        </div>
+      </div>
+    );
+  };
+
+  // Render vertical arrow (server <-> database) - direction aware
+  const renderVerticalArrow = (topNode, bottomNode) => {
+    const state = getConnectionState(topNode, bottomNode);
+    const isDown = state === 'forward';
+    const isUp = state === 'reverse';
+    const isActive = isDown || isUp;
+
+    return (
+      <div className="flex justify-center py-3">
+        <div className="relative w-8 h-12 flex flex-col items-center">
+          {/* Base line */}
+          <div className="absolute inset-y-0 left-1/2 w-0.5 bg-slate-700 -translate-x-1/2" />
+
+          {/* Animated glow line - direction aware */}
+          {isActive && (
+            <motion.div
+              key={`${topNode}-${bottomNode}-${currentStepIndex}`}
+              className="absolute left-1/2 -translate-x-1/2 w-1 rounded-full"
+              style={{ backgroundColor: color, boxShadow: `0 0 12px ${color}` }}
+              initial={isUp ? { bottom: 0, top: 'auto', height: 0 } : { top: 0, bottom: 'auto', height: 0 }}
+              animate={{ height: '100%' }}
+              transition={{ duration: 0.6, ease: 'easeOut' }}
+            />
+          )}
+
+          {/* Arrow heads - show direction */}
+          <ArrowRight
+            className={`absolute top-0 w-4 h-4 -rotate-90 transition-all duration-300 ${
+              isUp ? 'opacity-100' : 'opacity-30'
+            }`}
+            style={{ color: isUp ? color : '#475569' }}
+          />
+          <ArrowRight
+            className={`absolute bottom-0 w-4 h-4 rotate-90 transition-all duration-300 ${
+              isDown ? 'opacity-100' : 'opacity-30'
+            }`}
+            style={{ color: isDown ? color : '#475569' }}
+          />
+        </div>
+      </div>
+    );
+  };
 
   return (
     <div className="space-y-6">
       {/* Scenario Buttons */}
       <div className="text-center space-y-4">
         <h3 className="text-xl font-semibold text-white">What happens when you...</h3>
-        <p className="text-gray-400 text-sm">Click a scenario to see how data flows through the Vloto system</p>
+        <p className="text-gray-400 text-sm">Click a scenario to watch data flow through the system</p>
 
         <div className="flex flex-wrap justify-center gap-3">
           {scenarios.map((scenario) => {
@@ -559,8 +704,8 @@ const BookingFlowAnimation = () => {
                 disabled={isAnimating}
                 className={`flex items-center gap-2 px-5 py-3 rounded-xl font-medium transition-all ${
                   isActive
-                    ? `bg-gradient-to-r ${scenario.gradient} text-white shadow-lg shadow-${scenario.color}-500/30`
-                    : 'bg-slate-800 text-gray-300 hover:bg-slate-700 disabled:opacity-50'
+                    ? `bg-gradient-to-r ${scenario.gradient} text-white shadow-lg`
+                    : 'bg-slate-800 text-gray-300 hover:bg-slate-700 disabled:opacity-50 disabled:cursor-not-allowed'
                 }`}
               >
                 <IconComponent className="w-5 h-5" />
@@ -571,188 +716,99 @@ const BookingFlowAnimation = () => {
         </div>
       </div>
 
-      {/* Flow Diagram Container */}
-      <div className="relative bg-gradient-to-br from-slate-900 via-slate-900 to-slate-800 rounded-2xl border border-white/10 p-6 md:p-8 overflow-hidden">
-        {/* Background grid pattern */}
-        <div className="absolute inset-0 opacity-5">
-          <div className="absolute inset-0" style={{
-            backgroundImage: 'radial-gradient(circle at 1px 1px, white 1px, transparent 0)',
-            backgroundSize: '24px 24px'
-          }} />
+      {/* Simple Flowchart with CSS */}
+      <div className="relative bg-slate-900/80 rounded-2xl border border-white/10 p-6 md:p-8 min-h-[400px]">
+        {/* Top Row: User ↔ App ↔ Server */}
+        <div className="flex items-center justify-center gap-0 mb-8">
+          {renderNode('user')}
+          {renderHorizontalArrow('user', 'app')}
+          {renderNode('app')}
+          {renderHorizontalArrow('app', 'server')}
+          {renderNode('server')}
         </div>
 
-        {/* Component Nodes Row */}
-        <div className="relative flex justify-between items-start gap-2 mb-8">
-          {componentsToShow.map((id, index) => {
-            const comp = componentConfig[id];
-            const IconComponent = comp.icon;
-            const isActive = activeScenario && completedSteps.length > 0 && (
-              activeScenario.steps.slice(0, completedSteps.length).some(
-                step => step.from === id || step.to === id
-              )
-            );
-            const isCurrentFrom = activeScenario && currentStepIndex >= 0 &&
-              activeScenario.steps[currentStepIndex]?.from === id;
-            const isCurrentTo = activeScenario && currentStepIndex >= 0 &&
-              activeScenario.steps[currentStepIndex]?.to === id;
+        {/* Vertical connection: Server ↔ Database */}
+        <div className="flex justify-center">
+          <div className="flex flex-col items-center">
+            {renderVerticalArrow('server', 'database')}
+          </div>
+        </div>
 
-            return (
-              <div key={id} className="flex flex-col items-center flex-1 min-w-0">
-                {/* Connection line to next node */}
-                {index < componentsToShow.length - 1 && (
-                  <div className="absolute top-8 h-1 bg-slate-700/50 rounded-full"
-                    style={{
-                      left: `calc(${(index + 0.5) * (100 / componentsToShow.length)}% + 24px)`,
-                      width: `calc(${100 / componentsToShow.length}% - 48px)`
-                    }}
-                  />
-                )}
-
-                <motion.div
-                  animate={{
-                    scale: isCurrentFrom || isCurrentTo ? 1.15 : 1,
-                    y: isCurrentFrom || isCurrentTo ? -4 : 0
-                  }}
-                  transition={{ type: 'spring', stiffness: 300, damping: 20 }}
-                  className="relative z-10"
-                >
-                  <div className={`relative w-14 h-14 md:w-16 md:h-16 rounded-2xl bg-gradient-to-br ${comp.color} flex items-center justify-center shadow-xl transition-all duration-300 ${
-                    isCurrentFrom || isCurrentTo
-                      ? 'ring-4 ring-white/50 shadow-2xl'
-                      : isActive
-                        ? 'ring-2 ring-white/30'
-                        : ''
-                  }`}>
-                    <IconComponent className="w-7 h-7 md:w-8 md:h-8 text-white" />
-
-                    {/* Pulse effect for current node */}
-                    {(isCurrentFrom || isCurrentTo) && (
-                      <motion.div
-                        className={`absolute inset-0 rounded-2xl bg-gradient-to-br ${comp.color}`}
-                        initial={{ opacity: 0.5, scale: 1 }}
-                        animate={{ opacity: 0, scale: 1.5 }}
-                        transition={{ duration: 0.8, repeat: Infinity }}
-                      />
-                    )}
-                  </div>
-                </motion.div>
-
-                <span className="text-white text-xs md:text-sm font-semibold mt-2 text-center">{comp.label}</span>
-                <span className="text-gray-500 text-[10px] md:text-xs">{comp.sublabel}</span>
-              </div>
-            );
-          })}
+        {/* Bottom Row: Database (and Car for unlock) */}
+        <div className="flex items-center justify-center gap-0">
+          {!showCar && <div className="flex-1" />}
+          {renderNode('database')}
+          {showCar && (
+            <>
+              {renderHorizontalArrow('database', 'car')}
+              {renderNode('car')}
+            </>
+          )}
+          {!showCar && <div className="flex-1" />}
         </div>
 
         {/* Current Step Message */}
         <AnimatePresence mode="wait">
-          {activeScenario && currentStepIndex >= 0 ? (
+          {currentStep ? (
             <motion.div
               key={currentStepIndex}
-              initial={{ opacity: 0, y: 20, scale: 0.95 }}
-              animate={{ opacity: 1, y: 0, scale: 1 }}
-              exit={{ opacity: 0, y: -10, scale: 0.95 }}
-              transition={{ type: 'spring', stiffness: 300, damping: 25 }}
-              className="relative"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -10 }}
+              transition={{ duration: 0.5, ease: 'easeOut' }}
+              className="absolute bottom-4 left-4 right-4"
             >
-              <div className={`p-4 md:p-5 rounded-xl bg-gradient-to-r ${activeScenario.gradient} shadow-xl`}>
-                <div className="flex items-center gap-3">
-                  <div className="flex-shrink-0 w-10 h-10 rounded-lg bg-white/20 flex items-center justify-center">
-                    <span className="text-white font-bold">{currentStepIndex + 1}</span>
+              <div className={`p-4 rounded-xl bg-gradient-to-r ${activeScenario?.gradient} shadow-2xl`}>
+                <div className="flex items-center gap-4">
+                  <div className="flex-shrink-0 w-12 h-12 rounded-xl bg-white/20 flex items-center justify-center">
+                    <span className="text-white font-bold text-xl">{currentStepIndex + 1}</span>
                   </div>
-                  <div className="flex-1 min-w-0">
-                    <div className="flex items-center gap-2 text-white/80 text-sm mb-1">
-                      <span className="font-medium">{componentConfig[activeScenario.steps[currentStepIndex].from].label}</span>
-                      <ArrowRight className="w-4 h-4" />
-                      <span className="font-medium">{componentConfig[activeScenario.steps[currentStepIndex].to].label}</span>
+                  <div className="flex-1">
+                    <p className="text-white font-semibold text-lg">{currentStep.message}</p>
+                    <div className="flex items-center gap-1.5 mt-2">
+                      {activeScenario?.steps.map((_, idx) => (
+                        <motion.div
+                          key={idx}
+                          initial={false}
+                          animate={{ scaleY: idx === currentStepIndex ? 1.5 : 1 }}
+                          className={`h-1.5 flex-1 rounded-full transition-colors duration-300 ${
+                            idx <= currentStepIndex ? 'bg-white' : 'bg-white/30'
+                          }`}
+                        />
+                      ))}
                     </div>
-                    <p className="text-white font-medium text-sm md:text-base truncate">
-                      {activeScenario.steps[currentStepIndex].message}
-                    </p>
                   </div>
                 </div>
               </div>
-
-              {/* Step progress dots */}
-              <div className="flex justify-center gap-1.5 mt-4">
-                {activeScenario.steps.map((_, idx) => (
-                  <motion.div
-                    key={idx}
-                    initial={false}
-                    animate={{
-                      scale: idx === currentStepIndex ? 1.3 : 1,
-                      backgroundColor: idx <= currentStepIndex ? '#8B5CF6' : '#334155'
-                    }}
-                    className="w-2 h-2 rounded-full"
-                  />
-                ))}
-              </div>
             </motion.div>
-          ) : (
+          ) : !activeScenario && (
             <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              className="text-center py-8"
+              className="absolute inset-0 flex items-center justify-center"
             >
-              <motion.div
-                animate={{ y: [0, -8, 0] }}
-                transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' }}
-                className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-gradient-to-br from-purple-500/20 to-cyan-500/20 border border-purple-500/30 mb-4"
-              >
-                <Zap className="w-8 h-8 text-purple-400" />
-              </motion.div>
-              <p className="text-gray-300 font-medium">Select a scenario above</p>
-              <p className="text-gray-500 text-sm mt-1">Watch data flow through the system step by step</p>
+              <div className="text-center bg-slate-800/60 backdrop-blur-sm rounded-2xl p-8">
+                <motion.div
+                  animate={{ y: [0, -10, 0] }}
+                  transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut' }}
+                  className="inline-flex items-center justify-center w-20 h-20 rounded-2xl bg-gradient-to-br from-purple-500/30 to-cyan-500/30 border border-purple-500/40 mb-4"
+                >
+                  <Zap className="w-10 h-10 text-purple-400" />
+                </motion.div>
+                <p className="text-white font-semibold text-lg">Select a scenario above</p>
+                <p className="text-gray-400 text-sm mt-1">Watch how data flows through the system</p>
+              </div>
             </motion.div>
           )}
         </AnimatePresence>
       </div>
 
-      {/* Scenario Description Card */}
-      <AnimatePresence>
-        {activeScenario && (
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -20 }}
-            className="p-4 rounded-xl bg-slate-800/50 border border-white/10"
-          >
-            <div className="flex items-start gap-4">
-              <div className={`p-3 rounded-xl bg-gradient-to-br ${activeScenario.gradient} flex-shrink-0`}>
-                {(() => {
-                  const IconComponent = activeScenario.icon;
-                  return <IconComponent className="w-6 h-6 text-white" />;
-                })()}
-              </div>
-              <div className="flex-1 min-w-0">
-                <h4 className="text-lg font-semibold text-white">{activeScenario.label}</h4>
-                <p className="text-gray-400 text-sm">{activeScenario.description}</p>
-                <div className="flex items-center gap-2 mt-2">
-                  <div className={`h-1.5 flex-1 rounded-full bg-slate-700 overflow-hidden`}>
-                    <motion.div
-                      className={`h-full bg-gradient-to-r ${activeScenario.gradient}`}
-                      initial={{ width: '0%' }}
-                      animate={{ width: `${((currentStepIndex + 1) / activeScenario.steps.length) * 100}%` }}
-                      transition={{ duration: 0.3 }}
-                    />
-                  </div>
-                  <span className="text-sm text-gray-400 flex-shrink-0">
-                    {currentStepIndex + 1}/{activeScenario.steps.length}
-                  </span>
-                </div>
-              </div>
-            </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
-
       {/* Key insight */}
       <div className="flex items-start gap-3 p-4 rounded-xl bg-purple-500/10 border border-purple-500/30">
         <Lightbulb className="w-5 h-5 text-purple-400 flex-shrink-0 mt-0.5" />
         <p className="text-sm text-gray-300">
-          <span className="text-purple-400 font-medium">Key Insight:</span> The car is just another computer that receives commands!
-          When you tap "Unlock", your phone talks to Vloto's servers, which then sends a message to the car's onboard computer.
+          <span className="text-purple-400 font-medium">Key Insight:</span> Every app follows this same pattern!
+          Data flows from you → through the app → to servers → to databases. The car is just another computer that receives commands over the internet.
         </p>
       </div>
     </div>
