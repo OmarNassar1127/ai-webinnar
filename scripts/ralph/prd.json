@@ -45,7 +45,7 @@
         "Verify in browser using dev-browser skill"
       ],
       "priority": 3,
-      "passes": false,
+      "passes": true,
       "notes": "Modify src/components/auth/UserMenu.jsx, conditional rendering based on isAdmin"
     },
     {
@@ -63,7 +63,7 @@
         "Typecheck passes"
       ],
       "priority": 4,
-      "passes": false,
+      "passes": true,
       "notes": "New file: src/hooks/useAdminData.js"
     },
     {

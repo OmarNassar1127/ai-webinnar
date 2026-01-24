@@ -10,3 +10,27 @@ Started: Sat Jan 24 13:44:04 CET 2026
 - Created policy "Authenticated users can manage blocked lessons" for all operations (admin check in app logic)
 - Added index on lesson_id for faster lookups
 - Build passes successfully
+
+## US-003: Add Admin Dashboard menu item to UserMenu - COMPLETED
+- Created src/context/NavigationContext.jsx for app-wide navigation state
+- Updated App.jsx to use NavigationProvider wrapping the app
+- Updated UserMenu.jsx to:
+  - Import Shield icon from lucide-react
+  - Import useNavigation hook
+  - Extract isAdmin from useAuth()
+  - Added Admin Dashboard menu item (conditionally rendered when isAdmin is true)
+  - Uses Shield icon with amber color for admin indicator
+  - Clicking navigates to 'admin' page via navigateTo('admin')
+- Build passes successfully
+
+## US-004: Create useAdminData hook for fetching admin data - COMPLETED
+- Created src/hooks/useAdminData.js (115 lines, under 150 limit)
+- Hook fetches all profiles from Supabase
+- Hook fetches lesson_progress for all users
+- Hook fetches quiz_results for all users
+- Returns: users array, loading state, error state, refetch function
+- Each user object includes: id, name, email, lessonsCompleted, lastActive, quizScores, progress, isActive, isAdmin
+- Includes admin authorization check (returns error if non-admin)
+- Groups progress and quiz data by user for efficient processing
+- Calculates quiz score percentages and last activity dates
+- Build passes successfully
