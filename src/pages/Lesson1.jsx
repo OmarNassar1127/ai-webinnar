@@ -99,9 +99,9 @@ function Lesson1({ onBack }) {
   const CurrentSectionComponent = sectionComponents[currentSection]
 
   const pageVariants = {
-    initial: { opacity: 0, x: 100 },
-    animate: { opacity: 1, x: 0 },
-    exit: { opacity: 0, x: -100 }
+    initial: { opacity: 0 },
+    animate: { opacity: 1 },
+    exit: { opacity: 0 }
   }
 
   const sectionVariants = {
@@ -117,7 +117,7 @@ function Lesson1({ onBack }) {
       initial="initial"
       animate="animate"
       exit="exit"
-      transition={{ duration: 0.4, ease: 'easeInOut' }}
+      transition={{ duration: 0.2 }}
     >
       {/* Fixed Header */}
       <Header onBack={onBack} />

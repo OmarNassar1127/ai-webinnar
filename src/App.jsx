@@ -78,7 +78,6 @@ function AppContent() {
     <div className="min-h-screen relative overflow-hidden">
       <AnimatedBackground />
         <div className="relative z-10">
-          <AnimatePresence mode="wait">
             {currentPage === 'dashboard' && (
               <Dashboard
                 key="dashboard"
@@ -139,7 +138,6 @@ function AppContent() {
                 onBack={() => setCurrentPage('dashboard')}
               />
             )}
-          </AnimatePresence>
         </div>
 
       {/* Auth Modal - rendered at app level for global access */}

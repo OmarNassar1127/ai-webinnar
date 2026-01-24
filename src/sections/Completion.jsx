@@ -73,6 +73,8 @@ const ConfettiParticle = ({ delay }) => {
 
 const Completion = ({ onComplete, onBack }) => {
   const [showConfetti, setShowConfetti] = useState(true);
+  const [hasCompleted, setHasCompleted] = useState(false);
+  const [isNavigating, setIsNavigating] = useState(false);
   const [confettiParticles] = useState(() =>
     Array.from({ length: 60 }, (_, i) => ({
       id: i,
@@ -80,12 +82,28 @@ const Completion = ({ onComplete, onBack }) => {
     }))
   );
 
-  // Auto-complete this section when viewed
+  // Handle back navigation with cleanup
+  const handleBack = () => {
+    if (isNavigating) return;
+    setIsNavigating(true);
+    setShowConfetti(false);
+    // Small delay to allow animations to stop cleanly
+    setTimeout(() => {
+      onBack();
+    }, 50);
+  };
+
+  // Auto-complete this section when viewed (only once)
   useEffect(() => {
-    if (onComplete) {
-      onComplete();
+    if (onComplete && !hasCompleted) {
+      setHasCompleted(true);
+      // Small delay to prevent race conditions
+      const timer = setTimeout(() => {
+        onComplete();
+      }, 100);
+      return () => clearTimeout(timer);
     }
-  }, [onComplete]);
+  }, [onComplete, hasCompleted]);
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -253,41 +271,44 @@ const Completion = ({ onComplete, onBack }) => {
           <motion.button
             whileHover={{ scale: 1.02, boxShadow: '0 0 40px rgba(124, 58, 237, 0.5)' }}
             whileTap={{ scale: 0.98 }}
-            onClick={onBack}
-            className="group px-8 py-4 rounded-xl bg-slate-800 border border-white/10 text-white font-bold text-lg transition-all duration-300 flex items-center justify-center gap-3"
+            onClick={handleBack}
+            disabled={isNavigating}
+            className="group px-8 py-4 rounded-xl bg-slate-800 border border-white/10 text-white font-bold text-lg transition-all duration-300 flex items-center justify-center gap-3 disabled:opacity-50"
           >
             <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
             </svg>
-            Back to Dashboard
+            {isNavigating ? 'Redirecting...' : 'Back to Dashboard'}
           </motion.button>
         </motion.div>
 
-        {/* Celebration sparkles */}
-        <div className="absolute inset-0 pointer-events-none overflow-hidden">
-          {[...Array(20)].map((_, i) => (
-            <motion.div
-              key={i}
-              initial={{ opacity: 0 }}
-              animate={{
-                opacity: [0, 1, 0],
-                scale: [0.5, 1, 0.5]
-              }}
-              transition={{
-                duration: 2,
-                delay: i * 0.2,
-                repeat: Infinity,
-                repeatDelay: 3
-              }}
-              className="absolute w-2 h-2 bg-violet-400 rounded-full"
-              style={{
-                left: `${Math.random() * 100}%`,
-                top: `${Math.random() * 100}%`,
-                filter: 'blur(1px)'
-              }}
-            />
-          ))}
-        </div>
+        {/* Celebration sparkles - only show when not navigating */}
+        {!isNavigating && (
+          <div className="absolute inset-0 pointer-events-none overflow-hidden">
+            {[...Array(20)].map((_, i) => (
+              <motion.div
+                key={i}
+                initial={{ opacity: 0 }}
+                animate={{
+                  opacity: [0, 1, 0],
+                  scale: [0.5, 1, 0.5]
+                }}
+                transition={{
+                  duration: 2,
+                  delay: i * 0.2,
+                  repeat: Infinity,
+                  repeatDelay: 3
+                }}
+                className="absolute w-2 h-2 bg-violet-400 rounded-full"
+                style={{
+                  left: `${Math.random() * 100}%`,
+                  top: `${Math.random() * 100}%`,
+                  filter: 'blur(1px)'
+                }}
+              />
+            ))}
+          </div>
+        )}
       </div>
     </div>
   );

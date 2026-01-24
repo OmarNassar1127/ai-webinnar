@@ -21,8 +21,8 @@ const lessons = [
 ];
 
 const containerVariants = {
-  hidden: { opacity: 0 },
-  visible: { opacity: 1, transition: { staggerChildren: 0.1, delayChildren: 0.2 } },
+  hidden: { opacity: 0, transition: { duration: 0.3 } },
+  visible: { opacity: 1, transition: { staggerChildren: 0.1, delayChildren: 0.2, duration: 0.3 } },
 };
 
 const itemVariants = {
@@ -41,8 +41,13 @@ export default function Dashboard({ onStartLesson }) {
 
   // Refetch global progress when dashboard mounts to pick up any lesson completions
   useEffect(() => {
+    // Fetch immediately on mount
     refetch();
-  }, [refetch]);
+    // Also fetch after a delay to catch any pending saves (debounce is 500ms)
+    const timer = setTimeout(refetch, 700);
+    return () => clearTimeout(timer);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []); // Only run on mount
 
   // Use local state for lesson 1 completion check since we have it from LessonContext
   const isLessonReallyCompleted = (lessonId) => {
@@ -78,7 +83,13 @@ export default function Dashboard({ onStartLesson }) {
   const isNextLessonCompleted = nextLesson ? isLessonReallyCompleted(nextLesson.id) : false;
 
   return (
-    <motion.div className="min-h-screen" initial="hidden" animate="visible" variants={containerVariants}>
+    <motion.div
+      className="min-h-screen"
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      transition={{ duration: 0.2 }}
+    >
       <Header />
 
       <main className="pt-24 pb-16 px-4 md:px-6 lg:px-8 max-w-7xl mx-auto">
