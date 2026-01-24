@@ -293,7 +293,7 @@ export default function Dashboard({ onStartLesson }) {
               </Button>
               {!user && (
                 <Button variant="secondary" size="lg" onClick={() => openAuthModal('signup')}>
-                  Create Account
+                  Create Accountttt
                 </Button>
               )}
             </motion.div>
