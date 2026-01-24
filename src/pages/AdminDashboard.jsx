@@ -89,7 +89,7 @@ export default function AdminDashboard() {
       animate="visible"
       variants={containerVariants}
     >
-      <Header />
+      <Header onLogoClick={() => navigateTo('dashboard')} />
 
       <main className="pt-24 pb-16 px-4 md:px-6 lg:px-8 max-w-7xl mx-auto">
         {/* Header Section */}

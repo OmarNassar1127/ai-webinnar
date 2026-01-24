@@ -214,7 +214,7 @@ export default function Dashboard({ onStartLesson }) {
       exit={{ opacity: 0 }}
       transition={{ duration: 0.2 }}
     >
-      <Header />
+      <Header onLogoClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })} />
 
       <main className="pt-24 pb-16 px-4 md:px-6 lg:px-8 max-w-7xl mx-auto">
         {/* Blocked Lesson Toast */}
