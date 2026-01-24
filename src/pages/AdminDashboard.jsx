@@ -8,7 +8,10 @@ import {
   ArrowLeft,
   Loader2,
   AlertCircle,
-  CheckCircle
+  CheckCircle,
+  UserCheck,
+  UserX,
+  Search
 } from 'lucide-react'
 import Header from '../components/layout/Header'
 import { Card, Button } from '../components/common/'
@@ -56,8 +59,10 @@ function StatCard({ icon: Icon, label, value, color }) {
 export default function AdminDashboard() {
   const { isAdmin, user } = useAuth()
   const { navigateTo } = useNavigation()
-  const { users, loading, error } = useAdminData()
+  const { users, loading, error, toggleUserActive } = useAdminData()
   const [expandedUserId, setExpandedUserId] = useState(null)
+  const [userFilter, setUserFilter] = useState('all')
+  const [searchQuery, setSearchQuery] = useState('')
 
   // Toggle expanded state for a user
   const toggleUserExpanded = (userId) => {
@@ -78,9 +83,28 @@ export default function AdminDashboard() {
 
   // Calculate summary stats
   const totalUsers = users.length
-  const activeUsers = users.filter(u => u.lessonsCompleted > 0).length
+  const activeAccountUsers = users.filter(u => u.isActive).length
+  const inactiveAccountUsers = users.filter(u => !u.isActive).length
+  const learningUsers = users.filter(u => u.lessonsCompleted > 0).length
   const completedUsers = users.filter(u => u.lessonsCompleted === u.totalLessons).length
-  const totalLessonsCompleted = users.reduce((sum, u) => sum + u.lessonsCompleted, 0)
+
+  // Filter users based on current filter and search
+  const filteredUsers = users.filter(u => {
+    // Apply status filter
+    if (userFilter === 'active' && !u.isActive) return false
+    if (userFilter === 'inactive' && u.isActive) return false
+
+    // Apply search filter
+    if (searchQuery) {
+      const query = searchQuery.toLowerCase()
+      return (
+        u.name?.toLowerCase().includes(query) ||
+        u.email?.toLowerCase().includes(query)
+      )
+    }
+
+    return true
+  })
 
   return (
     <motion.div
@@ -150,9 +174,15 @@ export default function AdminDashboard() {
                 color="purple"
               />
               <StatCard
+                icon={CheckCircle}
+                label="Active Accounts"
+                value={activeAccountUsers}
+                color="cyan"
+              />
+              <StatCard
                 icon={BookOpen}
-                label="Active Learners"
-                value={activeUsers}
+                label="Learning"
+                value={learningUsers}
                 color="blue"
               />
               <StatCard
@@ -160,12 +190,6 @@ export default function AdminDashboard() {
                 label="Completed Course"
                 value={completedUsers}
                 color="amber"
-              />
-              <StatCard
-                icon={CheckCircle}
-                label="Lessons Completed"
-                value={totalLessonsCompleted}
-                color="cyan"
               />
             </motion.div>
 
@@ -177,26 +201,99 @@ export default function AdminDashboard() {
             {/* Users List */}
             <motion.div variants={itemVariants}>
               <Card className="p-6">
-                <div className="flex items-center justify-between mb-6">
-                  <h2 className="text-lg font-semibold text-white">All Users</h2>
-                  <span className="text-sm text-slate-400">{users.length} users</span>
+                {/* Header with title */}
+                <div className="flex items-center justify-between mb-4">
+                  <div className="flex items-center gap-3">
+                    <div className="p-2.5 rounded-xl bg-gradient-to-br from-blue-500/20 to-purple-500/20">
+                      <Users className="w-5 h-5 text-blue-400" />
+                    </div>
+                    <div>
+                      <h2 className="text-lg font-semibold text-white">User Management</h2>
+                      <p className="text-sm text-slate-400">Manage user accounts and view progress</p>
+                    </div>
+                  </div>
                 </div>
 
-                {users.length === 0 ? (
+                {/* Filter tabs and search */}
+                <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-6">
+                  {/* Filter Tabs */}
+                  <div className="flex items-center gap-2 p-1 bg-slate-900/50 rounded-lg">
+                    <button
+                      onClick={() => setUserFilter('all')}
+                      className={`flex items-center gap-1.5 px-3 py-1.5 rounded-md text-sm font-medium transition-colors ${
+                        userFilter === 'all'
+                          ? 'bg-purple-500/20 text-purple-400'
+                          : 'text-slate-400 hover:text-white'
+                      }`}
+                    >
+                      <Users className="w-4 h-4" />
+                      All ({totalUsers})
+                    </button>
+                    <button
+                      onClick={() => setUserFilter('active')}
+                      className={`flex items-center gap-1.5 px-3 py-1.5 rounded-md text-sm font-medium transition-colors ${
+                        userFilter === 'active'
+                          ? 'bg-emerald-500/20 text-emerald-400'
+                          : 'text-slate-400 hover:text-white'
+                      }`}
+                    >
+                      <UserCheck className="w-4 h-4" />
+                      Active ({activeAccountUsers})
+                    </button>
+                    <button
+                      onClick={() => setUserFilter('inactive')}
+                      className={`flex items-center gap-1.5 px-3 py-1.5 rounded-md text-sm font-medium transition-colors ${
+                        userFilter === 'inactive'
+                          ? 'bg-red-500/20 text-red-400'
+                          : 'text-slate-400 hover:text-white'
+                      }`}
+                    >
+                      <UserX className="w-4 h-4" />
+                      Inactive ({inactiveAccountUsers})
+                    </button>
+                  </div>
+
+                  {/* Search */}
+                  <div className="relative w-full sm:w-64">
+                    <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500" />
+                    <input
+                      type="text"
+                      placeholder="Search users..."
+                      value={searchQuery}
+                      onChange={(e) => setSearchQuery(e.target.value)}
+                      className="w-full pl-9 pr-4 py-2 bg-slate-900/50 border border-white/5 rounded-lg text-sm text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-purple-500/50 focus:border-purple-500/50"
+                    />
+                  </div>
+                </div>
+
+                {/* Users List */}
+                {filteredUsers.length === 0 ? (
                   <div className="text-center py-12">
                     <Users className="w-12 h-12 text-slate-600 mx-auto mb-3" />
-                    <p className="text-slate-400">No users found</p>
+                    <p className="text-slate-400">
+                      {searchQuery ? 'No users match your search' : 'No users found'}
+                    </p>
                   </div>
                 ) : (
                   <div className="space-y-3">
-                    {users.map((u) => (
+                    {filteredUsers.map((u) => (
                       <UserProgressDetail
                         key={u.id}
                         user={u}
                         isExpanded={expandedUserId === u.id}
                         onToggle={() => toggleUserExpanded(u.id)}
+                        onToggleActive={toggleUserActive}
                       />
                     ))}
+                  </div>
+                )}
+
+                {/* Results count */}
+                {filteredUsers.length > 0 && (
+                  <div className="mt-4 pt-4 border-t border-white/5 text-center">
+                    <span className="text-sm text-slate-500">
+                      Showing {filteredUsers.length} of {totalUsers} users
+                    </span>
                   </div>
                 )}
               </Card>

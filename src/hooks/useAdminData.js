@@ -120,10 +120,39 @@ export function useAdminData() {
     fetchAdminData()
   }, [fetchAdminData])
 
+  // Toggle user active status
+  const toggleUserActive = useCallback(async (userId, currentStatus) => {
+    if (!isAdmin) {
+      return { success: false, error: 'Unauthorized' }
+    }
+
+    try {
+      const { error: updateError } = await supabase
+        .from('profiles')
+        .update({ is_active: !currentStatus, updated_at: new Date().toISOString() })
+        .eq('id', userId)
+
+      if (updateError) throw updateError
+
+      // Update local state
+      setUsers(prev => prev.map(user =>
+        user.id === userId
+          ? { ...user, isActive: !currentStatus }
+          : user
+      ))
+
+      return { success: true }
+    } catch (err) {
+      console.error('Error toggling user status:', err)
+      return { success: false, error: err.message }
+    }
+  }, [isAdmin])
+
   return {
     users,
     loading,
     error,
-    refetch: fetchAdminData
+    refetch: fetchAdminData,
+    toggleUserActive
   }
 }

@@ -1,100 +1,90 @@
 import { useState } from 'react'
-import { motion } from 'framer-motion'
+import { motion, AnimatePresence } from 'framer-motion'
 import {
   Lock,
   Unlock,
   BookOpen,
   Loader2,
   AlertCircle,
-  CheckCircle
+  CheckCircle,
+  Shield
 } from 'lucide-react'
 import { Card } from '../common'
 import { useBlockedLessons } from '../../hooks/useBlockedLessons'
 
 // Lesson data matching other admin components
 const lessons = [
-  { id: 1, title: 'AI Thinking Foundations' },
-  { id: 2, title: 'Prompt Engineering' },
-  { id: 3, title: 'ChatGPT Mastery' },
-  { id: 4, title: 'Claude & Competitors' },
-  { id: 5, title: 'AI for Email & Docs' },
-  { id: 6, title: 'AI for Data Analysis' },
-  { id: 7, title: 'AI for Customer Service' },
-  { id: 8, title: 'AI Workflows' },
-  { id: 9, title: 'Final Project' },
+  { id: 1, title: 'AI Thinking Foundations', icon: '🧠' },
+  { id: 2, title: 'Prompt Engineering', icon: '✍️' },
+  { id: 3, title: 'ChatGPT Mastery', icon: '💬' },
+  { id: 4, title: 'Claude & Competitors', icon: '🤖' },
+  { id: 5, title: 'AI for Email & Docs', icon: '📧' },
+  { id: 6, title: 'AI for Data Analysis', icon: '📊' },
+  { id: 7, title: 'AI for Customer Service', icon: '🎧' },
+  { id: 8, title: 'AI Workflows', icon: '⚙️' },
+  { id: 9, title: 'Final Project', icon: '🎓' },
 ]
 
-function LessonToggleRow({ lesson, isBlocked, onToggle, isToggling }) {
+function LessonCard({ lesson, isBlocked, onToggle, isToggling }) {
   return (
-    <div className="flex items-center gap-4 py-3 px-4 rounded-lg bg-slate-900/50 hover:bg-slate-900/70 transition-colors">
-      {/* Lesson Icon */}
-      <div className="flex-shrink-0">
-        <div className={`w-10 h-10 rounded-xl flex items-center justify-center ${
-          isBlocked
-            ? 'bg-red-500/20'
-            : 'bg-gradient-to-br from-purple-500/20 to-blue-500/20'
-        }`}>
-          {isBlocked ? (
-            <Lock className="w-5 h-5 text-red-400" />
-          ) : (
-            <BookOpen className="w-5 h-5 text-purple-400" />
-          )}
+    <motion.div
+      whileHover={{ scale: 1.02 }}
+      whileTap={{ scale: 0.98 }}
+      className={`relative p-4 rounded-xl border transition-all duration-200 cursor-pointer ${
+        isBlocked
+          ? 'bg-red-500/10 border-red-500/30 hover:bg-red-500/15'
+          : 'bg-emerald-500/10 border-emerald-500/30 hover:bg-emerald-500/15'
+      }`}
+      onClick={() => !isToggling && onToggle(lesson.id)}
+    >
+      {/* Toggling overlay */}
+      {isToggling && (
+        <div className="absolute inset-0 bg-slate-900/50 rounded-xl flex items-center justify-center z-10">
+          <Loader2 className="w-5 h-5 text-white animate-spin" />
         </div>
-      </div>
+      )}
 
-      {/* Lesson Info */}
-      <div className="flex-1 min-w-0">
-        <div className="flex items-center gap-2">
-          <span className="text-xs font-medium text-slate-500">Lesson {lesson.id}</span>
-          {isBlocked && (
-            <span className="px-2 py-0.5 text-xs font-medium rounded-full bg-red-500/20 text-red-400">
-              Blocked
-            </span>
-          )}
-        </div>
-        <p className={`font-medium truncate ${isBlocked ? 'text-slate-400' : 'text-white'}`}>
+      {/* Status indicator */}
+      <div className={`absolute top-2 right-2 w-2.5 h-2.5 rounded-full ${
+        isBlocked ? 'bg-red-400' : 'bg-emerald-400'
+      }`} />
+
+      {/* Lesson icon */}
+      <div className="text-2xl mb-2">{lesson.icon}</div>
+
+      {/* Lesson info */}
+      <div className="mb-3">
+        <span className="text-xs font-medium text-slate-500">Lesson {lesson.id}</span>
+        <p className={`text-sm font-medium truncate ${isBlocked ? 'text-slate-400' : 'text-white'}`}>
           {lesson.title}
         </p>
       </div>
 
-      {/* Toggle Switch */}
-      <div className="flex-shrink-0">
-        <button
-          onClick={() => onToggle(lesson.id)}
-          disabled={isToggling}
-          className={`relative inline-flex h-7 w-12 items-center rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 focus:ring-offset-slate-900 ${
-            isBlocked
-              ? 'bg-red-500/30'
-              : 'bg-emerald-500/30'
-          } ${isToggling ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}`}
-          aria-label={isBlocked ? `Unblock ${lesson.title}` : `Block ${lesson.title}`}
-        >
-          {isToggling ? (
-            <Loader2 className="w-4 h-4 text-white absolute left-1/2 -translate-x-1/2 animate-spin" />
-          ) : (
-            <span
-              className={`inline-flex h-5 w-5 items-center justify-center rounded-full transition-transform ${
-                isBlocked
-                  ? 'translate-x-1 bg-red-400'
-                  : 'translate-x-6 bg-emerald-400'
-              }`}
-            >
-              {isBlocked ? (
-                <Lock className="w-3 h-3 text-white" />
-              ) : (
-                <Unlock className="w-3 h-3 text-white" />
-              )}
-            </span>
-          )}
-        </button>
+      {/* Status badge */}
+      <div className={`inline-flex items-center gap-1.5 px-2 py-1 rounded-full text-xs font-medium ${
+        isBlocked
+          ? 'bg-red-500/20 text-red-400'
+          : 'bg-emerald-500/20 text-emerald-400'
+      }`}>
+        {isBlocked ? (
+          <>
+            <Lock className="w-3 h-3" />
+            <span>Blocked</span>
+          </>
+        ) : (
+          <>
+            <Unlock className="w-3 h-3" />
+            <span>Available</span>
+          </>
+        )}
       </div>
-    </div>
+    </motion.div>
   )
 }
 
 /**
  * LessonBlockManager - Admin component for blocking/unblocking lessons globally
- * Shows all 9 lessons with toggle switches to control access
+ * Shows all 9 lessons in a grid with visual status indicators
  */
 export default function LessonBlockManager() {
   const { blockedLessons, loading, error, isLessonBlocked, blockLesson, unblockLesson } = useBlockedLessons()
@@ -120,58 +110,71 @@ export default function LessonBlockManager() {
       setFeedback({
         type: 'success',
         message: isCurrentlyBlocked
-          ? `Lesson ${lessonId} is now available to users`
+          ? `Lesson ${lessonId} is now available`
           : `Lesson ${lessonId} is now blocked`
       })
     } else {
       setFeedback({
         type: 'error',
-        message: result.error || 'Failed to update lesson status'
+        message: result.error || 'Failed to update'
       })
     }
 
-    // Clear feedback after 3 seconds
     setTimeout(() => setFeedback(null), 3000)
   }
 
   const blockedCount = blockedLessons.length
+  const availableCount = 9 - blockedCount
 
   return (
     <Card className="p-6">
+      {/* Header */}
       <div className="flex items-center justify-between mb-6">
-        <div>
-          <h2 className="text-lg font-semibold text-white">Lesson Access Control</h2>
-          <p className="text-sm text-slate-400 mt-1">
-            Block lessons to prevent user access
-          </p>
+        <div className="flex items-center gap-3">
+          <div className="p-2.5 rounded-xl bg-gradient-to-br from-purple-500/20 to-blue-500/20">
+            <Shield className="w-5 h-5 text-purple-400" />
+          </div>
+          <div>
+            <h2 className="text-lg font-semibold text-white">Lesson Access Control</h2>
+            <p className="text-sm text-slate-400">Click a lesson to toggle access</p>
+          </div>
         </div>
-        <div className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-slate-900/50">
-          <Lock className="w-4 h-4 text-slate-400" />
-          <span className="text-sm font-medium text-white">{blockedCount}</span>
-          <span className="text-sm text-slate-400">blocked</span>
+
+        {/* Status summary */}
+        <div className="flex items-center gap-4">
+          <div className="flex items-center gap-2">
+            <div className="w-2.5 h-2.5 rounded-full bg-emerald-400" />
+            <span className="text-sm text-slate-300">{availableCount} available</span>
+          </div>
+          <div className="flex items-center gap-2">
+            <div className="w-2.5 h-2.5 rounded-full bg-red-400" />
+            <span className="text-sm text-slate-300">{blockedCount} blocked</span>
+          </div>
         </div>
       </div>
 
       {/* Feedback Toast */}
-      {feedback && (
-        <motion.div
-          initial={{ opacity: 0, y: -10 }}
-          animate={{ opacity: 1, y: 0 }}
-          exit={{ opacity: 0 }}
-          className={`mb-4 p-3 rounded-lg flex items-center gap-2 ${
-            feedback.type === 'success'
-              ? 'bg-emerald-500/20 text-emerald-400'
-              : 'bg-red-500/20 text-red-400'
-          }`}
-        >
-          {feedback.type === 'success' ? (
-            <CheckCircle className="w-4 h-4 flex-shrink-0" />
-          ) : (
-            <AlertCircle className="w-4 h-4 flex-shrink-0" />
-          )}
-          <span className="text-sm">{feedback.message}</span>
-        </motion.div>
-      )}
+      <AnimatePresence>
+        {feedback && (
+          <motion.div
+            initial={{ opacity: 0, y: -10 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0 }}
+            className={`mb-4 p-3 rounded-lg flex items-center gap-2 ${
+              feedback.type === 'success'
+                ? 'bg-emerald-500/20 text-emerald-400'
+                : 'bg-red-500/20 text-red-400'
+            }`}
+          >
+            {feedback.type === 'success' ? (
+              <CheckCircle className="w-4 h-4 flex-shrink-0" />
+            ) : (
+              <AlertCircle className="w-4 h-4 flex-shrink-0" />
+            )}
+            <span className="text-sm">{feedback.message}</span>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       {/* Loading State */}
       {loading && (
@@ -193,11 +196,11 @@ export default function LessonBlockManager() {
         </div>
       )}
 
-      {/* Lessons List */}
+      {/* Lessons Grid */}
       {!loading && !error && (
-        <div className="space-y-2">
+        <div className="grid grid-cols-3 md:grid-cols-5 lg:grid-cols-9 gap-3">
           {lessons.map(lesson => (
-            <LessonToggleRow
+            <LessonCard
               key={lesson.id}
               lesson={lesson}
               isBlocked={isLessonBlocked(lesson.id)}
@@ -210,10 +213,10 @@ export default function LessonBlockManager() {
 
       {/* Help Text */}
       {!loading && !error && (
-        <div className="mt-6 p-4 rounded-lg bg-slate-900/30 border border-white/5">
-          <p className="text-xs text-slate-500">
-            <strong className="text-slate-400">Note:</strong> Blocked lessons will appear locked for all users,
-            even if they have completed previous lessons. Changes take effect immediately.
+        <div className="mt-6 flex items-start gap-2 text-xs text-slate-500">
+          <AlertCircle className="w-3.5 h-3.5 mt-0.5 flex-shrink-0" />
+          <p>
+            Blocked lessons appear locked for all users. Changes take effect immediately.
           </p>
         </div>
       )}
