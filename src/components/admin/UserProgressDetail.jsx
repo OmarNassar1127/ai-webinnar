@@ -147,9 +147,12 @@ export default function UserProgressDetail({ user, isExpanded, onToggle, onToggl
       user.isActive ? 'border-white/5 hover:bg-slate-800/70' : 'border-red-500/20 bg-red-500/5'
     }`}>
       {/* Clickable Header */}
-      <button
+      <div
         onClick={onToggle}
-        className="w-full p-4 flex items-center gap-4 text-left"
+        role="button"
+        tabIndex={0}
+        onKeyDown={(e) => e.key === 'Enter' && onToggle()}
+        className="w-full p-4 flex items-center gap-4 text-left cursor-pointer"
       >
         {/* User Avatar */}
         <div className={`relative w-11 h-11 rounded-full flex items-center justify-center flex-shrink-0 ${
@@ -250,7 +253,7 @@ export default function UserProgressDetail({ user, isExpanded, onToggle, onToggl
             <ChevronDown className="w-5 h-5 text-slate-400" />
           )}
         </div>
-      </button>
+      </div>
 
       {/* Expandable Detail Section */}
       <AnimatePresence>
