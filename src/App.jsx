@@ -110,6 +110,7 @@ function AppContent() {
               key="lesson2"
               onBack={() => setCurrentPage('dashboard')}
               onNavigateToLesson={handleNavigateToLesson}
+              isNextLessonBlocked={isLessonBlocked(3)}
             />
           )}
           {currentPage === 'lesson3' && (
@@ -117,6 +118,7 @@ function AppContent() {
               key="lesson3"
               onBack={() => setCurrentPage('dashboard')}
               onNavigateToLesson={handleNavigateToLesson}
+              isNextLessonBlocked={isLessonBlocked(4)}
             />
           )}
           {currentPage === 'lesson4' && (
@@ -124,6 +126,7 @@ function AppContent() {
               key="lesson4"
               onBack={() => setCurrentPage('dashboard')}
               onNavigateToLesson={handleNavigateToLesson}
+              isNextLessonBlocked={isLessonBlocked(5)}
             />
           )}
           {currentPage === 'lesson5' && (
@@ -131,6 +134,7 @@ function AppContent() {
               key="lesson5"
               onBack={() => setCurrentPage('dashboard')}
               onNavigateToLesson={handleNavigateToLesson}
+              isNextLessonBlocked={isLessonBlocked(6)}
             />
           )}
           {currentPage === 'lesson6' && (
@@ -138,6 +142,7 @@ function AppContent() {
               key="lesson6"
               onBack={() => setCurrentPage('dashboard')}
               onNavigateToLesson={handleNavigateToLesson}
+              isNextLessonBlocked={isLessonBlocked(7)}
             />
           )}
           {currentPage === 'lesson7' && (
@@ -145,6 +150,7 @@ function AppContent() {
               key="lesson7"
               onBack={() => setCurrentPage('dashboard')}
               onNavigateToLesson={handleNavigateToLesson}
+              isNextLessonBlocked={isLessonBlocked(8)}
             />
           )}
           {currentPage === 'lesson8' && (
@@ -152,6 +158,7 @@ function AppContent() {
               key="lesson8"
               onBack={() => setCurrentPage('dashboard')}
               onNavigateToLesson={handleNavigateToLesson}
+              isNextLessonBlocked={isLessonBlocked(9)}
             />
           )}
           {currentPage === 'lesson9' && (

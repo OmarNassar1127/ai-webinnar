@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { BlockedLessonButton } from '../components/common';
 
 const recapCards = [
   {
@@ -75,7 +76,6 @@ const Completion = ({ onComplete, onBack, onNavigateToLesson, isNextLessonBlocke
   const [showConfetti, setShowConfetti] = useState(true);
   const [hasCompleted, setHasCompleted] = useState(false);
   const [isNavigating, setIsNavigating] = useState(false);
-  const [showBlockedModal, setShowBlockedModal] = useState(false);
   const [confettiParticles] = useState(() =>
     Array.from({ length: 60 }, (_, i) => ({
       id: i,
@@ -287,89 +287,12 @@ const Completion = ({ onComplete, onBack, onNavigateToLesson, isNextLessonBlocke
             </svg>
             {isNavigating ? 'Redirecting...' : 'Back to Dashboard'}
           </motion.button>
-          <motion.button
-            whileHover={{ scale: 1.02, boxShadow: isNextLessonBlocked ? '0 0 20px rgba(251, 191, 36, 0.3)' : '0 0 40px rgba(124, 58, 237, 0.5)' }}
-            whileTap={{ scale: 0.98 }}
-            onClick={() => {
-              if (isNextLessonBlocked) {
-                setShowBlockedModal(true);
-              } else {
-                onNavigateToLesson && onNavigateToLesson(2);
-              }
-            }}
-            className={`group px-10 py-4 rounded-xl text-white font-bold text-lg shadow-2xl transition-all duration-300 flex items-center justify-center gap-3 ${
-              isNextLessonBlocked
-                ? 'bg-gradient-to-r from-amber-600 to-orange-600'
-                : 'bg-gradient-to-r from-violet-600 to-cyan-600'
-            }`}
-          >
-            {isNextLessonBlocked ? (
-              <>
-                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
-                </svg>
-                Lesson 2 Locked
-              </>
-            ) : (
-              <>
-                Continue to Lesson 2
-                <svg className="w-5 h-5 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 5l7 7m0 0l-7 7m7-7H3" />
-                </svg>
-              </>
-            )}
-          </motion.button>
+          <BlockedLessonButton
+            nextLessonId={2}
+            isBlocked={isNextLessonBlocked}
+            onNavigate={onNavigateToLesson}
+          />
         </motion.div>
-
-        {/* Blocked Lesson Modal */}
-        <AnimatePresence>
-          {showBlockedModal && (
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4"
-              onClick={() => setShowBlockedModal(false)}
-            >
-              <motion.div
-                initial={{ scale: 0.9, opacity: 0 }}
-                animate={{ scale: 1, opacity: 1 }}
-                exit={{ scale: 0.9, opacity: 0 }}
-                className="bg-slate-800 border border-amber-500/30 rounded-2xl p-8 max-w-md w-full shadow-2xl"
-                onClick={(e) => e.stopPropagation()}
-              >
-                <div className="flex justify-center mb-6">
-                  <div className="w-16 h-16 rounded-full bg-amber-500/20 flex items-center justify-center">
-                    <svg className="w-8 h-8 text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
-                    </svg>
-                  </div>
-                </div>
-
-                <h3 className="text-xl font-bold text-white text-center mb-4">
-                  Lesson Not Available Yet
-                </h3>
-
-                <p className="text-slate-300 text-center mb-6 leading-relaxed">
-                  Your instructor has temporarily locked this lesson to help you master the current material first.
-                </p>
-
-                <div className="bg-slate-700/50 rounded-xl p-4 mb-6">
-                  <p className="text-slate-400 text-sm leading-relaxed">
-                    <span className="text-amber-400 font-medium">Tip:</span> Use this time to review what you've learned. When the lesson opens, everything will make much more sense!
-                  </p>
-                </div>
-
-                <button
-                  onClick={() => setShowBlockedModal(false)}
-                  className="w-full py-3 rounded-xl bg-gradient-to-r from-violet-600 to-cyan-600 text-white font-semibold hover:opacity-90 transition-opacity"
-                >
-                  Got it!
-                </button>
-              </motion.div>
-            </motion.div>
-          )}
-        </AnimatePresence>
 
         {/* Celebration sparkles - only show when not navigating */}
         {!isNavigating && (

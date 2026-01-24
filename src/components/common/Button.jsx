@@ -5,7 +5,7 @@ import { motion } from 'framer-motion';
  * A reusable button with multiple variants, sizes, and states
  *
  * @param {React.ReactNode} children - Button content
- * @param {'primary' | 'secondary' | 'ghost'} variant - Button style variant
+ * @param {'primary' | 'secondary' | 'ghost' | 'warning'} variant - Button style variant
  * @param {'sm' | 'md' | 'lg'} size - Button size
  * @param {React.ReactNode} icon - Icon element
  * @param {'left' | 'right'} iconPosition - Icon position
@@ -55,6 +55,12 @@ const Button = ({
       hover:text-white
       hover:bg-white/5
     `,
+    warning: `
+      bg-gradient-to-r from-amber-600 to-orange-600
+      text-white
+      border-0
+      hover:from-amber-500 hover:to-orange-500
+    `,
   };
 
   // Glow effects for hover
@@ -62,6 +68,7 @@ const Button = ({
     primary: '0 0 30px rgba(124, 58, 237, 0.5), 0 0 60px rgba(59, 130, 246, 0.3)',
     secondary: '0 0 20px rgba(124, 58, 237, 0.3)',
     ghost: 'none',
+    warning: '0 0 30px rgba(251, 191, 36, 0.4), 0 0 60px rgba(249, 115, 22, 0.3)',
   };
 
   // Spinner component

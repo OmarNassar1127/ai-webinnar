@@ -286,7 +286,7 @@ function LockedMessage({ onBack, onUnlock }) {
   )
 }
 
-function Lesson8Content({ onBack, onNavigateToLesson }) {
+function Lesson8Content({ onBack, onNavigateToLesson, isNextLessonBlocked }) {
   const { currentSection, sectionCompletion, goToSection, completeSection, isUnlocked, refetch } = useLesson8()
   const contentRef = useRef(null)
   const [showUnlockAnimation, setShowUnlockAnimation] = useState(false)
@@ -416,6 +416,7 @@ function Lesson8Content({ onBack, onNavigateToLesson }) {
                   onComplete={handleComplete}
                   onBack={onBack}
                   onNavigateToLesson={onNavigateToLesson}
+                  isNextLessonBlocked={isNextLessonBlocked}
                 />
               )}
             </motion.div>
@@ -436,10 +437,10 @@ function Lesson8Content({ onBack, onNavigateToLesson }) {
   )
 }
 
-function Lesson8({ onBack, onNavigateToLesson }) {
+function Lesson8({ onBack, onNavigateToLesson, isNextLessonBlocked }) {
   return (
     <Lesson8Provider>
-      <Lesson8Content onBack={onBack} onNavigateToLesson={onNavigateToLesson} />
+      <Lesson8Content onBack={onBack} onNavigateToLesson={onNavigateToLesson} isNextLessonBlocked={isNextLessonBlocked} />
     </Lesson8Provider>
   )
 }

@@ -41,7 +41,7 @@ const sectionComponents = {
   8: Completion
 }
 
-function Lesson3Content({ onBack, onNavigateToLesson }) {
+function Lesson3Content({ onBack, onNavigateToLesson, isNextLessonBlocked }) {
   const { currentSection, sectionCompletion, goToSection, completeSection } = useLesson3()
   const contentRef = useRef(null)
 
@@ -147,6 +147,7 @@ function Lesson3Content({ onBack, onNavigateToLesson }) {
                   onComplete={handleComplete}
                   onBack={onBack}
                   onNavigateToLesson={onNavigateToLesson}
+                  isNextLessonBlocked={isNextLessonBlocked}
                 />
               )}
             </motion.div>
@@ -167,10 +168,10 @@ function Lesson3Content({ onBack, onNavigateToLesson }) {
   )
 }
 
-function Lesson3({ onBack, onNavigateToLesson }) {
+function Lesson3({ onBack, onNavigateToLesson, isNextLessonBlocked }) {
   return (
     <Lesson3Provider>
-      <Lesson3Content onBack={onBack} onNavigateToLesson={onNavigateToLesson} />
+      <Lesson3Content onBack={onBack} onNavigateToLesson={onNavigateToLesson} isNextLessonBlocked={isNextLessonBlocked} />
     </Lesson3Provider>
   )
 }

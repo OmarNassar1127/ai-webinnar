@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { Trophy, Sparkles, Zap, Bot, FileText, Target, ArrowRight, Home, Rocket } from 'lucide-react';
-import { Button, Card } from '../../components/common';
+import { Trophy, Sparkles, Zap, Bot, FileText, Target, Home, Rocket } from 'lucide-react';
+import { Button, Card, BlockedLessonButton } from '../../components/common';
 import { useLesson8 } from '../../context/Lesson8Context';
 
 // Confetti particles - extra special for the magic lesson!
@@ -88,7 +88,7 @@ const recapCards = [
   },
 ];
 
-export default function Completion({ onComplete, onBack, onNavigateToLesson }) {
+export default function Completion({ onComplete, onBack, onNavigateToLesson, isNextLessonBlocked }) {
   const { completeSection } = useLesson8();
   const [showContent, setShowContent] = useState(false);
 
@@ -302,6 +302,15 @@ export default function Completion({ onComplete, onBack, onNavigateToLesson }) {
                   <Rocket className="w-5 h-5 text-purple-400" />
                 </div>
                 <span className="text-purple-300 font-medium">Coming Next</span>
+                {isNextLessonBlocked ? (
+                  <span className="text-xs font-medium text-amber-400 bg-amber-500/20 px-2 py-0.5 rounded-full">
+                    Blocked by Admin
+                  </span>
+                ) : (
+                  <span className="text-xs font-medium text-emerald-400 bg-emerald-500/20 px-2 py-0.5 rounded-full">
+                    Unlocked
+                  </span>
+                )}
               </div>
               <h3 className="text-xl text-white font-bold mb-2">Final Project & What's Next</h3>
               <p className="text-slate-400 mb-4">
@@ -333,15 +342,12 @@ export default function Completion({ onComplete, onBack, onNavigateToLesson }) {
               <Home className="w-5 h-5 mr-2" />
               Back to Dashboard
             </Button>
-            <Button
-              variant="primary"
-              size="lg"
-              onClick={() => onNavigateToLesson && onNavigateToLesson(9)}
-              className="bg-gradient-to-r from-emerald-500 to-cyan-500 hover:from-emerald-600 hover:to-cyan-600"
-            >
-              Continue to Final Lesson
-              <ArrowRight className="w-5 h-5 ml-2" />
-            </Button>
+            <BlockedLessonButton
+              nextLessonId={9}
+              isBlocked={isNextLessonBlocked}
+              onNavigate={onNavigateToLesson}
+              className={!isNextLessonBlocked ? "bg-gradient-to-r from-emerald-500 to-cyan-500 hover:from-emerald-600 hover:to-cyan-600" : ""}
+            />
           </motion.div>
         )}
       </div>

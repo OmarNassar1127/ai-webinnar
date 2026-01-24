@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { Trophy, Database, FileText, Eraser, Search, ArrowRight, Home, Lock } from 'lucide-react';
-import { Card, Button } from '../../components/common';
+import { Trophy, Database, FileText, Eraser, Search, Home, Lock } from 'lucide-react';
+import { Card, Button, BlockedLessonButton } from '../../components/common';
 import { useLesson7 } from '../../context/Lesson7Context';
 
 const recapCards = [
@@ -62,7 +62,7 @@ function ConfettiParticle({ delay, color }) {
   );
 }
 
-function Completion({ onComplete, onBack, onNavigateToLesson }) {
+function Completion({ onComplete, onBack, onNavigateToLesson, isNextLessonBlocked }) {
   const { completeSection } = useLesson7();
   const [confettiParticles] = useState(() =>
     Array.from({ length: 50 }, (_, i) => ({
@@ -266,6 +266,15 @@ function Completion({ onComplete, onBack, onNavigateToLesson }) {
           <div className="flex items-center gap-3 mb-4">
             <Lock className="w-5 h-5 text-purple-400" />
             <h3 className="text-lg font-semibold text-purple-300">Coming Next: The Magic Lesson</h3>
+            {isNextLessonBlocked ? (
+              <span className="text-xs font-medium text-amber-400 bg-amber-500/20 px-2 py-0.5 rounded-full">
+                Blocked by Admin
+              </span>
+            ) : (
+              <span className="text-xs font-medium text-emerald-400 bg-emerald-500/20 px-2 py-0.5 rounded-full">
+                Unlocked
+              </span>
+            )}
           </div>
           <p className="text-slate-300 mb-4">
             Lesson 8 is a special hidden lesson that unlocks advanced capabilities.
@@ -291,10 +300,11 @@ function Completion({ onComplete, onBack, onNavigateToLesson }) {
           <Home className="w-5 h-5 mr-2" />
           Back to Dashboard
         </Button>
-        <Button variant="primary" size="lg" onClick={() => onNavigateToLesson && onNavigateToLesson(8)}>
-          Continue to Lesson 8
-          <ArrowRight className="w-5 h-5 ml-2" />
-        </Button>
+        <BlockedLessonButton
+          nextLessonId={8}
+          isBlocked={isNextLessonBlocked}
+          onNavigate={onNavigateToLesson}
+        />
       </motion.div>
     </div>
   );
