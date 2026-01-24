@@ -1,0 +1,23 @@
+# Ralph Progress Log
+Started: Sat Jan 24 13:36:42 CET 2026
+
+## Codebase Patterns
+- AuthContext already fetches all profile fields with `select('*')` so new columns are automatically available
+- SQL migrations go in `supabase/migrations/` directory
+- Build check: use `npm run build` for full verification (includes bundling)
+- Branch naming: avoid nested branch names like `ralph/admin-features` when a `ralph` branch exists
+
+---
+
+## 2026-01-24 14:00 - US-001
+- **What was implemented:**
+  - Added SQL migration to create `is_admin` boolean column on profiles table (defaults to false)
+  - Updated AuthContext.jsx to expose `isAdmin` boolean derived from profile.is_admin
+- **Files changed:**
+  - `supabase/migrations/20260124_add_is_admin_column.sql` (new)
+  - `src/context/AuthContext.jsx` (modified)
+- **Learnings for future iterations:**
+  - AuthContext.fetchProfile uses `select('*')` so any new profile columns are automatically available
+  - Use `profile?.is_admin ?? false` for safe defaulting when field may not exist
+  - The CLAUDE.md design system specifies purple/blue gradients, glassmorphism - remember for UI work
+---

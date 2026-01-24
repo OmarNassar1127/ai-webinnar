@@ -29,7 +29,7 @@
         "Typecheck passes"
       ],
       "priority": 2,
-      "passes": true,
+      "passes": false,
       "notes": "SQL migration to create table with RLS policies"
     },
     {
@@ -45,7 +45,7 @@
         "Verify in browser using dev-browser skill"
       ],
       "priority": 3,
-      "passes": true,
+      "passes": false,
       "notes": "Modify src/components/auth/UserMenu.jsx, conditional rendering based on isAdmin"
     },
     {
@@ -63,7 +63,7 @@
         "Typecheck passes"
       ],
       "priority": 4,
-      "passes": true,
+      "passes": false,
       "notes": "New file: src/hooks/useAdminData.js"
     },
     {
@@ -82,7 +82,7 @@
         "Verify in browser using dev-browser skill"
       ],
       "priority": 5,
-      "passes": true,
+      "passes": false,
       "notes": "New file: src/pages/AdminDashboard.jsx, update App.jsx routing"
     },
     {
@@ -98,7 +98,7 @@
         "Verify in browser using dev-browser skill"
       ],
       "priority": 6,
-      "passes": true,
+      "passes": false,
       "notes": "New file: src/components/admin/UserProgressDetail.jsx"
     },
     {
@@ -113,7 +113,7 @@
         "Typecheck passes"
       ],
       "priority": 7,
-      "passes": true,
+      "passes": false,
       "notes": "New file: src/hooks/useBlockedLessons.js"
     },
     {
@@ -131,7 +131,7 @@
         "Verify in browser using dev-browser skill"
       ],
       "priority": 8,
-      "passes": true,
+      "passes": false,
       "notes": "New file: src/components/admin/LessonBlockManager.jsx"
     },
     {

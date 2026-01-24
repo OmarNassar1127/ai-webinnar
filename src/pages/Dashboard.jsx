@@ -1,9 +1,11 @@
-import { motion } from 'framer-motion';
-import { Brain, Clock, Unlock, ChevronRight, Sparkles, Play, Trophy, Target } from 'lucide-react';
+import { useState } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { Brain, Clock, Unlock, ChevronRight, Sparkles, Play, Trophy, Target, Lock, AlertCircle } from 'lucide-react';
 import Header from '../components/layout/Header';
 import { Card, Button, Badge, ProgressBar } from '../components/common/';
 import { useLesson } from '../context/LessonContext';
 import { useAuth } from '../context/AuthContext';
+import { useBlockedLessons } from '../hooks/useBlockedLessons';
 import { FloatingAIGraphic, TimelineNode, CircuitPattern } from '../components/dashboard/DashboardGraphics';
 
 const lessons = [
@@ -31,10 +33,29 @@ const itemVariants = {
 export default function Dashboard({ onStartLesson }) {
   const { lessonProgress, quizScore, sectionCompletion } = useLesson();
   const { user, profile, openAuthModal } = useAuth();
+  const { isLessonBlocked, loading: blockedLoading } = useBlockedLessons();
+  const [blockedMessage, setBlockedMessage] = useState(null);
 
-  const isLessonUnlocked = (id) => id === 1;
+  // Check if lesson is unlocked: must be unblocked AND meet progress requirements
+  const isLessonUnlocked = (id) => {
+    // If lesson is blocked by admin, it's not unlocked
+    if (isLessonBlocked(id)) return false;
+    // Normal unlock logic: only lesson 1 is unlocked for now
+    return id === 1;
+  };
+
   const isLessonCompleted = sectionCompletion?.every(Boolean) || false;
   const completedSections = sectionCompletion?.filter(Boolean).length || 0;
+
+  // Handle starting a lesson - check if blocked first
+  const handleStartLesson = () => {
+    if (isLessonBlocked(1)) {
+      setBlockedMessage('This lesson is not yet available');
+      setTimeout(() => setBlockedMessage(null), 3000);
+      return;
+    }
+    onStartLesson();
+  };
 
   const getGreeting = () => {
     if (!user) return 'Welcome, Learner';
@@ -47,6 +68,23 @@ export default function Dashboard({ onStartLesson }) {
       <Header />
 
       <main className="pt-24 pb-16 px-4 md:px-6 lg:px-8 max-w-7xl mx-auto">
+        {/* Blocked Lesson Toast */}
+        <AnimatePresence>
+          {blockedMessage && (
+            <motion.div
+              initial={{ opacity: 0, y: -20 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -20 }}
+              className="fixed top-20 left-1/2 -translate-x-1/2 z-50"
+            >
+              <div className="flex items-center gap-2 px-4 py-3 rounded-lg bg-amber-500/20 border border-amber-500/30 backdrop-blur-sm">
+                <Lock className="w-4 h-4 text-amber-400 flex-shrink-0" />
+                <span className="text-sm text-amber-300">{blockedMessage}</span>
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
+
         {/* Hero Section */}
         <motion.section
           className="relative py-12 md:py-20 flex flex-col lg:flex-row items-center justify-between gap-8 lg:gap-12"
@@ -101,7 +139,7 @@ export default function Dashboard({ onStartLesson }) {
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.6 }}
             >
-              <Button variant="primary" size="lg" icon={<Play className="w-5 h-5" />} onClick={onStartLesson}>
+              <Button variant="primary" size="lg" icon={<Play className="w-5 h-5" />} onClick={handleStartLesson}>
                 {lessonProgress > 0 ? 'Continue Learning' : 'Start Learning'}
               </Button>
               {!user && (
@@ -222,9 +260,15 @@ export default function Dashboard({ onStartLesson }) {
                   <Badge variant="active" pulse icon={<Sparkles className="w-3 h-3" />}>
                     Lesson 1
                   </Badge>
-                  <Badge variant="success" icon={<Unlock className="w-3 h-3" />}>
-                    {isLessonCompleted ? 'Completed' : 'Unlocked'}
-                  </Badge>
+                  {isLessonBlocked(1) ? (
+                    <Badge variant="error" icon={<Lock className="w-3 h-3" />}>
+                      Blocked
+                    </Badge>
+                  ) : (
+                    <Badge variant="success" icon={<Unlock className="w-3 h-3" />}>
+                      {isLessonCompleted ? 'Completed' : 'Unlocked'}
+                    </Badge>
+                  )}
                 </div>
 
                 <h3 className="text-2xl md:text-3xl font-bold text-white mb-3">
@@ -255,7 +299,7 @@ export default function Dashboard({ onStartLesson }) {
                     variant="primary"
                     size="lg"
                     icon={<Play className="w-5 h-5" />}
-                    onClick={onStartLesson}
+                    onClick={handleStartLesson}
                     className="w-full md:w-auto"
                   >
                     {isLessonCompleted ? 'Review Lesson' : lessonProgress > 0 ? 'Continue Lesson' : 'Start Lesson'}

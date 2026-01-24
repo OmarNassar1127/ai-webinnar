@@ -61,3 +61,27 @@ Started: Sat Jan 24 13:44:04 CET 2026
   - All 9 lessons with completion status, quiz score, and completion date
 - Matches design system (glassmorphism, purple/blue gradients, emerald for complete, amber for scores)
 - Build passes successfully
+
+## US-007: Create useBlockedLessons hook - COMPLETED
+- Created src/hooks/useBlockedLessons.js (79 lines, under 80 limit)
+- Hook fetches blocked_lessons from Supabase ordered by lesson_id
+- Returns: blockedLessons array, loading state, error state, refetch function
+- Provides isLessonBlocked(lessonId) function that checks if a lesson is blocked
+- Provides blockLesson(lessonId) function for admins to block a lesson
+- Provides unblockLesson(lessonId) function for admins to unblock a lesson
+- Both block/unblock functions verify admin status before executing
+- Returns success/error objects from mutation functions
+- Build passes successfully
+
+## US-008: Create LessonBlockManager component for admin - COMPLETED
+- Created src/components/admin/LessonBlockManager.jsx (197 lines, under 200 limit)
+- Shows all 9 lessons with toggle switches for blocking/unblocking
+- Uses useBlockedLessons hook for fetching and managing blocked lessons
+- Toggle buttons switch between block/unblock state with visual feedback
+- Blocked lessons show Lock icon and red styling
+- Unblocked lessons show BookOpen icon and purple/blue gradient
+- Changes saved to Supabase immediately on toggle
+- Shows loading spinner while toggling individual lessons
+- Displays feedback toast for success/error messages
+- Integrated into AdminDashboard.jsx (added import and rendered between stats and user list)
+- Build passes successfully

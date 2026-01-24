@@ -5,7 +5,7 @@ import { motion } from 'framer-motion';
  * A status badge with multiple variants and optional pulse animation
  *
  * @param {React.ReactNode} children - Badge content
- * @param {'default' | 'success' | 'warning' | 'locked' | 'active'} variant - Badge style variant
+ * @param {'default' | 'success' | 'warning' | 'error' | 'locked' | 'active'} variant - Badge style variant
  * @param {'sm' | 'md'} size - Badge size
  * @param {React.ReactNode} icon - Optional icon element
  * @param {boolean} pulse - Whether to show pulse animation (useful for active state)
@@ -42,6 +42,11 @@ const Badge = ({
       text-amber-400
       border border-amber-500/30
     `,
+    error: `
+      bg-red-500/20
+      text-red-400
+      border border-red-500/30
+    `,
     locked: `
       bg-slate-800/80
       text-gray-500
@@ -59,6 +64,7 @@ const Badge = ({
     default: 'bg-slate-400',
     success: 'bg-emerald-400',
     warning: 'bg-amber-400',
+    error: 'bg-red-400',
     locked: 'bg-gray-500',
     active: 'bg-purple-400',
   };
@@ -68,6 +74,7 @@ const Badge = ({
     default: 'text-gray-400',
     success: 'text-emerald-400',
     warning: 'text-amber-400',
+    error: 'text-red-400',
     locked: 'text-gray-500',
     active: 'text-purple-400',
   };
