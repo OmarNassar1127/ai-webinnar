@@ -67,8 +67,8 @@ function Lesson1({ onBack, onNavigateToLesson, isNextLessonBlocked }) {
       completeSection(currentSection)
       goToSection(currentSection + 1)
     } else if (currentSection === sections.length) {
-      // On last section - complete and go back to dashboard
-      completeSection(currentSection)
+      // On last section (Completion) - just go back to dashboard
+      // Note: Completion component's useEffect already marks section 8 as complete
       onBack()
     }
   }, [currentSection, completeSection, goToSection, onBack])

@@ -188,10 +188,14 @@ export function LessonProvider({ children }) {
     }
   }, []);
 
-  // Mark a section as completed
+  // Mark a section as completed (only if not already complete)
   const completeSection = useCallback((sectionNum) => {
     if (sectionNum >= 1 && sectionNum <= 8) {
       setSectionCompletion((prev) => {
+        // Only update if the section is not already complete
+        if (prev[sectionNum - 1] === true) {
+          return prev; // Return same reference, no re-render
+        }
         const updated = [...prev];
         updated[sectionNum - 1] = true;
         return updated;

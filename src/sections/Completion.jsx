@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { BlockedLessonButton } from '../components/common';
+import { useLesson } from '../context/LessonContext';
 
 const recapCards = [
   {
@@ -72,9 +73,9 @@ const ConfettiParticle = ({ delay }) => {
   );
 };
 
-const Completion = ({ onComplete, onBack, onNavigateToLesson, isNextLessonBlocked }) => {
+const Completion = ({ onBack, onNavigateToLesson, isNextLessonBlocked }) => {
+  const { completeSection } = useLesson();
   const [showConfetti, setShowConfetti] = useState(true);
-  const [hasCompleted, setHasCompleted] = useState(false);
   const [isNavigating, setIsNavigating] = useState(false);
   const [confettiParticles] = useState(() =>
     Array.from({ length: 60 }, (_, i) => ({
@@ -94,17 +95,10 @@ const Completion = ({ onComplete, onBack, onNavigateToLesson, isNextLessonBlocke
     }, 50);
   };
 
-  // Auto-complete this section when viewed (only once)
+  // Mark section 8 as complete on mount (same pattern as other lessons)
   useEffect(() => {
-    if (onComplete && !hasCompleted) {
-      setHasCompleted(true);
-      // Small delay to prevent race conditions
-      const timer = setTimeout(() => {
-        onComplete();
-      }, 100);
-      return () => clearTimeout(timer);
-    }
-  }, [onComplete, hasCompleted]);
+    completeSection(8);
+  }, [completeSection]);
 
   useEffect(() => {
     const timer = setTimeout(() => {
