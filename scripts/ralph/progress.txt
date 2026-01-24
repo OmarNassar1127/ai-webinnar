@@ -34,3 +34,30 @@ Started: Sat Jan 24 13:44:04 CET 2026
 - Groups progress and quiz data by user for efficient processing
 - Calculates quiz score percentages and last activity dates
 - Build passes successfully
+
+## US-005: Create AdminDashboard page with user list - COMPLETED
+- Created src/pages/AdminDashboard.jsx (268 lines, under 300 limit)
+- Added admin page route in App.jsx (import and AnimatePresence case)
+- Shows table/cards of all users using useAdminData hook
+- Each user shows: name, email, lessons completed count, progress bar, quiz average, last active date
+- Shows loading spinner with message while fetching
+- Shows error state if data fetch fails
+- Responsive design with hidden elements on smaller screens
+- Non-admins redirected to dashboard via useEffect
+- Summary stats at top: Total Users, Active Learners, Completed Course, Lessons Completed
+- Matches design system (purple/blue gradients, glassmorphism cards)
+- Build passes successfully
+
+## US-006: Create UserProgressDetail component for admin view - COMPLETED
+- Created src/components/admin/UserProgressDetail.jsx (218 lines, under 250 limit)
+- Shows each lesson status with visual progress bar using ProgressBar component
+- Shows quiz scores for each completed lesson with amber highlight for passing scores
+- Expandable/collapsible from user list - clicking user row expands/collapses detail view
+- Updated AdminDashboard.jsx to use UserProgressDetail instead of simple UserRow
+- Added expandedUserId state management for accordion-style expansion (only one user expanded at a time)
+- Detail view shows:
+  - Overall progress bar with percentage
+  - Summary stats: Lessons Done, Quizzes Taken, Avg Score
+  - All 9 lessons with completion status, quiz score, and completion date
+- Matches design system (glassmorphism, purple/blue gradients, emerald for complete, amber for scores)
+- Build passes successfully

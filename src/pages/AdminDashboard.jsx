@@ -1,4 +1,4 @@
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { motion } from 'framer-motion'
 import {
   Shield,
@@ -8,7 +8,6 @@ import {
   ArrowLeft,
   Loader2,
   AlertCircle,
-  Clock,
   CheckCircle
 } from 'lucide-react'
 import Header from '../components/layout/Header'
@@ -16,6 +15,7 @@ import { Card, Button } from '../components/common/'
 import { useAuth } from '../context/AuthContext'
 import { useNavigation } from '../context/NavigationContext'
 import { useAdminData } from '../hooks/useAdminData'
+import UserProgressDetail from '../components/admin/UserProgressDetail'
 
 const containerVariants = {
   hidden: { opacity: 0 },
@@ -27,21 +27,6 @@ const itemVariants = {
   visible: { opacity: 1, y: 0, transition: { duration: 0.5 } },
 }
 
-function formatLastActive(dateString) {
-  if (!dateString) return 'Never'
-  const date = new Date(dateString)
-  const now = new Date()
-  const diffMs = now - date
-  const diffMins = Math.floor(diffMs / (1000 * 60))
-  const diffHours = Math.floor(diffMs / (1000 * 60 * 60))
-  const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24))
-
-  if (diffMins < 1) return 'Just now'
-  if (diffMins < 60) return `${diffMins}m ago`
-  if (diffHours < 24) return `${diffHours}h ago`
-  if (diffDays < 7) return `${diffDays}d ago`
-  return date.toLocaleDateString()
-}
 
 function StatCard({ icon: Icon, label, value, color }) {
   const colorClasses = {
@@ -66,85 +51,17 @@ function StatCard({ icon: Icon, label, value, color }) {
   )
 }
 
-function UserRow({ user }) {
-  const progressPercent = Math.round((user.lessonsCompleted / user.totalLessons) * 100)
-  const avgQuizScore = user.quizScores.length > 0
-    ? Math.round(user.quizScores.reduce((sum, q) => sum + q.percentage, 0) / user.quizScores.length)
-    : null
-
-  return (
-    <motion.div
-      variants={itemVariants}
-      className="bg-slate-800/50 backdrop-blur-sm border border-white/5 rounded-xl p-4 hover:bg-slate-800/70 transition-all duration-200"
-    >
-      <div className="flex flex-col md:flex-row md:items-center gap-4">
-        {/* User Info */}
-        <div className="flex items-center gap-3 flex-1 min-w-0">
-          <div className="w-10 h-10 rounded-full bg-gradient-to-br from-purple-500 to-blue-500 flex items-center justify-center flex-shrink-0">
-            <span className="text-sm font-semibold text-white">
-              {user.name?.charAt(0)?.toUpperCase() || 'U'}
-            </span>
-          </div>
-          <div className="min-w-0">
-            <p className="font-medium text-white truncate">{user.name}</p>
-            <p className="text-sm text-slate-400 truncate">{user.email}</p>
-          </div>
-        </div>
-
-        {/* Stats */}
-        <div className="flex items-center gap-6 md:gap-8 text-sm">
-          {/* Lessons Completed */}
-          <div className="flex items-center gap-2">
-            <BookOpen className="w-4 h-4 text-purple-400" />
-            <span className="text-white font-medium">{user.lessonsCompleted}</span>
-            <span className="text-slate-500">/ {user.totalLessons}</span>
-          </div>
-
-          {/* Progress Bar */}
-          <div className="hidden sm:flex items-center gap-2 min-w-[120px]">
-            <div className="flex-1 h-2 bg-slate-700 rounded-full overflow-hidden">
-              <div
-                className="h-full bg-gradient-to-r from-purple-500 to-blue-500 rounded-full transition-all duration-500"
-                style={{ width: `${progressPercent}%` }}
-              />
-            </div>
-            <span className="text-slate-400 text-xs w-8">{progressPercent}%</span>
-          </div>
-
-          {/* Quiz Score */}
-          <div className="flex items-center gap-2">
-            <Award className="w-4 h-4 text-amber-400" />
-            <span className="text-white font-medium">
-              {avgQuizScore !== null ? `${avgQuizScore}%` : '-'}
-            </span>
-          </div>
-
-          {/* Last Active */}
-          <div className="hidden lg:flex items-center gap-2 text-slate-400">
-            <Clock className="w-4 h-4" />
-            <span>{formatLastActive(user.lastActive)}</span>
-          </div>
-
-          {/* Status Indicator */}
-          <div className="flex items-center gap-1.5">
-            {user.lessonsCompleted === user.totalLessons ? (
-              <CheckCircle className="w-4 h-4 text-emerald-400" />
-            ) : user.lessonsCompleted > 0 ? (
-              <div className="w-2 h-2 rounded-full bg-blue-400" />
-            ) : (
-              <div className="w-2 h-2 rounded-full bg-slate-500" />
-            )}
-          </div>
-        </div>
-      </div>
-    </motion.div>
-  )
-}
 
 export default function AdminDashboard() {
   const { isAdmin, user } = useAuth()
   const { navigateTo } = useNavigation()
   const { users, loading, error } = useAdminData()
+  const [expandedUserId, setExpandedUserId] = useState(null)
+
+  // Toggle expanded state for a user
+  const toggleUserExpanded = (userId) => {
+    setExpandedUserId(prev => prev === userId ? null : userId)
+  }
 
   // Redirect non-admins to dashboard
   useEffect(() => {
@@ -266,8 +183,13 @@ export default function AdminDashboard() {
                   </div>
                 ) : (
                   <div className="space-y-3">
-                    {users.map((user) => (
-                      <UserRow key={user.id} user={user} />
+                    {users.map((u) => (
+                      <UserProgressDetail
+                        key={u.id}
+                        user={u}
+                        isExpanded={expandedUserId === u.id}
+                        onToggle={() => toggleUserExpanded(u.id)}
+                      />
                     ))}
                   </div>
                 )}
