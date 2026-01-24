@@ -1,0 +1,20 @@
+# Ralph Progress Log
+Started: 2026-01-24
+Feature: Admin Dashboard & Progress Tracking
+---
+
+## Codebase Patterns
+- Lesson pages follow pattern: src/pages/Lesson{N}.jsx
+- Lesson sections in: src/sections/lesson{N}/*.jsx
+- Content data in: src/data/lesson{N}Content.js
+- Quiz data in: src/data/quiz{N}Questions.js
+- All animations use Framer Motion
+- Styling uses Tailwind CSS with glassmorphism effects (bg-slate-800/50 backdrop-blur-xl)
+- Progress saves to Supabase
+- App.jsx uses state-based navigation (`currentPage` state), not React Router
+- Colors: Purple (#7C3AED), Blue (#3B82F6), Cyan (#06B6D4), Dark (#0F172A)
+- Auth: useAuth() hook from AuthContext
+- Database: Supabase with existing tables (profiles, lesson_progress, quiz_results)
+
+---
+

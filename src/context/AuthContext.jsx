@@ -287,6 +287,9 @@ export function AuthProvider({ children }) {
     setAuthSuccess(false)
   }
 
+  // Derive isAdmin from profile, defaulting to false
+  const isAdmin = profile?.is_admin ?? false
+
   const value = {
     user,
     profile,
@@ -295,6 +298,7 @@ export function AuthProvider({ children }) {
     showAuthModal,
     authModalMode,
     authSuccess,
+    isAdmin,
     isEmailAllowed,
     signUp,
     signIn,
