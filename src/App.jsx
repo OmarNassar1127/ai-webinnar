@@ -1,20 +1,16 @@
-import { useState, useEffect } from 'react'
+import { useEffect } from 'react'
 import { AnimatePresence } from 'framer-motion'
 import { AuthProvider, useAuth } from './context/AuthContext'
 import { LessonProvider } from './context/LessonContext'
+import { NavigationProvider, useNavigation } from './context/NavigationContext'
 import Dashboard from './pages/Dashboard'
 import Lesson1 from './pages/Lesson1'
 import AnimatedBackground from './components/layout/AnimatedBackground'
 import AuthModal from './components/auth/AuthModal'
 
 function AppContent() {
-  const [currentPage, setCurrentPage] = useState('dashboard')
+  const { currentPage, setCurrentPage } = useNavigation()
   const { user, openAuthModal } = useAuth()
-
-  // Scroll to top when page changes
-  useEffect(() => {
-    window.scrollTo({ top: 0, behavior: 'smooth' })
-  }, [currentPage])
 
   // Handle keyboard navigation
   useEffect(() => {
@@ -67,7 +63,9 @@ function AppContent() {
 function App() {
   return (
     <AuthProvider>
-      <AppContent />
+      <NavigationProvider>
+        <AppContent />
+      </NavigationProvider>
     </AuthProvider>
   )
 }

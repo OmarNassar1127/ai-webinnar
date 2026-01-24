@@ -1,10 +1,12 @@
 import { useState, useRef, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { User, LogOut, ChevronDown, BarChart3 } from 'lucide-react'
+import { User, LogOut, ChevronDown, BarChart3, Shield } from 'lucide-react'
 import { useAuth } from '../../context/AuthContext'
+import { useNavigation } from '../../context/NavigationContext'
 
 export default function UserMenu() {
-  const { user, profile, signOut, openAuthModal } = useAuth()
+  const { user, profile, signOut, openAuthModal, isAdmin } = useAuth()
+  const { navigateTo } = useNavigation()
   const [isOpen, setIsOpen] = useState(false)
   const menuRef = useRef(null)
 
@@ -105,6 +107,19 @@ export default function UserMenu() {
 
             {/* Menu items */}
             <div className="py-2">
+              {isAdmin && (
+                <button
+                  onClick={() => {
+                    navigateTo('admin')
+                    setIsOpen(false)
+                  }}
+                  className="w-full flex items-center gap-3 px-4 py-2.5 text-sm text-slate-300
+                           hover:bg-white/5 hover:text-white transition-all duration-200"
+                >
+                  <Shield className="w-4 h-4 text-amber-400" />
+                  Admin Dashboard
+                </button>
+              )}
               <button
                 onClick={() => setIsOpen(false)}
                 className="w-full flex items-center gap-3 px-4 py-2.5 text-sm text-slate-300
