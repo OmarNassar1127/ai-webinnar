@@ -1,6 +1,6 @@
-import { useEffect } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { motion } from 'framer-motion';
-import { Brain, Clock, Unlock, ChevronRight, Sparkles, Play, Trophy, Target, Lock } from 'lucide-react';
+import { Brain, Clock, Unlock, ChevronRight, ChevronLeft, Sparkles, Play, Trophy, Target, Lock } from 'lucide-react';
 import Header from '../components/layout/Header';
 import { Card, Button, Badge, ProgressBar } from '../components/common/';
 import { useLesson } from '../context/LessonContext';
@@ -23,6 +23,114 @@ const lessons = [
 const containerVariants = {
   hidden: { opacity: 0, transition: { duration: 0.3 } },
   visible: { opacity: 1, transition: { staggerChildren: 0.1, delayChildren: 0.2, duration: 0.3 } },
+};
+
+// Learning Journey component with arrow navigation
+const LearningJourney = ({ lessons, isLessonReallyUnlocked, isLessonReallyCompleted, onStartLesson }) => {
+  const scrollRef = useRef(null);
+  const [canScrollLeft, setCanScrollLeft] = useState(false);
+  const [canScrollRight, setCanScrollRight] = useState(true);
+
+  const checkScroll = () => {
+    if (scrollRef.current) {
+      const { scrollLeft, scrollWidth, clientWidth } = scrollRef.current;
+      setCanScrollLeft(scrollLeft > 10);
+      setCanScrollRight(scrollLeft < scrollWidth - clientWidth - 10);
+    }
+  };
+
+  useEffect(() => {
+    checkScroll();
+    window.addEventListener('resize', checkScroll);
+    return () => window.removeEventListener('resize', checkScroll);
+  }, []);
+
+  const scroll = (direction) => {
+    if (scrollRef.current) {
+      const scrollAmount = 200;
+      scrollRef.current.scrollBy({
+        left: direction === 'left' ? -scrollAmount : scrollAmount,
+        behavior: 'smooth'
+      });
+      setTimeout(checkScroll, 300);
+    }
+  };
+
+  return (
+    <motion.section
+      className="py-12"
+      initial={{ opacity: 0, y: 30 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ delay: 0.4, duration: 0.6 }}
+    >
+      <motion.h2
+        className="text-2xl md:text-3xl font-bold text-white mb-10 text-center"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ delay: 0.4 }}
+      >
+        Your Learning Journey
+      </motion.h2>
+
+      <div className="relative group">
+        {/* Left Arrow */}
+        <motion.button
+          onClick={() => scroll('left')}
+          className={`absolute left-0 top-1/2 -translate-y-1/2 z-10 w-10 h-10 md:w-12 md:h-12
+            rounded-full bg-slate-800/90 border border-slate-700 shadow-lg
+            flex items-center justify-center transition-all duration-200
+            hover:bg-slate-700 hover:border-purple-500/50 hover:shadow-purple-500/20
+            ${canScrollLeft ? 'opacity-100' : 'opacity-0 pointer-events-none'}
+            -translate-x-2 md:-translate-x-4`}
+          whileHover={{ scale: 1.1 }}
+          whileTap={{ scale: 0.95 }}
+        >
+          <ChevronLeft className="w-5 h-5 md:w-6 md:h-6 text-slate-300" />
+        </motion.button>
+
+        {/* Right Arrow */}
+        <motion.button
+          onClick={() => scroll('right')}
+          className={`absolute right-0 top-1/2 -translate-y-1/2 z-10 w-10 h-10 md:w-12 md:h-12
+            rounded-full bg-slate-800/90 border border-slate-700 shadow-lg
+            flex items-center justify-center transition-all duration-200
+            hover:bg-slate-700 hover:border-purple-500/50 hover:shadow-purple-500/20
+            ${canScrollRight ? 'opacity-100' : 'opacity-0 pointer-events-none'}
+            translate-x-2 md:translate-x-4`}
+          whileHover={{ scale: 1.1 }}
+          whileTap={{ scale: 0.95 }}
+        >
+          <ChevronRight className="w-5 h-5 md:w-6 md:h-6 text-slate-300" />
+        </motion.button>
+
+        {/* Gradient fades on edges */}
+        <div className={`absolute left-0 top-0 bottom-0 w-12 md:w-20 bg-gradient-to-r from-slate-900 to-transparent z-[5] pointer-events-none transition-opacity duration-200 ${canScrollLeft ? 'opacity-100' : 'opacity-0'}`} />
+        <div className={`absolute right-0 top-0 bottom-0 w-12 md:w-20 bg-gradient-to-l from-slate-900 to-transparent z-[5] pointer-events-none transition-opacity duration-200 ${canScrollRight ? 'opacity-100' : 'opacity-0'}`} />
+
+        {/* Scrollable container */}
+        <div
+          ref={scrollRef}
+          onScroll={checkScroll}
+          className="overflow-x-auto scrollbar-hide px-8 md:px-16 py-4"
+        >
+          <div className="flex items-start justify-start min-w-max">
+            {lessons.map((lesson, index) => (
+              <TimelineNode
+                key={lesson.id}
+                lesson={lesson}
+                index={index}
+                totalLessons={lessons.length}
+                isUnlocked={isLessonReallyUnlocked(lesson.id)}
+                isActive={isLessonReallyUnlocked(lesson.id) && !isLessonReallyCompleted(lesson.id)}
+                isCompleted={isLessonReallyCompleted(lesson.id)}
+                onClick={(lessonId) => onStartLesson(lessonId)}
+              />
+            ))}
+          </div>
+        </div>
+      </div>
+    </motion.section>
+  );
 };
 
 const itemVariants = {
@@ -218,41 +326,12 @@ export default function Dashboard({ onStartLesson }) {
         )}
 
         {/* Learning Journey Map */}
-        <motion.section className="py-12" variants={itemVariants}>
-          <motion.h2
-            className="text-2xl md:text-3xl font-bold text-white mb-8 text-center"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 0.4 }}
-          >
-            Your Learning Journey
-          </motion.h2>
-
-          <div className="relative overflow-x-auto pb-4">
-            <div className="flex items-start gap-4 md:gap-6 lg:gap-8 min-w-max px-4 md:px-0 justify-center">
-              {lessons.map((lesson, index) => (
-                <TimelineNode
-                  key={lesson.id}
-                  lesson={lesson}
-                  index={index}
-                  isUnlocked={isLessonReallyUnlocked(lesson.id)}
-                  isActive={isLessonReallyUnlocked(lesson.id) && !isLessonReallyCompleted(lesson.id)}
-                  isCompleted={isLessonReallyCompleted(lesson.id)}
-                  onClick={(lessonId) => onStartLesson(lessonId)}
-                />
-              ))}
-            </div>
-          </div>
-
-          <motion.p
-            className="text-center text-slate-500 text-sm mt-4 md:hidden"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 1 }}
-          >
-            Scroll to see all lessons
-          </motion.p>
-        </motion.section>
+        <LearningJourney
+          lessons={lessons}
+          isLessonReallyUnlocked={isLessonReallyUnlocked}
+          isLessonReallyCompleted={isLessonReallyCompleted}
+          onStartLesson={onStartLesson}
+        />
 
         {/* Main Lesson Card */}
         <motion.section className="py-12" variants={itemVariants}>
