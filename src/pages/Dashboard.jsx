@@ -255,7 +255,7 @@ export default function Dashboard({ onStartLesson }) {
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.6 }}
             >
-              <Button variant="primary" size="lg" icon={<Play className="w-5 h-5" />} onClick={() => onStartLesson(1)}>
+              <Button variant="primary" size="lg" icon={<Play className="w-5 h-5" />} onClick={() => onStartLesson(nextLesson.id)}>
                 {lessonProgress > 0 ? 'Continue Learning' : 'Start Learning'}
               </Button>
               {!user && (

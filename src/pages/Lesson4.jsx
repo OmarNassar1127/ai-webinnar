@@ -38,7 +38,7 @@ const sectionComponents = {
   7: Completion
 }
 
-function Lesson4Content({ onBack }) {
+function Lesson4Content({ onBack, onNavigateToLesson }) {
   const { currentSection, sectionCompletion, goToSection, completeSection } = useLesson4()
   const contentRef = useRef(null)
 
@@ -143,6 +143,7 @@ function Lesson4Content({ onBack }) {
                 <CurrentSectionComponent
                   onComplete={handleComplete}
                   onBack={onBack}
+                  onNavigateToLesson={onNavigateToLesson}
                 />
               )}
             </motion.div>
@@ -163,10 +164,10 @@ function Lesson4Content({ onBack }) {
   )
 }
 
-function Lesson4({ onBack }) {
+function Lesson4({ onBack, onNavigateToLesson }) {
   return (
     <Lesson4Provider>
-      <Lesson4Content onBack={onBack} />
+      <Lesson4Content onBack={onBack} onNavigateToLesson={onNavigateToLesson} />
     </Lesson4Provider>
   )
 }

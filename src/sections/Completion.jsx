@@ -71,7 +71,7 @@ const ConfettiParticle = ({ delay }) => {
   );
 };
 
-const Completion = ({ onComplete, onBack }) => {
+const Completion = ({ onComplete, onBack, onNavigateToLesson }) => {
   const [showConfetti, setShowConfetti] = useState(true);
   const [hasCompleted, setHasCompleted] = useState(false);
   const [isNavigating, setIsNavigating] = useState(false);
@@ -269,7 +269,7 @@ const Completion = ({ onComplete, onBack }) => {
           className="flex flex-col sm:flex-row gap-4 justify-center"
         >
           <motion.button
-            whileHover={{ scale: 1.02, boxShadow: '0 0 40px rgba(124, 58, 237, 0.5)' }}
+            whileHover={{ scale: 1.02 }}
             whileTap={{ scale: 0.98 }}
             onClick={handleBack}
             disabled={isNavigating}
@@ -279,6 +279,17 @@ const Completion = ({ onComplete, onBack }) => {
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
             </svg>
             {isNavigating ? 'Redirecting...' : 'Back to Dashboard'}
+          </motion.button>
+          <motion.button
+            whileHover={{ scale: 1.02, boxShadow: '0 0 40px rgba(124, 58, 237, 0.5)' }}
+            whileTap={{ scale: 0.98 }}
+            onClick={() => onNavigateToLesson && onNavigateToLesson(2)}
+            className="group px-10 py-4 rounded-xl bg-gradient-to-r from-violet-600 to-cyan-600 text-white font-bold text-lg shadow-2xl transition-all duration-300 flex items-center justify-center gap-3"
+          >
+            Continue to Lesson 2
+            <svg className="w-5 h-5 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 5l7 7m0 0l-7 7m7-7H3" />
+            </svg>
           </motion.button>
         </motion.div>
 

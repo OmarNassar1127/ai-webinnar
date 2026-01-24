@@ -62,7 +62,7 @@ function ConfettiParticle({ delay, color }) {
   );
 }
 
-function Completion({ onComplete, onBack }) {
+function Completion({ onComplete, onBack, onNavigateToLesson }) {
   const { completeSection } = useLesson4();
   const [confettiParticles] = useState(() =>
     Array.from({ length: 50 }, (_, i) => ({
@@ -253,7 +253,7 @@ function Completion({ onComplete, onBack }) {
           <Home className="w-5 h-5 mr-2" />
           Back to Dashboard
         </Button>
-        <Button variant="primary" size="lg" onClick={onComplete}>
+        <Button variant="primary" size="lg" onClick={() => onNavigateToLesson && onNavigateToLesson(5)}>
           Continue to Lesson 5
           <ArrowRight className="w-5 h-5 ml-2" />
         </Button>

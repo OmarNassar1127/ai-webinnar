@@ -74,6 +74,15 @@ function AppContent() {
     setCurrentPage(`lesson${lessonId}`)
   }
 
+  // Navigate to a specific lesson (used by completion screens)
+  const handleNavigateToLesson = (lessonId) => {
+    if (isLessonReallyUnlocked(lessonId)) {
+      setCurrentPage(`lesson${lessonId}`)
+    } else {
+      setCurrentPage('dashboard')
+    }
+  }
+
   return (
     <div className="min-h-screen relative overflow-hidden">
       <AnimatedBackground />
@@ -88,54 +97,63 @@ function AppContent() {
               <Lesson1
                 key="lesson1"
                 onBack={() => setCurrentPage('dashboard')}
+                onNavigateToLesson={handleNavigateToLesson}
               />
             )}
             {currentPage === 'lesson2' && (
               <Lesson2
                 key="lesson2"
                 onBack={() => setCurrentPage('dashboard')}
+                onNavigateToLesson={handleNavigateToLesson}
               />
             )}
             {currentPage === 'lesson3' && (
               <Lesson3
                 key="lesson3"
                 onBack={() => setCurrentPage('dashboard')}
+                onNavigateToLesson={handleNavigateToLesson}
               />
             )}
             {currentPage === 'lesson4' && (
               <Lesson4
                 key="lesson4"
                 onBack={() => setCurrentPage('dashboard')}
+                onNavigateToLesson={handleNavigateToLesson}
               />
             )}
             {currentPage === 'lesson5' && (
               <Lesson5
                 key="lesson5"
                 onBack={() => setCurrentPage('dashboard')}
+                onNavigateToLesson={handleNavigateToLesson}
               />
             )}
             {currentPage === 'lesson6' && (
               <Lesson6
                 key="lesson6"
                 onBack={() => setCurrentPage('dashboard')}
+                onNavigateToLesson={handleNavigateToLesson}
               />
             )}
             {currentPage === 'lesson7' && (
               <Lesson7
                 key="lesson7"
                 onBack={() => setCurrentPage('dashboard')}
+                onNavigateToLesson={handleNavigateToLesson}
               />
             )}
             {currentPage === 'lesson8' && (
               <Lesson8
                 key="lesson8"
                 onBack={() => setCurrentPage('dashboard')}
+                onNavigateToLesson={handleNavigateToLesson}
               />
             )}
             {currentPage === 'lesson9' && (
               <Lesson9
                 key="lesson9"
                 onBack={() => setCurrentPage('dashboard')}
+                onNavigateToLesson={handleNavigateToLesson}
               />
             )}
         </div>

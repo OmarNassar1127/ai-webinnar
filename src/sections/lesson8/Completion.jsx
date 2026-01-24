@@ -88,7 +88,7 @@ const recapCards = [
   },
 ];
 
-export default function Completion({ onComplete, onBack }) {
+export default function Completion({ onComplete, onBack, onNavigateToLesson }) {
   const { completeSection } = useLesson8();
   const [showContent, setShowContent] = useState(false);
 
@@ -336,7 +336,7 @@ export default function Completion({ onComplete, onBack }) {
             <Button
               variant="primary"
               size="lg"
-              onClick={onComplete}
+              onClick={() => onNavigateToLesson && onNavigateToLesson(9)}
               className="bg-gradient-to-r from-emerald-500 to-cyan-500 hover:from-emerald-600 hover:to-cyan-600"
             >
               Continue to Final Lesson

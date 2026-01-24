@@ -72,7 +72,7 @@ const ConfettiParticle = ({ delay }) => {
   );
 };
 
-const Completion = ({ onComplete, onBack }) => {
+const Completion = ({ onComplete, onBack, onNavigateToLesson }) => {
   const { completeSection } = useLesson2();
   const [showConfetti, setShowConfetti] = useState(true);
   const [confettiParticles] = useState(() =>
@@ -288,7 +288,7 @@ const Completion = ({ onComplete, onBack }) => {
           <motion.button
             whileHover={{ scale: 1.02, boxShadow: '0 0 40px rgba(124, 58, 237, 0.5)' }}
             whileTap={{ scale: 0.98 }}
-            onClick={onComplete}
+            onClick={() => onNavigateToLesson && onNavigateToLesson(3)}
             className="group px-10 py-4 rounded-xl bg-gradient-to-r from-violet-600 to-cyan-600 text-white font-bold text-lg shadow-2xl transition-all duration-300 flex items-center justify-center gap-3"
           >
             Continue to Lesson 3
