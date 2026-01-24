@@ -62,7 +62,7 @@ export default function AuthModal() {
                 </div>
                 <span className="text-xl font-bold bg-gradient-to-r from-purple-400 via-blue-400 to-cyan-400
                                bg-clip-text text-transparent">
-                  Vloto AI Academy
+                  Omar AI Academy
                 </span>
               </div>
 
