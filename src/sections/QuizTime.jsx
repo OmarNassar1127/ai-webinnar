@@ -8,6 +8,7 @@ import {
   isQuizPassed,
   totalQuestions
 } from '../data/quizQuestions';
+import { useQuizResults } from '../hooks/useQuizResults';
 
 const optionLabels = ['A', 'B', 'C', 'D'];
 
@@ -281,12 +282,13 @@ const ScoreDisplay = ({ score, answers, onComplete }) => {
   );
 };
 
-const QuizTime = ({ onComplete }) => {
+const QuizTime = ({ onComplete, lessonId = 1 }) => {
   const [currentQuestion, setCurrentQuestion] = useState(0);
   const [answers, setAnswers] = useState([]);
   const [selectedAnswer, setSelectedAnswer] = useState(null);
   const [showFeedback, setShowFeedback] = useState(false);
   const [quizComplete, setQuizComplete] = useState(false);
+  const { saveQuizResult } = useQuizResults(lessonId);
 
   const handleAnswer = (answerIndex) => {
     setSelectedAnswer(answerIndex);
@@ -302,6 +304,9 @@ const QuizTime = ({ onComplete }) => {
       setSelectedAnswer(null);
       setShowFeedback(false);
     } else {
+      // Quiz is complete - calculate and save score
+      const finalScore = calculateQuizScore(newAnswers);
+      saveQuizResult(finalScore, totalQuestions, newAnswers);
       setQuizComplete(true);
     }
   };

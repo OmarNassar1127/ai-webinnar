@@ -144,6 +144,7 @@ function Lesson1({ onBack }) {
                 <CurrentSectionComponent
                   onComplete={handleComplete}
                   onBack={onBack}
+                  lessonId={1}
                 />
               )}
             </motion.div>
