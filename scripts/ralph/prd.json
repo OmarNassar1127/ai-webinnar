@@ -214,7 +214,7 @@
         "Typecheck passes"
       ],
       "priority": 13,
-      "passes": false,
+      "passes": true,
       "notes": "Check src/components/lesson/Quiz.jsx and lesson QuizTime sections"
     },
     {
@@ -232,7 +232,7 @@
         "Build succeeds: npm run build"
       ],
       "priority": 14,
-      "passes": false,
+      "passes": true,
       "notes": "Test all features end-to-end"
     }
   ]

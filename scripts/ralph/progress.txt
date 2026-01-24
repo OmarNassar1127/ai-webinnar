@@ -138,3 +138,44 @@ Started: Sat Jan 24 13:44:04 CET 2026
 - Reusable component that can be used anywhere in the app
 - Uses existing design system (Card, Badge, motion animations)
 - Build passes successfully
+
+## US-013: Ensure quiz results save to Supabase - COMPLETED
+- Verified useQuizResults hook already exists with saveQuizResult function
+- Updated src/sections/QuizTime.jsx to import and use useQuizResults hook
+- QuizTime now calls saveQuizResult when quiz completes with score, total_questions, and answers
+- Updated src/pages/Lesson1.jsx to pass lessonId={1} prop to all section components
+- Results saved to quiz_results table with: user_id, lesson_id, score, total_questions, answers, completed_at
+- useQuizResults hook properly uses upsert to update existing results
+- Build passes successfully
+
+## US-014: Final integration testing and polish - COMPLETED
+- Verified npm run dev starts without errors
+- Verified npm run build succeeds (619.80 kB bundle)
+- Admin dashboard accessibility verified:
+  - AdminDashboard.jsx checks isAdmin from useAuth and redirects non-admins
+  - UserMenu.jsx only shows Admin Dashboard link when isAdmin is true
+- User list shows correct progress data:
+  - useAdminData hook fetches all profiles, lesson_progress, and quiz_results
+  - UserProgressDetail component displays lessons completed, quiz scores, last active date
+  - Expandable/collapsible user cards with detailed progress view
+- Lesson blocking functionality verified:
+  - LessonBlockManager allows admins to toggle lesson blocking
+  - useBlockedLessons hook provides isLessonBlocked, blockLesson, unblockLesson
+  - Dashboard.jsx checks blocked status in isLessonUnlocked function
+  - Blocked lessons show toast message "This lesson is not yet available"
+- My Progress page shows accurate stats and history:
+  - StatCards show lessons completed, overall progress %, quiz average, quizzes taken
+  - LessonJourneyCard displays all 9 lessons with completion status
+  - QuizHistory section shows all attempts with pass/fail badges
+- Navigation works correctly:
+  - NavigationContext provides navigateTo function
+  - UserMenu navigates to 'admin' and 'progress' pages
+  - App.jsx renders AdminDashboard and MyProgress based on currentPage
+  - Back to Dashboard buttons work on all pages
+- Design system verified:
+  - Purple (#7C3AED) to Blue (#3B82F6) gradients throughout
+  - Dark slate background (#0F172A) via AnimatedBackground
+  - Cards use bg-slate-800/50 backdrop-blur-xl (glassmorphism)
+  - Cyan (#06B6D4) accents for highlights
+  - Consistent use of Card, Button, Badge, ProgressBar components
+- All acceptance criteria met, all user stories complete
