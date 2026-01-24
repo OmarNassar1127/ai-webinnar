@@ -140,7 +140,7 @@ function Lesson2Content({ onBack, onNavigateToLesson, isNextLessonBlocked }) {
               animate="animate"
               exit="exit"
               transition={{ duration: 0.3, ease: 'easeInOut' }}
-              className="h-full"
+              className="flex-1"
             >
               {CurrentSectionComponent && (
                 <CurrentSectionComponent
@@ -152,18 +152,18 @@ function Lesson2Content({ onBack, onNavigateToLesson, isNextLessonBlocked }) {
               )}
             </motion.div>
           </AnimatePresence>
+
+          {/* Navigation at bottom of content area */}
+          <Navigation
+            currentSection={currentSection}
+            totalSections={sections.length}
+            onPrevious={handlePrevious}
+            onNext={handleNext}
+            canGoPrevious={currentSection > 1}
+            canGoNext={currentSection < sections.length}
+          />
         </div>
       </div>
-
-      {/* Fixed Navigation at bottom */}
-      <Navigation
-        currentSection={currentSection}
-        totalSections={sections.length}
-        onPrevious={handlePrevious}
-        onNext={handleNext}
-        canGoPrevious={currentSection > 1}
-        canGoNext={currentSection < sections.length}
-      />
     </motion.div>
   )
 }

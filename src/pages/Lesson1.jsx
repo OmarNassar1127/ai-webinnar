@@ -142,7 +142,7 @@ function Lesson1({ onBack, onNavigateToLesson, isNextLessonBlocked }) {
         </div>
 
         {/* Main content - 75% width */}
-        <div ref={contentRef} className="flex-1 overflow-y-auto">
+        <div ref={contentRef} className="flex-1 overflow-y-auto flex flex-col">
           <AnimatePresence mode="wait">
             <motion.div
               key={currentSection}
@@ -151,7 +151,7 @@ function Lesson1({ onBack, onNavigateToLesson, isNextLessonBlocked }) {
               animate="animate"
               exit="exit"
               transition={{ duration: 0.3, ease: 'easeInOut' }}
-              className="h-full"
+              className="flex-1"
             >
               {CurrentSectionComponent && (
                 <CurrentSectionComponent
@@ -164,19 +164,19 @@ function Lesson1({ onBack, onNavigateToLesson, isNextLessonBlocked }) {
               )}
             </motion.div>
           </AnimatePresence>
+
+          {/* Navigation at bottom of content area */}
+          <Navigation
+            currentSection={currentSection}
+            totalSections={sections.length}
+            onPrevious={handlePrevious}
+            onNext={handleNext}
+            canGoPrevious={currentSection > 1}
+            canGoNext={true}
+            showComplete={isLastSection}
+          />
         </div>
       </div>
-
-      {/* Fixed Navigation at bottom */}
-      <Navigation
-        currentSection={currentSection}
-        totalSections={sections.length}
-        onPrevious={handlePrevious}
-        onNext={handleNext}
-        canGoPrevious={currentSection > 1}
-        canGoNext={true}
-        showComplete={isLastSection}
-      />
     </motion.div>
   )
 }
