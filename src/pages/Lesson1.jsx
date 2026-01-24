@@ -1,4 +1,4 @@
-import { useEffect, useCallback, useRef } from 'react'
+import { useState, useEffect, useCallback, useRef } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { Sparkles, Brain, Users, FileText, MessageSquare, MousePointer, HelpCircle, Trophy } from 'lucide-react'
 
@@ -42,6 +42,7 @@ const sectionComponents = {
 function Lesson1({ onBack, onNavigateToLesson, isNextLessonBlocked }) {
   const { currentSection, sectionCompletion, goToSection, completeSection } = useLesson()
   const contentRef = useRef(null)
+  const [isExiting, setIsExiting] = useState(false)
 
   // Scroll to top when section changes
   useEffect(() => {
@@ -63,15 +64,21 @@ function Lesson1({ onBack, onNavigateToLesson, isNextLessonBlocked }) {
   }, [currentSection, goToSection])
 
   const handleNext = useCallback(() => {
+    if (isExiting) return // Prevent double-clicks
+
     if (currentSection < sections.length) {
       completeSection(currentSection)
       goToSection(currentSection + 1)
     } else if (currentSection === sections.length) {
-      // On last section (Completion) - just go back to dashboard
-      // Note: Completion component's useEffect already marks section 8 as complete
-      onBack()
+      // On last section (Completion) - mark complete and refresh to dashboard
+      setIsExiting(true)
+      completeSection(currentSection)
+      // Small delay to ensure state is saved, then refresh
+      setTimeout(() => {
+        window.location.href = '/'
+      }, 300)
     }
-  }, [currentSection, completeSection, goToSection, onBack])
+  }, [currentSection, completeSection, goToSection, isExiting])
 
   const handleComplete = useCallback(() => {
     completeSection(currentSection)

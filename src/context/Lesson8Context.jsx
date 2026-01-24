@@ -219,7 +219,7 @@ export function Lesson8Provider({ children }) {
   // Mark a section as completed
   const completeSection = useCallback((sectionNum) => {
     if (sectionNum >= 1 && sectionNum <= TOTAL_SECTIONS) {
-      setSectionCompletion((prev) => {
+      setSectionCompletion((prev) => { if (prev[sectionNum - 1] === true) { return prev; }
         const updated = [...prev];
         updated[sectionNum - 1] = true;
         return updated;
