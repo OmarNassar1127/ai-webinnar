@@ -6,6 +6,7 @@ import { NavigationProvider, useNavigation } from './context/NavigationContext'
 import Dashboard from './pages/Dashboard'
 import Lesson1 from './pages/Lesson1'
 import AdminDashboard from './pages/AdminDashboard'
+import MyProgress from './pages/MyProgress'
 import AnimatedBackground from './components/layout/AnimatedBackground'
 import AuthModal from './components/auth/AuthModal'
 
@@ -53,6 +54,9 @@ function AppContent() {
             )}
             {currentPage === 'admin' && (
               <AdminDashboard key="admin" />
+            )}
+            {currentPage === 'progress' && (
+              <MyProgress key="progress" />
             )}
           </AnimatePresence>
         </div>

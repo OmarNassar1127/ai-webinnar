@@ -148,7 +148,7 @@
         "Verify in browser using dev-browser skill"
       ],
       "priority": 9,
-      "passes": false,
+      "passes": true,
       "notes": "Modify src/pages/Dashboard.jsx"
     },
     {
@@ -166,7 +166,7 @@
         "Verify in browser using dev-browser skill"
       ],
       "priority": 10,
-      "passes": false,
+      "passes": true,
       "notes": "New file: src/pages/MyProgress.jsx, update UserMenu.jsx and App.jsx"
     },
     {

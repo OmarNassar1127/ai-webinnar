@@ -85,3 +85,29 @@ Started: Sat Jan 24 13:44:04 CET 2026
 - Displays feedback toast for success/error messages
 - Integrated into AdminDashboard.jsx (added import and rendered between stats and user list)
 - Build passes successfully
+
+## US-009: Integrate blocked lessons into Dashboard - COMPLETED
+- Updated src/pages/Dashboard.jsx to use useBlockedLessons hook
+- Modified isLessonUnlocked function to check blocked_lessons table
+- Blocked lessons show as locked regardless of user progress (isLessonBlocked check first)
+- Clicking blocked lesson shows toast message 'This lesson is not yet available'
+- Toast displays with amber styling and Lock icon, auto-dismisses after 3 seconds
+- Works alongside existing unlock logic (unblocked AND previous completed)
+- Updated lesson card badge to show "Blocked" state with error variant
+- Added "error" variant to Badge component (red-500 color scheme)
+- Build passes successfully
+
+## US-010: Create MyProgress page with overview stats - COMPLETED
+- Created src/pages/MyProgress.jsx (340 lines, under 350 limit)
+- Added 'My Progress' navigation to UserMenu.jsx (clicking navigates to 'progress' page)
+- Added progress page route in App.jsx (import and AnimatePresence case)
+- Shows overview stats: lessons completed count, total progress %, quiz average score, quizzes taken
+- Visual journey map showing all 9 lessons with completion status checkmarks
+- Each lesson shows: title, duration, quiz score, completion status, review/start buttons
+- Blocked lessons show with lock icon and reduced opacity
+- Fetches quiz history from Supabase quiz_results table
+- Displays quiz history section with score, date, pass/fail status
+- Redirects to login if user not authenticated
+- Accessible for all authenticated users via UserMenu dropdown
+- Uses existing design system (purple/blue gradients, glassmorphism cards, cyan accents)
+- Build passes successfully
