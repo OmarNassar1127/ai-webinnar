@@ -120,7 +120,7 @@ function Lesson1({ onBack, onNavigateToLesson }) {
       transition={{ duration: 0.2 }}
     >
       {/* Fixed Header */}
-      <Header onBack={onBack} />
+      <Header onBack={onBack} onLogoClick={onBack} />
 
       {/* Main content area with sidebar */}
       <div className="flex flex-1 pt-16 pb-20">
