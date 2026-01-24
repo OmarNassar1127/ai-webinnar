@@ -1,0 +1,722 @@
+{
+  "project": "AI Webinar Platform - Lessons 2-9",
+  "branchName": "ralph/lessons-2-9",
+  "description": "Build lessons 2-9 for the AI learning platform. Each lesson teaches AI concepts to non-technical users with interactive sections, quizzes, and celebrations.",
+  "userStories": [
+    {
+      "id": "US-001",
+      "title": "Update Dashboard with new lesson titles",
+      "description": "As a user, I want to see the correct lesson titles on the dashboard so I know what each lesson covers.",
+      "acceptanceCriteria": [
+        "Dashboard shows updated titles: Lesson 2='How Software Works', Lesson 3='The AI Tools Landscape', Lesson 4='AI in Action', Lesson 5='Your First Build', Lesson 6='Building for Operations', Lesson 7='Data & AI', Lesson 8='???' (hidden/locked), Lesson 9='Final Project'",
+        "Lesson 8 shows a lock icon and mysterious '???' title",
+        "Lesson 8 is not clickable until unlocked",
+        "Typecheck passes"
+      ],
+      "priority": 1,
+      "passes": true,
+      "notes": "Update src/pages/Dashboard.jsx or wherever lesson cards are rendered"
+    },
+    {
+      "id": "US-002",
+      "title": "Create Lesson 2 page structure and routing",
+      "description": "As a developer, I need the basic Lesson 2 page following Lesson 1's pattern so sections can be added.",
+      "acceptanceCriteria": [
+        "Create src/pages/Lesson2.jsx following Lesson1.jsx pattern",
+        "Add route for /lesson/2 in the router",
+        "Lesson 2 has 8 sections defined: Introduction, Restaurant Analogy, Real Examples, Why This Matters for AI, Technical Describing Practice, Label the Parts, Quiz Time, Completion",
+        "Sidebar navigation works with section list",
+        "Typecheck passes"
+      ],
+      "priority": 2,
+      "passes": true,
+      "notes": "Follow exact pattern from Lesson1.jsx - sections array, sectionComponents mapping, navigation"
+    },
+    {
+      "id": "US-003",
+      "title": "Create Lesson 2 Section 1 - Introduction",
+      "description": "As a user, I want to see the introduction for Lesson 2 so I understand what I'll learn.",
+      "acceptanceCriteria": [
+        "Create src/sections/lesson2/Introduction.jsx",
+        "Shows welcome animation with software/code themed visuals",
+        "Displays heading: 'How Software Works'",
+        "Shows 3 learning objective cards with icons",
+        "Has motivational text about communicating with developers and AI",
+        "Has 'Let's begin' button that advances to next section",
+        "Uses Framer Motion for animations",
+        "Follows design system (purple/blue gradients, glassmorphism)",
+        "Typecheck passes"
+      ],
+      "priority": 3,
+      "passes": true,
+      "notes": ""
+    },
+    {
+      "id": "US-004",
+      "title": "Create Lesson 2 Section 2 - Restaurant Analogy",
+      "description": "As a user, I want to learn the restaurant analogy for software components.",
+      "acceptanceCriteria": [
+        "Create src/sections/lesson2/RestaurantAnalogy.jsx",
+        "Shows heading 'Software is Like a Restaurant'",
+        "Has 4 interactive cards that reveal on click: Frontend (Dining Room), Backend (Kitchen), Database (Pantry), API (Waiters)",
+        "Each card shows visual, title, description, examples, and key trait",
+        "Cards animate on reveal using Framer Motion",
+        "Has animated flow showing order going through all 4 components",
+        "Shows Key Insight Box at bottom",
+        "Typecheck passes"
+      ],
+      "priority": 4,
+      "passes": true,
+      "notes": ""
+    },
+    {
+      "id": "US-005",
+      "title": "Create Lesson 2 Section 3 - Real Examples",
+      "description": "As a user, I want to see real app examples (Vloto, Instagram, Google) broken into components.",
+      "acceptanceCriteria": [
+        "Create src/sections/lesson2/RealExamples.jsx",
+        "Has tab component with 3 tabs: Vloto App, Instagram, Google Search",
+        "Each tab shows visual diagram with Frontend, Backend, Database, API labeled",
+        "Vloto tab has interactive mockup - click parts to see which component handles what",
+        "Shows comparison table at bottom comparing all 3 apps",
+        "Shows Key Insight Box",
+        "Typecheck passes"
+      ],
+      "priority": 5,
+      "passes": true,
+      "notes": ""
+    },
+    {
+      "id": "US-006",
+      "title": "Create Lesson 2 Section 4 - Why This Matters for AI",
+      "description": "As a user, I want to understand why learning software concepts helps me use AI tools.",
+      "acceptanceCriteria": [
+        "Create src/sections/lesson2/WhyThisMatters.jsx",
+        "Shows heading 'So Why Learn This?' with subheading",
+        "Has animated diagram showing old way (You->Developer->Months) vs new way (You->AI->Hours)",
+        "Shows 'The Catch' card explaining AI needs clear descriptions",
+        "Shows before/after example of bad vs good AI requests",
+        "Has 3 benefit cards: Talk to Developers, Direct AI Tools, Evaluate Solutions",
+        "Typecheck passes"
+      ],
+      "priority": 6,
+      "passes": true,
+      "notes": ""
+    },
+    {
+      "id": "US-007",
+      "title": "Create Lesson 2 Section 5 - Technical Describing Practice",
+      "description": "As a user, I want to practice describing tools using the 4-part framework.",
+      "acceptanceCriteria": [
+        "Create src/sections/lesson2/TechnicalDescribing.jsx",
+        "Shows framework visual: What users SEE (Frontend), What system DOES (Backend), What's REMEMBERED (Database), What CONNECTS (API)",
+        "Has 3 interactive exercises with text areas or multiple choice for each component",
+        "Exercise 1: Describe a Todo App",
+        "Exercise 2: Describe a Booking Calendar",
+        "Exercise 3: Describe a Customer Feedback Tool",
+        "Each exercise has 'Check my answer' button showing comparison with good answer",
+        "Shows Pro Tip Box at bottom",
+        "Typecheck passes"
+      ],
+      "priority": 7,
+      "passes": true,
+      "notes": ""
+    },
+    {
+      "id": "US-008",
+      "title": "Create Lesson 2 Section 6 - Label the Parts",
+      "description": "As a user, I want to test my understanding by labeling software components in screenshots.",
+      "acceptanceCriteria": [
+        "Create src/sections/lesson2/LabelTheParts.jsx",
+        "Shows heading 'Test Your Eyes'",
+        "Has 3 interactive labeling exercises with mock screenshots",
+        "Screenshot 1: Login form - label username field (Frontend), check password (Backend), user accounts (Database), login request (API)",
+        "Screenshot 2: Newsfeed - label post cards (Frontend), sort by relevance (Backend), all posts (Database), fetch feed (API)",
+        "Screenshot 3: Booking confirmation - label confirmation page (Frontend), create booking (Backend), booking records (Database), send confirmation (API)",
+        "Shows feedback after each: 'Correct!' or 'Not quite - [explanation]'",
+        "Typecheck passes"
+      ],
+      "priority": 8,
+      "passes": true,
+      "notes": ""
+    },
+    {
+      "id": "US-009",
+      "title": "Create Lesson 2 quiz data",
+      "description": "As a developer, I need the quiz questions for Lesson 2.",
+      "acceptanceCriteria": [
+        "Create src/data/quiz2Questions.js with 6 questions",
+        "Q1: Restaurant analogy - kitchen represents what? (Backend)",
+        "Q2: Tapping Vloto button interacts with what? (Frontend)",
+        "Q3: Booking history stored where? (Database)",
+        "Q4: What does API do? (Carries messages)",
+        "Q5: Adding car battery feature needs which parts? (Frontend, Backend, Database)",
+        "Q6: Why understand for AI tools? (Describe clearly)",
+        "Each question has options, correct answer, and feedback",
+        "Typecheck passes"
+      ],
+      "priority": 9,
+      "passes": true,
+      "notes": "Follow pattern from quiz1Questions.js if it exists"
+    },
+    {
+      "id": "US-010",
+      "title": "Create Lesson 2 Section 7 - Quiz Time",
+      "description": "As a user, I want to take a quiz to test my Lesson 2 knowledge.",
+      "acceptanceCriteria": [
+        "Create src/sections/lesson2/QuizTime.jsx",
+        "Uses quiz data from src/data/quiz2Questions.js",
+        "Shows one question at a time with 4 options",
+        "Highlights correct/incorrect after selection",
+        "Shows feedback for each answer",
+        "Tracks score and displays at end",
+        "Has 'Next Question' button progression",
+        "Saves quiz completion to Supabase progress",
+        "Typecheck passes"
+      ],
+      "priority": 10,
+      "passes": true,
+      "notes": "Can reuse or extend QuizTime component pattern from Lesson 1"
+    },
+    {
+      "id": "US-011",
+      "title": "Create Lesson 2 Section 8 - Completion",
+      "description": "As a user, I want to see a celebration when I complete Lesson 2.",
+      "acceptanceCriteria": [
+        "Create src/sections/lesson2/Completion.jsx",
+        "Shows celebration animation with confetti",
+        "Displays 'Lesson 2 Complete!' heading",
+        "Shows 4 recap cards summarizing: Frontend=dining room, Backend=kitchen, Database=pantry, API=waiter",
+        "Shows Key Takeaway Box about identifying components in any app",
+        "Shows Next Lesson Preview: 'Coming Next: The AI Tools Landscape'",
+        "Has button to return to dashboard or continue to next lesson",
+        "Saves lesson completion to Supabase",
+        "Typecheck passes"
+      ],
+      "priority": 11,
+      "passes": true,
+      "notes": ""
+    },
+    {
+      "id": "US-012",
+      "title": "Create Lesson 3 page structure and routing",
+      "description": "As a developer, I need the basic Lesson 3 page following the established pattern.",
+      "acceptanceCriteria": [
+        "Create src/pages/Lesson3.jsx following Lesson2.jsx pattern",
+        "Add route for /lesson/3 in the router",
+        "Lesson 3 has 8 sections: Introduction, Chatbots vs Agents, Tools Explained, How They Work Together, What's Possible Now, Your Role, Quiz Time, Completion",
+        "Sidebar navigation works",
+        "Typecheck passes"
+      ],
+      "priority": 12,
+      "passes": true,
+      "notes": ""
+    },
+    {
+      "id": "US-013",
+      "title": "Create Lesson 3 Section 1 - Introduction",
+      "description": "As a user, I want to see the introduction for Lesson 3 about AI tools landscape.",
+      "acceptanceCriteria": [
+        "Create src/sections/lesson3/Introduction.jsx",
+        "Shows welcome animation with interconnected AI nodes visual",
+        "Heading: 'Beyond ChatGPT: The World of AI Tools'",
+        "Shows 3 learning objectives about agents, MCPs/plugins/skills, and possibilities",
+        "Has 'Let's explore' button",
+        "Typecheck passes"
+      ],
+      "priority": 13,
+      "passes": true,
+      "notes": "Already implemented as part of US-012"
+    },
+    {
+      "id": "US-014",
+      "title": "Create Lesson 3 Section 2 - Chatbots vs Agents",
+      "description": "As a user, I want to understand the difference between chatbots and AI agents.",
+      "acceptanceCriteria": [
+        "Create src/sections/lesson3/ChatbotsVsAgents.jsx",
+        "Shows animated evolution timeline: 2020 Basic Chatbots -> 2025 AI Agents",
+        "Has 3 comparison cards: Basic Chatbot, AI Assistant, AI Agent",
+        "Each card shows what they can/can't do with examples",
+        "Has interactive 'Spot the Agent' demo with 4 scenarios",
+        "Shows Key Insight Box about agents doing vs saying",
+        "Typecheck passes"
+      ],
+      "priority": 14,
+      "passes": true,
+      "notes": ""
+    },
+    {
+      "id": "US-015",
+      "title": "Create Lesson 3 Section 3 - Tools Explained Simply",
+      "description": "As a user, I want to understand MCPs, Plugins, Skills, and AI IDEs simply.",
+      "acceptanceCriteria": [
+        "Create src/sections/lesson3/ToolsExplained.jsx",
+        "Shows toolbox analogy visual",
+        "Explains 4 tools with analogies: MCP (universal translator), Plugins (phone apps), Skills (training manuals), AI IDEs (personal programmer)",
+        "Each tool has simple explanation, analogy, visual, real example, with/without comparison",
+        "Shows comparison table at bottom",
+        "Typecheck passes"
+      ],
+      "priority": 15,
+      "passes": true,
+      "notes": ""
+    },
+    {
+      "id": "US-016",
+      "title": "Create Lesson 3 Section 4 - How They Work Together",
+      "description": "As a user, I want to see how AI tools connect in real workflows.",
+      "acceptanceCriteria": [
+        "Create src/sections/lesson3/HowTheyWorkTogether.jsx",
+        "Shows animated workflow visual: user request -> MCP -> Skill -> Plugin -> MCP -> Result",
+        "Has interactive 'Build a Workflow' exercise with drag-and-drop or selection",
+        "Task: Monitor customer complaints and alert about urgent ones",
+        "User connects: MCP Email, MCP Slack, Skill Complaint Analysis, Plugin Notification",
+        "Shows Vision Card about describing workflows",
+        "Typecheck passes"
+      ],
+      "priority": 16,
+      "passes": true,
+      "notes": ""
+    },
+    {
+      "id": "US-017",
+      "title": "Create Lesson 3 Section 5 - What's Possible Now",
+      "description": "As a user, I want to see real examples of what AI can do today.",
+      "acceptanceCriteria": [
+        "Create src/sections/lesson3/WhatsPossible.jsx",
+        "Has gallery of 4 expandable examples: Automated Research, Code Without Coding, Data Analysis, Content Creation",
+        "Each example shows: description, what AI does, time saved",
+        "Shows Limitations Card being honest about what AI can't do",
+        "Typecheck passes"
+      ],
+      "priority": 17,
+      "passes": true,
+      "notes": ""
+    },
+    {
+      "id": "US-018",
+      "title": "Create Lesson 3 Section 6 - Your Role in This Future",
+      "description": "As a user, I want to understand my role in working with AI.",
+      "acceptanceCriteria": [
+        "Create src/sections/lesson3/YourRole.jsx",
+        "Shows new skill stack: Old way (learn to code) vs New way (describe clearly)",
+        "Has 4 'Your Superpowers' cards: Domain Knowledge, Clear Communication, Quality Judgment, Human Touch",
+        "Shows Human-AI Partnership visual",
+        "Shows Key Insight Box about becoming an AI Director",
+        "Typecheck passes"
+      ],
+      "priority": 18,
+      "passes": true,
+      "notes": ""
+    },
+    {
+      "id": "US-019",
+      "title": "Create Lesson 3 quiz and completion sections",
+      "description": "As a user, I want to complete the quiz and see celebration for Lesson 3.",
+      "acceptanceCriteria": [
+        "Create src/data/quiz3Questions.js with 6 questions about chatbots vs agents, MCP, skills, AI IDEs",
+        "Create src/sections/lesson3/QuizTime.jsx using quiz data",
+        "Create src/sections/lesson3/Completion.jsx with celebration and recap",
+        "Recap cards: Agents DO things, MCP connects, Plugins/Skills, AI IDEs build",
+        "Preview next lesson: AI in Action",
+        "Saves progress to Supabase",
+        "Typecheck passes"
+      ],
+      "priority": 19,
+      "passes": true,
+      "notes": ""
+    },
+    {
+      "id": "US-020",
+      "title": "Create Lesson 4 page structure and routing",
+      "description": "As a developer, I need the basic Lesson 4 page for 'AI in Action'.",
+      "acceptanceCriteria": [
+        "Create src/pages/Lesson4.jsx",
+        "Add route for /lesson/4",
+        "Lesson 4 has 7 sections: Introduction, What We're Building, Demo Placeholder, Key Observations, What to Watch For, Quiz Time, Completion",
+        "Typecheck passes"
+      ],
+      "priority": 20,
+      "passes": true,
+      "notes": ""
+    },
+    {
+      "id": "US-021",
+      "title": "Create Lesson 4 Sections 1-3",
+      "description": "As a user, I want to see the introduction and demo placeholder for AI in Action.",
+      "acceptanceCriteria": [
+        "Create src/sections/lesson4/Introduction.jsx with 'Time to See the Magic' heading",
+        "Create src/sections/lesson4/WhatWereBuilding.jsx showing Quick Feedback Collector project card",
+        "Create src/sections/lesson4/DemoPlaceholder.jsx with video embed area or annotated screenshot walkthrough",
+        "Demo shows 6 steps: Starting Claude Code, Describing, AI Builds, First Attempt, Iterating, Final Result",
+        "Typecheck passes"
+      ],
+      "priority": 21,
+      "passes": true,
+      "notes": "Implemented as part of US-020"
+    },
+    {
+      "id": "US-022",
+      "title": "Create Lesson 4 Sections 4-5",
+      "description": "As a user, I want to learn key observations and what to watch for when building with AI.",
+      "acceptanceCriteria": [
+        "Create src/sections/lesson4/KeyObservations.jsx with 5 animated observation cards",
+        "Cards: It's a Conversation, Mistakes are Normal, Clear Description = Better Results, Don't Need to Understand Code, Speed is Incredible",
+        "Shows Honest Truth Box about collaboration",
+        "Create src/sections/lesson4/WhatToWatchFor.jsx with checklist and warning signs",
+        "Typecheck passes"
+      ],
+      "priority": 22,
+      "passes": true,
+      "notes": "Implemented as part of US-020"
+    },
+    {
+      "id": "US-023",
+      "title": "Create Lesson 4 quiz and completion",
+      "description": "As a user, I want to complete Lesson 4 with quiz and celebration.",
+      "acceptanceCriteria": [
+        "Create src/data/quiz4Questions.js with 5 questions about iterative AI building",
+        "Create src/sections/lesson4/QuizTime.jsx",
+        "Create src/sections/lesson4/Completion.jsx with recap about conversation, mistakes, directing, descriptions",
+        "Preview: Your First Build",
+        "Saves progress",
+        "Typecheck passes"
+      ],
+      "priority": 23,
+      "passes": true,
+      "notes": "Implemented as part of US-020"
+    },
+    {
+      "id": "US-024",
+      "title": "Create Lesson 5 page structure and routing",
+      "description": "As a developer, I need the basic Lesson 5 page for 'Your First Build'.",
+      "acceptanceCriteria": [
+        "Create src/pages/Lesson5.jsx",
+        "Add route for /lesson/5",
+        "Lesson 5 has 7 sections: Introduction, The WHAT Framework, Requirements Practice, Common Mistakes, Your Real Tool Plan, Quiz Time, Completion",
+        "Typecheck passes"
+      ],
+      "priority": 24,
+      "passes": true,
+      "notes": "Full implementation with all sections"
+    },
+    {
+      "id": "US-025",
+      "title": "Create Lesson 5 Sections 1-2",
+      "description": "As a user, I want to learn the WHAT framework for describing tools.",
+      "acceptanceCriteria": [
+        "Create src/sections/lesson5/Introduction.jsx with 'Your Turn to Direct' heading",
+        "Create src/sections/lesson5/WhatFramework.jsx",
+        "Shows framework visual: W=What it does, H=How user interacts, A=Actions behind scenes, T=Things to remember",
+        "Has example walkthrough: Team Availability Checker",
+        "Has interactive exercise: fill in WHAT for car maintenance tracker",
+        "Typecheck passes"
+      ],
+      "priority": 25,
+      "passes": true,
+      "notes": "Implemented as part of US-024"
+    },
+    {
+      "id": "US-026",
+      "title": "Create Lesson 5 Sections 3-4",
+      "description": "As a user, I want to practice requirements and learn common mistakes.",
+      "acceptanceCriteria": [
+        "Create src/sections/lesson5/RequirementsPractice.jsx with 3 scenarios",
+        "Scenario 1: Customer Complaint Tracker with text areas and reveal",
+        "Scenario 2: Car Checklist App",
+        "Scenario 3: Custom builder for user's own tool",
+        "Create src/sections/lesson5/CommonMistakes.jsx with 4 mistake cards",
+        "Mistakes: Too Vague, Missing User Perspective, Forgetting Edge Cases, No Success Criteria",
+        "Shows before/after examples",
+        "Quick check questionnaire",
+        "Typecheck passes"
+      ],
+      "priority": 26,
+      "passes": true,
+      "notes": "Implemented as part of US-024"
+    },
+    {
+      "id": "US-027",
+      "title": "Create Lesson 5 Section 5 and quiz/completion",
+      "description": "As a user, I want to design my own tool and complete Lesson 5.",
+      "acceptanceCriteria": [
+        "Create src/sections/lesson5/YourRealToolPlan.jsx",
+        "Has idea prompters and full requirements template form",
+        "Form saves to user profile/localStorage for use in Lesson 6",
+        "Create src/data/quiz5Questions.js with 5 questions about WHAT framework",
+        "Create src/sections/lesson5/QuizTime.jsx and Completion.jsx",
+        "Completion includes homework about refining tool plan",
+        "Preview: Building for Operations",
+        "Typecheck passes"
+      ],
+      "priority": 27,
+      "passes": true,
+      "notes": "Implemented as part of US-024"
+    },
+    {
+      "id": "US-028",
+      "title": "Create Lesson 6 page structure and routing",
+      "description": "As a developer, I need the basic Lesson 6 page for 'Building for Operations'.",
+      "acceptanceCriteria": [
+        "Create src/pages/Lesson6.jsx",
+        "Add route for /lesson/6",
+        "Lesson 6 has 8 sections: Introduction, Operations Pain Points, Choosing Your Tool, Specification Workshop, Review & Refine, Implementation Path, Quiz Time, Completion",
+        "Typecheck passes"
+      ],
+      "priority": 28,
+      "passes": true,
+      "notes": "Full implementation with all 8 sections"
+    },
+    {
+      "id": "US-029",
+      "title": "Create Lesson 6 Sections 1-3",
+      "description": "As a user, I want to identify pain points and choose a tool to build.",
+      "acceptanceCriteria": [
+        "Create src/sections/lesson6/Introduction.jsx with 'From Learning to Building' heading",
+        "Create src/sections/lesson6/OperationsPainPoints.jsx",
+        "Has interactive pain point identifier rating 8 tasks (1-5)",
+        "Suggests tool ideas based on ratings",
+        "Has pre-built tool ideas gallery: Fleet Health Dashboard, Customer Response Helper, Maintenance Scheduler, Weekly Report Generator, Damage Report Processor, Partner Communication Templates",
+        "Create src/sections/lesson6/ChoosingYourTool.jsx with selection criteria and decision helper",
+        "Typecheck passes"
+      ],
+      "priority": 29,
+      "passes": true,
+      "notes": "Already implemented as part of US-028"
+    },
+    {
+      "id": "US-030",
+      "title": "Create Lesson 6 Section 4 - Specification Workshop",
+      "description": "As a user, I want to create a complete specification for my Vloto tool.",
+      "acceptanceCriteria": [
+        "Create src/sections/lesson6/SpecificationWorkshop.jsx",
+        "Has full specification template with 7 sections: Overview, Problem Statement, Solution Frontend, Solution Backend, Solution Database, Edge Cases, Success Criteria",
+        "Pre-filled with Vloto context where relevant",
+        "Has save button that stores specification",
+        "Option to export as document",
+        "Typecheck passes"
+      ],
+      "priority": 30,
+      "passes": true,
+      "notes": "Already implemented as part of US-028"
+    },
+    {
+      "id": "US-031",
+      "title": "Create Lesson 6 Sections 5-8",
+      "description": "As a user, I want to review my spec and complete Lesson 6.",
+      "acceptanceCriteria": [
+        "Create src/sections/lesson6/ReviewRefine.jsx with specification checklist",
+        "Shows examples of weak vs strong sections",
+        "Create src/sections/lesson6/ImplementationPath.jsx with timeline visual",
+        "Shows realistic expectations for build times",
+        "Create src/data/quiz6Questions.js with 5 questions",
+        "Create src/sections/lesson6/QuizTime.jsx and Completion.jsx",
+        "Completion displays saved spec summary",
+        "Preview: Data & AI",
+        "Typecheck passes"
+      ],
+      "priority": 31,
+      "passes": true,
+      "notes": "Already implemented as part of US-028"
+    },
+    {
+      "id": "US-032",
+      "title": "Create Lesson 7 page structure and routing",
+      "description": "As a developer, I need the basic Lesson 7 page for 'Data & AI'.",
+      "acceptanceCriteria": [
+        "Create src/pages/Lesson7.jsx",
+        "Add route for /lesson/7",
+        "Lesson 7 has 7 sections: Introduction, AI for Spreadsheet Analysis, Report Generation, Data Cleaning, Finding Insights, Quiz Time, Completion",
+        "Typecheck passes"
+      ],
+      "priority": 32,
+      "passes": true,
+      "notes": "Fully implemented with all 7 section components"
+    },
+    {
+      "id": "US-033",
+      "title": "Create Lesson 7 Sections 1-3",
+      "description": "As a user, I want to learn about AI for spreadsheets and reports.",
+      "acceptanceCriteria": [
+        "Create src/sections/lesson7/Introduction.jsx with 'AI Meets Your Spreadsheets' heading",
+        "Create src/sections/lesson7/SpreadsheetAnalysis.jsx",
+        "Shows old way vs new way comparison",
+        "Has sample data table (Vloto bookings)",
+        "Interactive demo: click questions to see AI responses",
+        "Has practical exercise to write 3 questions",
+        "Create src/sections/lesson7/ReportGeneration.jsx",
+        "Shows report automation concept",
+        "Has Weekly Fleet Report example",
+        "Has template builder exercise",
+        "Typecheck passes"
+      ],
+      "priority": 33,
+      "passes": true,
+      "notes": "Implemented as part of US-032"
+    },
+    {
+      "id": "US-034",
+      "title": "Create Lesson 7 Sections 4-7",
+      "description": "As a user, I want to learn data cleaning and insights, then complete Lesson 7.",
+      "acceptanceCriteria": [
+        "Create src/sections/lesson7/DataCleaning.jsx showing common problems and cleanup prompts",
+        "Has interactive exercise: write cleanup instruction for messy data",
+        "Create src/sections/lesson7/FindingInsights.jsx",
+        "Shows AI analyst capabilities and Vloto-specific prompts",
+        "Has practice exercise for insight-finding prompt",
+        "Create src/data/quiz7Questions.js with 5 questions",
+        "Create src/sections/lesson7/QuizTime.jsx and Completion.jsx",
+        "Includes practical challenge to analyze real spreadsheet",
+        "Preview: The Magic Lesson",
+        "Typecheck passes"
+      ],
+      "priority": 34,
+      "passes": true,
+      "notes": "Implemented as part of US-032"
+    },
+    {
+      "id": "US-035",
+      "title": "Create Lesson 8 page structure (Hidden Magic Lesson)",
+      "description": "As a developer, I need the basic Lesson 8 page for the hidden 'Magic Lesson'.",
+      "acceptanceCriteria": [
+        "Create src/pages/Lesson8.jsx",
+        "Add route for /lesson/8",
+        "Lesson requires unlock mechanism - check for unlock flag",
+        "If not unlocked, redirect to dashboard or show locked message",
+        "Lesson 8 has 8 sections: The Big Reveal, Beyond Single Prompts, Meet Ralph, The PRD, Seeing It In Action, When to Use, Quiz Time, Completion",
+        "Typecheck passes"
+      ],
+      "priority": 35,
+      "passes": true,
+      "notes": "Fully implemented with all 8 section components and unlock mechanism"
+    },
+    {
+      "id": "US-036",
+      "title": "Create Lesson 8 Sections 1-3",
+      "description": "As a user, I want to learn about autonomous AI development.",
+      "acceptanceCriteria": [
+        "Create src/sections/lesson8/TheBigReveal.jsx with special unlock animation (matrix-style)",
+        "Shows dramatic reveal about AI building while you sleep",
+        "Create src/sections/lesson8/BeyondSinglePrompts.jsx",
+        "Shows current approach limitations vs autonomous loops solution",
+        "Has visual animation of the loop running",
+        "Create src/sections/lesson8/MeetRalph.jsx explaining Ralph pattern",
+        "Shows flowchart: PRD -> prd.json -> Ralph loop -> Complete",
+        "Key insight about context problem solution",
+        "Typecheck passes"
+      ],
+      "priority": 36,
+      "passes": true,
+      "notes": "Implemented as part of US-035"
+    },
+    {
+      "id": "US-037",
+      "title": "Create Lesson 8 Sections 4-8",
+      "description": "As a user, I want to understand PRDs and complete the Magic Lesson.",
+      "acceptanceCriteria": [
+        "Create src/sections/lesson8/ThePRD.jsx explaining PRD structure with example",
+        "Create src/sections/lesson8/SeeingItInAction.jsx with demo/video placeholder and live stats example",
+        "Create src/sections/lesson8/WhenToUse.jsx with good/not great use cases",
+        "Create src/data/quiz8Questions.js with 5 questions about Ralph and PRDs",
+        "Create src/sections/lesson8/QuizTime.jsx and Completion.jsx",
+        "Completion has extra special celebration (more confetti)",
+        "Shows future of autonomous AI",
+        "Typecheck passes"
+      ],
+      "priority": 37,
+      "passes": true,
+      "notes": "Implemented as part of US-035"
+    },
+    {
+      "id": "US-038",
+      "title": "Create Lesson 9 page structure",
+      "description": "As a developer, I need the basic Lesson 9 page for 'Final Project & What's Next'.",
+      "acceptanceCriteria": [
+        "Create src/pages/Lesson9.jsx",
+        "Add route for /lesson/9",
+        "Lesson 9 has 6 sections: Opening Celebration, Your Journey Recap, Tool Showcase, What's Next, Thank You & Close, Final Completion",
+        "Typecheck passes"
+      ],
+      "priority": 38,
+      "passes": true,
+      "notes": "Fully implemented with all 6 section components"
+    },
+    {
+      "id": "US-039",
+      "title": "Create Lesson 9 Sections 1-3",
+      "description": "As a user, I want to celebrate my journey and showcase my tool.",
+      "acceptanceCriteria": [
+        "Create src/sections/lesson9/OpeningCelebration.jsx with grand celebration animation",
+        "Shows journey timeline animation of all lessons completed",
+        "Create src/sections/lesson9/JourneyRecap.jsx",
+        "Has interactive journey map showing each lesson with key learning and quiz score",
+        "Shows skills acquired visual: before vs after",
+        "Create src/sections/lesson9/ToolShowcase.jsx",
+        "Displays user's tool specification from Lesson 6",
+        "Has peer feedback section",
+        "Generates completion certificate",
+        "Typecheck passes"
+      ],
+      "priority": 39,
+      "passes": true,
+      "notes": "Implemented as part of US-038"
+    },
+    {
+      "id": "US-040",
+      "title": "Create Lesson 9 Sections 4-6",
+      "description": "As a user, I want to see next steps and complete the academy.",
+      "acceptanceCriteria": [
+        "Create src/sections/lesson9/WhatsNext.jsx",
+        "Shows immediate next steps: build tool, start Claude Project, practice weekly",
+        "Has resources cards with links",
+        "Shows skill levels progression",
+        "Create src/sections/lesson9/ThankYouClose.jsx with feedback survey",
+        "Create src/sections/lesson9/FinalCompletion.jsx with ultimate celebration",
+        "Shows final stats: 9 lessons, quiz questions answered, hours",
+        "Closing quote from Alan Kay",
+        "Option to share certificate",
+        "Saves final completion to Supabase",
+        "Typecheck passes"
+      ],
+      "priority": 40,
+      "passes": true,
+      "notes": "Implemented as part of US-038"
+    },
+    {
+      "id": "US-041",
+      "title": "Add unlock mechanism for Lesson 8",
+      "description": "As an admin, I want to be able to unlock Lesson 8 for users.",
+      "acceptanceCriteria": [
+        "Add unlocked_lessons field or similar to user profile in Supabase",
+        "Lesson 8 checks if user has unlock flag",
+        "Dashboard shows lock icon for Lesson 8 until unlocked",
+        "Add admin function or hidden URL to unlock Lesson 8",
+        "Special reveal animation when Lesson 8 first becomes accessible",
+        "Typecheck passes"
+      ],
+      "priority": 41,
+      "passes": true,
+      "notes": "Secret code entry (RALPH) and URL-based unlock (?unlock=RALPH)"
+    },
+    {
+      "id": "US-042",
+      "title": "Final integration testing and polish",
+      "description": "As a user, I want all lessons to work smoothly together.",
+      "acceptanceCriteria": [
+        "All lesson routes work correctly",
+        "Progress saves and loads correctly for lessons 2-9",
+        "Navigation between lessons works",
+        "Sidebar progress tracking shows correct state",
+        "All quizzes save results to Supabase",
+        "Design system is consistent across all lessons",
+        "Animations are smooth with Framer Motion",
+        "Dev server runs without errors: npm run dev",
+        "Typecheck passes: npm run typecheck or tsc",
+        "Build succeeds: npm run build"
+      ],
+      "priority": 42,
+      "passes": true,
+      "notes": "Fixed Sidebar to use dynamic section count. All verifications passed."
+    }
+  ]
+}

@@ -23,7 +23,7 @@ export function useProgress(lessonId = 1) {
           .select('*')
           .eq('user_id', user.id)
           .eq('lesson_id', lessonId)
-          .single()
+          .maybeSingle()
 
         if (error && error.code !== 'PGRST116') {
           console.error('Error fetching progress:', error)

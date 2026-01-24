@@ -1,26 +1,137 @@
-import { motion } from 'framer-motion';
-import { Brain, Clock, Unlock, ChevronRight, Sparkles, Play, Trophy, Target } from 'lucide-react';
+import { useEffect, useState, useRef } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { Brain, Clock, Unlock, ChevronRight, ChevronLeft, Sparkles, Play, Trophy, Target, Lock } from 'lucide-react';
 import Header from '../components/layout/Header';
 import { Card, Button, Badge, ProgressBar } from '../components/common/';
 import { useLesson } from '../context/LessonContext';
 import { useAuth } from '../context/AuthContext';
+import { useGlobalProgress } from '../context/GlobalProgressContext';
+import { useBlockedLessons } from '../hooks/useBlockedLessons';
 import { FloatingAIGraphic, TimelineNode, CircuitPattern } from '../components/dashboard/DashboardGraphics';
 
 const lessons = [
   { id: 1, title: 'AI Thinking Foundations', duration: '1 hour' },
-  { id: 2, title: 'Prompt Engineering', duration: '1 hour' },
-  { id: 3, title: 'ChatGPT Mastery', duration: '1 hour' },
-  { id: 4, title: 'Claude & Competitors', duration: '1 hour' },
-  { id: 5, title: 'AI for Email & Docs', duration: '1 hour' },
-  { id: 6, title: 'AI for Data Analysis', duration: '1 hour' },
-  { id: 7, title: 'AI for Customer Service', duration: '1 hour' },
-  { id: 8, title: 'AI Workflows', duration: '1 hour' },
+  { id: 2, title: 'How Software Works', duration: '1 hour' },
+  { id: 3, title: 'The AI Tools Landscape', duration: '1 hour' },
+  { id: 4, title: 'AI in Action', duration: '1 hour' },
+  { id: 5, title: 'Your First Build', duration: '1 hour' },
+  { id: 6, title: 'Building for Operations', duration: '1 hour' },
+  { id: 7, title: 'Data & AI', duration: '1 hour' },
+  { id: 8, title: '???', duration: '1 hour', locked: true },
   { id: 9, title: 'Final Project', duration: '1 hour' },
 ];
 
 const containerVariants = {
-  hidden: { opacity: 0 },
-  visible: { opacity: 1, transition: { staggerChildren: 0.1, delayChildren: 0.2 } },
+  hidden: { opacity: 0, transition: { duration: 0.3 } },
+  visible: { opacity: 1, transition: { staggerChildren: 0.1, delayChildren: 0.2, duration: 0.3 } },
+};
+
+// Learning Journey component with arrow navigation
+const LearningJourney = ({ lessons, isLessonReallyUnlocked, isLessonReallyCompleted, onStartLesson }) => {
+  const scrollRef = useRef(null);
+  const [canScrollLeft, setCanScrollLeft] = useState(false);
+  const [canScrollRight, setCanScrollRight] = useState(true);
+
+  const checkScroll = () => {
+    if (scrollRef.current) {
+      const { scrollLeft, scrollWidth, clientWidth } = scrollRef.current;
+      setCanScrollLeft(scrollLeft > 10);
+      setCanScrollRight(scrollLeft < scrollWidth - clientWidth - 10);
+    }
+  };
+
+  useEffect(() => {
+    checkScroll();
+    window.addEventListener('resize', checkScroll);
+    return () => window.removeEventListener('resize', checkScroll);
+  }, []);
+
+  const scroll = (direction) => {
+    if (scrollRef.current) {
+      const scrollAmount = 200;
+      scrollRef.current.scrollBy({
+        left: direction === 'left' ? -scrollAmount : scrollAmount,
+        behavior: 'smooth'
+      });
+      setTimeout(checkScroll, 300);
+    }
+  };
+
+  return (
+    <motion.section
+      className="py-12"
+      initial={{ opacity: 0, y: 30 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ delay: 0.4, duration: 0.6 }}
+    >
+      <motion.h2
+        className="text-2xl md:text-3xl font-bold text-white mb-10 text-center"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ delay: 0.4 }}
+      >
+        Your Learning Journey
+      </motion.h2>
+
+      <div className="relative group">
+        {/* Left Arrow */}
+        <motion.button
+          onClick={() => scroll('left')}
+          className={`absolute left-0 top-1/2 -translate-y-1/2 z-10 w-10 h-10 md:w-12 md:h-12
+            rounded-full bg-slate-800/90 border border-slate-700 shadow-lg
+            flex items-center justify-center transition-all duration-200
+            hover:bg-slate-700 hover:border-purple-500/50 hover:shadow-purple-500/20
+            ${canScrollLeft ? 'opacity-100' : 'opacity-0 pointer-events-none'}
+            -translate-x-2 md:-translate-x-4`}
+          whileHover={{ scale: 1.1 }}
+          whileTap={{ scale: 0.95 }}
+        >
+          <ChevronLeft className="w-5 h-5 md:w-6 md:h-6 text-slate-300" />
+        </motion.button>
+
+        {/* Right Arrow */}
+        <motion.button
+          onClick={() => scroll('right')}
+          className={`absolute right-0 top-1/2 -translate-y-1/2 z-10 w-10 h-10 md:w-12 md:h-12
+            rounded-full bg-slate-800/90 border border-slate-700 shadow-lg
+            flex items-center justify-center transition-all duration-200
+            hover:bg-slate-700 hover:border-purple-500/50 hover:shadow-purple-500/20
+            ${canScrollRight ? 'opacity-100' : 'opacity-0 pointer-events-none'}
+            translate-x-2 md:translate-x-4`}
+          whileHover={{ scale: 1.1 }}
+          whileTap={{ scale: 0.95 }}
+        >
+          <ChevronRight className="w-5 h-5 md:w-6 md:h-6 text-slate-300" />
+        </motion.button>
+
+        {/* Gradient fades on edges */}
+        <div className={`absolute left-0 top-0 bottom-0 w-12 md:w-20 bg-gradient-to-r from-slate-900 to-transparent z-[5] pointer-events-none transition-opacity duration-200 ${canScrollLeft ? 'opacity-100' : 'opacity-0'}`} />
+        <div className={`absolute right-0 top-0 bottom-0 w-12 md:w-20 bg-gradient-to-l from-slate-900 to-transparent z-[5] pointer-events-none transition-opacity duration-200 ${canScrollRight ? 'opacity-100' : 'opacity-0'}`} />
+
+        {/* Scrollable container */}
+        <div
+          ref={scrollRef}
+          onScroll={checkScroll}
+          className="overflow-x-auto scrollbar-hide px-8 md:px-16 py-4"
+        >
+          <div className="flex items-start justify-start min-w-max">
+            {lessons.map((lesson, index) => (
+              <TimelineNode
+                key={lesson.id}
+                lesson={lesson}
+                index={index}
+                totalLessons={lessons.length}
+                isUnlocked={isLessonReallyUnlocked(lesson.id)}
+                isActive={isLessonReallyUnlocked(lesson.id) && !isLessonReallyCompleted(lesson.id)}
+                isCompleted={isLessonReallyCompleted(lesson.id)}
+                onClick={(lessonId) => onStartLesson(lessonId)}
+              />
+            ))}
+          </div>
+        </div>
+      </div>
+    </motion.section>
+  );
 };
 
 const itemVariants = {
@@ -31,10 +142,49 @@ const itemVariants = {
 export default function Dashboard({ onStartLesson }) {
   const { lessonProgress, quizScore, sectionCompletion } = useLesson();
   const { user, profile, openAuthModal } = useAuth();
+  const { isLessonUnlocked, isLessonCompleted: checkLessonCompleted, getOverallProgress, refetch } = useGlobalProgress();
+  const { isLessonBlocked } = useBlockedLessons();
+  const [blockedMessage, setBlockedMessage] = useState(null);
 
-  const isLessonUnlocked = (id) => id === 1;
-  const isLessonCompleted = sectionCompletion?.every(Boolean) || false;
+  const isLesson1Completed = sectionCompletion?.every(Boolean) || false;
   const completedSections = sectionCompletion?.filter(Boolean).length || 0;
+  const overallProgress = getOverallProgress();
+
+  // Refetch global progress when dashboard mounts to pick up any lesson completions
+  useEffect(() => {
+    // Fetch immediately on mount
+    refetch();
+    // Also fetch after a delay to catch any pending saves (debounce is 500ms)
+    const timer = setTimeout(refetch, 700);
+    return () => clearTimeout(timer);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []); // Only run on mount
+
+  // Use local state for lesson 1 completion check since we have it from LessonContext
+  const isLessonReallyCompleted = (lessonId) => {
+    if (lessonId === 1) return isLesson1Completed;
+    return checkLessonCompleted(lessonId);
+  };
+
+  // Use combined unlock check - for lesson 2, check if lesson 1 is locally complete
+  // Also check if lesson is blocked by admin
+  const isLessonReallyUnlocked = (lessonId) => {
+    // If lesson is blocked by admin, it's not unlocked
+    if (isLessonBlocked(lessonId)) return false;
+    if (lessonId === 1) return true;
+    if (lessonId === 2) return isLesson1Completed;
+    return isLessonUnlocked(lessonId);
+  };
+
+  // Handle starting a lesson - check if blocked first
+  const handleStartLesson = (lessonId) => {
+    if (isLessonBlocked(lessonId)) {
+      setBlockedMessage('This lesson is not yet available');
+      setTimeout(() => setBlockedMessage(null), 3000);
+      return;
+    }
+    onStartLesson(lessonId);
+  };
 
   const getGreeting = () => {
     if (!user) return 'Welcome, Learner';
@@ -42,11 +192,48 @@ export default function Dashboard({ onStartLesson }) {
     return `Welcome back, ${firstName}!`;
   };
 
+  // Find the next lesson to show (first unlocked but not completed, or first lesson)
+  const getNextLesson = () => {
+    for (const lesson of lessons) {
+      if (isLessonReallyUnlocked(lesson.id) && !isLessonReallyCompleted(lesson.id)) {
+        return lesson;
+      }
+    }
+    // All completed - return the first lesson as a fallback
+    return lessons[0];
+  };
+
+  const nextLesson = getNextLesson();
+  const isNextLessonCompleted = nextLesson ? isLessonReallyCompleted(nextLesson.id) : false;
+
   return (
-    <motion.div className="min-h-screen" initial="hidden" animate="visible" variants={containerVariants}>
-      <Header />
+    <motion.div
+      className="min-h-screen"
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      transition={{ duration: 0.2 }}
+    >
+      <Header onLogoClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })} />
 
       <main className="pt-24 pb-16 px-4 md:px-6 lg:px-8 max-w-7xl mx-auto">
+        {/* Blocked Lesson Toast */}
+        <AnimatePresence>
+          {blockedMessage && (
+            <motion.div
+              initial={{ opacity: 0, y: -20 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -20 }}
+              className="fixed top-20 left-1/2 -translate-x-1/2 z-50"
+            >
+              <div className="flex items-center gap-2 px-4 py-3 rounded-lg bg-amber-500/20 border border-amber-500/30 backdrop-blur-sm">
+                <Lock className="w-4 h-4 text-amber-400 flex-shrink-0" />
+                <span className="text-sm text-amber-300">{blockedMessage}</span>
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
+
         {/* Hero Section */}
         <motion.section
           className="relative py-12 md:py-20 flex flex-col lg:flex-row items-center justify-between gap-8 lg:gap-12"
@@ -101,7 +288,7 @@ export default function Dashboard({ onStartLesson }) {
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.6 }}
             >
-              <Button variant="primary" size="lg" icon={<Play className="w-5 h-5" />} onClick={onStartLesson}>
+              <Button variant="primary" size="lg" icon={<Play className="w-5 h-5" />} onClick={() => handleStartLesson(nextLesson.id)}>
                 {lessonProgress > 0 ? 'Continue Learning' : 'Start Learning'}
               </Button>
               {!user && (
@@ -135,19 +322,19 @@ export default function Dashboard({ onStartLesson }) {
 
               <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                 <div className="text-center p-4 rounded-xl bg-slate-800/50">
-                  <p className="text-2xl font-bold text-white">{isLessonCompleted ? 1 : 0}/9</p>
+                  <p className="text-2xl font-bold text-white">{overallProgress.completed}/9</p>
                   <p className="text-sm text-slate-400">Lessons Completed</p>
                 </div>
                 <div className="text-center p-4 rounded-xl bg-slate-800/50">
                   <p className="text-2xl font-bold text-white">{completedSections}/8</p>
-                  <p className="text-sm text-slate-400">Sections Done</p>
+                  <p className="text-sm text-slate-400">L1 Sections</p>
                 </div>
                 <div className="text-center p-4 rounded-xl bg-slate-800/50">
                   <p className="text-2xl font-bold text-white">{quizScore !== null ? `${quizScore}/6` : '-'}</p>
-                  <p className="text-sm text-slate-400">Quiz Score</p>
+                  <p className="text-sm text-slate-400">L1 Quiz Score</p>
                 </div>
                 <div className="text-center p-4 rounded-xl bg-slate-800/50">
-                  <p className="text-2xl font-bold text-white">{lessonProgress}%</p>
+                  <p className="text-2xl font-bold text-white">{overallProgress.percentage}%</p>
                   <p className="text-sm text-slate-400">Overall Progress</p>
                 </div>
               </div>
@@ -172,40 +359,12 @@ export default function Dashboard({ onStartLesson }) {
         )}
 
         {/* Learning Journey Map */}
-        <motion.section className="py-12" variants={itemVariants}>
-          <motion.h2
-            className="text-2xl md:text-3xl font-bold text-white mb-8 text-center"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 0.4 }}
-          >
-            Your Learning Journey
-          </motion.h2>
-
-          <div className="relative overflow-x-auto pb-4">
-            <div className="flex items-start gap-4 md:gap-6 lg:gap-8 min-w-max px-4 md:px-0 justify-center">
-              {lessons.map((lesson, index) => (
-                <TimelineNode
-                  key={lesson.id}
-                  lesson={lesson}
-                  index={index}
-                  isUnlocked={isLessonUnlocked(lesson.id)}
-                  isActive={lesson.id === 1 && !isLessonCompleted}
-                  isCompleted={lesson.id === 1 && isLessonCompleted}
-                />
-              ))}
-            </div>
-          </div>
-
-          <motion.p
-            className="text-center text-slate-500 text-sm mt-4 md:hidden"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 1 }}
-          >
-            Scroll to see all lessons
-          </motion.p>
-        </motion.section>
+        <LearningJourney
+          lessons={lessons}
+          isLessonReallyUnlocked={isLessonReallyUnlocked}
+          isLessonReallyCompleted={isLessonReallyCompleted}
+          onStartLesson={handleStartLesson}
+        />
 
         {/* Main Lesson Card */}
         <motion.section className="py-12" variants={itemVariants}>
@@ -220,25 +379,38 @@ export default function Dashboard({ onStartLesson }) {
               <div className="relative z-10">
                 <div className="flex items-center gap-3 mb-6">
                   <Badge variant="active" pulse icon={<Sparkles className="w-3 h-3" />}>
-                    Lesson 1
+                    Lesson {nextLesson.id}
                   </Badge>
-                  <Badge variant="success" icon={<Unlock className="w-3 h-3" />}>
-                    {isLessonCompleted ? 'Completed' : 'Unlocked'}
-                  </Badge>
+                  {isLessonBlocked(nextLesson.id) ? (
+                    <Badge variant="error" icon={<Lock className="w-3 h-3" />}>
+                      Blocked
+                    </Badge>
+                  ) : (
+                    <Badge variant="success" icon={<Unlock className="w-3 h-3" />}>
+                      {isNextLessonCompleted ? 'Completed' : 'Unlocked'}
+                    </Badge>
+                  )}
                 </div>
 
                 <h3 className="text-2xl md:text-3xl font-bold text-white mb-3">
-                  AI Thinking Foundations
+                  {nextLesson.title}
                 </h3>
                 <p className="text-slate-400 text-lg mb-6">
-                  Understand how AI really works and why your input matters. Build a solid
-                  foundation for effective AI collaboration.
+                  {nextLesson.id === 1 && 'Understand how AI really works and why your input matters. Build a solid foundation for effective AI collaboration.'}
+                  {nextLesson.id === 2 && 'Learn the basics of how software works, so you can communicate effectively with developers and AI tools.'}
+                  {nextLesson.id === 3 && 'Explore the landscape of AI tools and understand when to use each type.'}
+                  {nextLesson.id === 4 && 'See AI in action with real-world examples and hands-on exercises.'}
+                  {nextLesson.id === 5 && 'Build your first AI-powered tool from scratch.'}
+                  {nextLesson.id === 6 && 'Learn to build AI tools specifically for operations workflows.'}
+                  {nextLesson.id === 7 && 'Master data analysis and reporting with AI assistance.'}
+                  {nextLesson.id === 8 && 'Discover the secret lesson and advanced AI techniques.'}
+                  {nextLesson.id === 9 && 'Complete your final project and showcase your AI skills.'}
                 </p>
 
                 <div className="flex items-center gap-6 mb-8">
                   <div className="flex items-center gap-2 text-slate-300">
                     <Clock className="w-5 h-5 text-cyan-400" />
-                    <span>60 minutes</span>
+                    <span>{nextLesson.duration}</span>
                   </div>
                   <div className="flex items-center gap-2 text-slate-300">
                     <Brain className="w-5 h-5 text-purple-400" />
@@ -246,19 +418,15 @@ export default function Dashboard({ onStartLesson }) {
                   </div>
                 </div>
 
-                <div className="mb-8">
-                  <ProgressBar value={lessonProgress} showLabel size="md" glow />
-                </div>
-
                 <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
                   <Button
                     variant="primary"
                     size="lg"
                     icon={<Play className="w-5 h-5" />}
-                    onClick={onStartLesson}
+                    onClick={() => handleStartLesson(nextLesson.id)}
                     className="w-full md:w-auto"
                   >
-                    {isLessonCompleted ? 'Review Lesson' : lessonProgress > 0 ? 'Continue Lesson' : 'Start Lesson'}
+                    {isNextLessonCompleted ? 'Review Lesson' : 'Start Lesson'}
                     <ChevronRight className="w-5 h-5 ml-1" />
                   </Button>
                 </motion.div>

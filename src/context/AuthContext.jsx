@@ -22,7 +22,7 @@ export function AuthProvider({ children }) {
         .from('profiles')
         .select('*')
         .eq('id', userId)
-        .single()
+        .maybeSingle()
 
       if (error) throw error
       setProfile(data)
@@ -35,26 +35,35 @@ export function AuthProvider({ children }) {
 
   // Initialize auth state
   useEffect(() => {
+    let isMounted = true
+
     const initAuth = async () => {
       try {
         const { data: { session } } = await supabase.auth.getSession()
 
-        if (session?.user) {
-          const profileData = await fetchProfile(session.user.id)
-          // Only set user if profile is active
-          if (profileData?.is_active) {
-            setUser(session.user)
-          } else if (profileData) {
-            // User exists but not active - sign them out
-            await supabase.auth.signOut()
-            setUser(null)
-            setProfile(null)
-          }
+        if (session?.user && isMounted) {
+          // Set user immediately from session
+          setUser(session.user)
+
+          // Then fetch profile (non-blocking for UI)
+          fetchProfile(session.user.id).then(profileData => {
+            if (!isMounted) return
+            // If profile exists and is explicitly inactive, sign out
+            if (profileData && profileData.is_active === false) {
+              supabase.auth.signOut()
+              setUser(null)
+              setProfile(null)
+            }
+          }).catch(err => {
+            console.warn('Profile fetch failed:', err)
+          })
         }
       } catch (err) {
         console.error('Error initializing auth:', err)
       } finally {
-        setLoading(false)
+        if (isMounted) {
+          setLoading(false)
+        }
       }
     }
 
@@ -63,23 +72,44 @@ export function AuthProvider({ children }) {
     // Listen for auth changes
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
       async (event, session) => {
+        if (!isMounted) return
+
+        if (event === 'SIGNED_OUT') {
+          setUser(null)
+          setProfile(null)
+          setLoading(false)
+          return
+        }
+
         if (session?.user) {
-          const profileData = await fetchProfile(session.user.id)
-          if (profileData?.is_active) {
-            setUser(session.user)
-          } else {
-            setUser(null)
-            setProfile(null)
-          }
+          setUser(session.user)
+
+          // Fetch profile in background
+          fetchProfile(session.user.id).then(profileData => {
+            if (!isMounted) return
+            if (profileData && profileData.is_active === false) {
+              supabase.auth.signOut()
+              setUser(null)
+              setProfile(null)
+            }
+          }).catch(err => {
+            console.warn('Profile fetch failed on auth change:', err)
+          })
         } else {
           setUser(null)
           setProfile(null)
         }
-        setLoading(false)
+
+        if (isMounted) {
+          setLoading(false)
+        }
       }
     )
 
-    return () => subscription.unsubscribe()
+    return () => {
+      isMounted = false
+      subscription.unsubscribe()
+    }
   }, [fetchProfile])
 
   // Validate email domain
@@ -123,23 +153,42 @@ export function AuthProvider({ children }) {
     setError(null)
     setAuthSuccess(false)
 
+    // Create a timeout promise
+    const timeoutPromise = new Promise((_, reject) => {
+      setTimeout(() => reject(new Error('Sign in timed out. Please try again.')), 15000)
+    })
+
     try {
-      const { data, error } = await supabase.auth.signInWithPassword({
-        email,
-        password
-      })
+      // Race the sign in against the timeout
+      const { data, error } = await Promise.race([
+        supabase.auth.signInWithPassword({ email, password }),
+        timeoutPromise
+      ])
 
       if (error) throw error
 
-      // Check if user is active
-      const profileData = await fetchProfile(data.user.id)
-      if (!profileData?.is_active) {
+      // Check if user is active (with timeout protection)
+      let profileData = null
+      try {
+        profileData = await Promise.race([
+          fetchProfile(data.user.id),
+          new Promise((_, reject) => setTimeout(() => reject(new Error('Profile fetch timeout')), 5000))
+        ])
+      } catch (profileErr) {
+        console.warn('Profile fetch failed:', profileErr)
+        // Continue without profile - user can still use the app
+      }
+
+      // If profile exists and is explicitly inactive, sign them out
+      if (profileData && profileData.is_active === false) {
         await supabase.auth.signOut()
         throw new Error('Your account is pending activation. Please contact an administrator.')
       }
 
-      // Check for existing localStorage progress to migrate
-      await checkAndOfferMigration(data.user.id)
+      // Check for existing localStorage progress to migrate (non-blocking)
+      checkAndOfferMigration(data.user.id).catch(err => {
+        console.warn('Migration check failed (non-blocking):', err)
+      })
 
       setUser(data.user)
       setAuthSuccess(true)
@@ -197,7 +246,7 @@ export function AuthProvider({ children }) {
         .update({ ...updates, updated_at: new Date().toISOString() })
         .eq('id', user.id)
         .select()
-        .single()
+        .maybeSingle()
 
       if (error) throw error
       setProfile(data)
@@ -224,7 +273,7 @@ export function AuthProvider({ children }) {
           .select('id')
           .eq('user_id', userId)
           .eq('lesson_id', 1)
-          .single()
+          .maybeSingle()
 
         if (!existingProgress) {
           await migrateLocalStorageProgress(userId)
@@ -255,7 +304,7 @@ export function AuthProvider({ children }) {
         completed_sections: completedSections,
         is_completed: completedSections.length === 8,
         completed_at: completedSections.length === 8 ? new Date().toISOString() : null
-      })
+      }, { onConflict: 'user_id,lesson_id' })
 
       if (progress.quizScore !== null && progress.quizAnswers?.length > 0) {
         await supabase.from('quiz_results').upsert({
@@ -264,7 +313,7 @@ export function AuthProvider({ children }) {
           score: progress.quizScore,
           total_questions: progress.quizAnswers.length,
           answers: progress.quizAnswers
-        })
+        }, { onConflict: 'user_id,lesson_id' })
       }
 
       localStorage.removeItem(STORAGE_KEY)
@@ -287,6 +336,9 @@ export function AuthProvider({ children }) {
     setAuthSuccess(false)
   }
 
+  // Derive isAdmin from profile, defaulting to false
+  const isAdmin = profile?.is_admin ?? false
+
   const value = {
     user,
     profile,
@@ -295,6 +347,7 @@ export function AuthProvider({ children }) {
     showAuthModal,
     authModalMode,
     authSuccess,
+    isAdmin,
     isEmailAllowed,
     signUp,
     signIn,

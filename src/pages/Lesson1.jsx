@@ -1,4 +1,4 @@
-import { useEffect, useCallback, useRef } from 'react'
+import { useState, useEffect, useCallback, useRef } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { Sparkles, Brain, Users, FileText, MessageSquare, MousePointer, HelpCircle, Trophy } from 'lucide-react'
 
@@ -39,9 +39,10 @@ const sectionComponents = {
   8: Completion
 }
 
-function Lesson1({ onBack }) {
+function Lesson1({ onBack, onNavigateToLesson, isNextLessonBlocked }) {
   const { currentSection, sectionCompletion, goToSection, completeSection } = useLesson()
   const contentRef = useRef(null)
+  const [isExiting, setIsExiting] = useState(false)
 
   // Scroll to top when section changes
   useEffect(() => {
@@ -63,11 +64,21 @@ function Lesson1({ onBack }) {
   }, [currentSection, goToSection])
 
   const handleNext = useCallback(() => {
+    if (isExiting) return // Prevent double-clicks
+
     if (currentSection < sections.length) {
       completeSection(currentSection)
       goToSection(currentSection + 1)
+    } else if (currentSection === sections.length) {
+      // On last section (Completion) - mark complete and refresh to dashboard
+      setIsExiting(true)
+      completeSection(currentSection)
+      // Small delay to ensure state is saved, then refresh
+      setTimeout(() => {
+        window.location.href = '/'
+      }, 300)
     }
-  }, [currentSection, completeSection, goToSection])
+  }, [currentSection, completeSection, goToSection, isExiting])
 
   const handleComplete = useCallback(() => {
     completeSection(currentSection)
@@ -75,6 +86,8 @@ function Lesson1({ onBack }) {
       goToSection(currentSection + 1)
     }
   }, [currentSection, completeSection, goToSection])
+
+  const isLastSection = currentSection === sections.length
 
   // Keyboard navigation
   useEffect(() => {
@@ -93,9 +106,9 @@ function Lesson1({ onBack }) {
   const CurrentSectionComponent = sectionComponents[currentSection]
 
   const pageVariants = {
-    initial: { opacity: 0, x: 100 },
-    animate: { opacity: 1, x: 0 },
-    exit: { opacity: 0, x: -100 }
+    initial: { opacity: 0 },
+    animate: { opacity: 1 },
+    exit: { opacity: 0 }
   }
 
   const sectionVariants = {
@@ -111,10 +124,10 @@ function Lesson1({ onBack }) {
       initial="initial"
       animate="animate"
       exit="exit"
-      transition={{ duration: 0.4, ease: 'easeInOut' }}
+      transition={{ duration: 0.2 }}
     >
       {/* Fixed Header */}
-      <Header onBack={onBack} />
+      <Header onBack={onBack} onLogoClick={onBack} />
 
       {/* Main content area with sidebar */}
       <div className="flex flex-1 pt-16 pb-20">
@@ -144,6 +157,9 @@ function Lesson1({ onBack }) {
                 <CurrentSectionComponent
                   onComplete={handleComplete}
                   onBack={onBack}
+                  lessonId={1}
+                  onNavigateToLesson={onNavigateToLesson}
+                  isNextLessonBlocked={isNextLessonBlocked}
                 />
               )}
             </motion.div>
@@ -158,7 +174,8 @@ function Lesson1({ onBack }) {
         onPrevious={handlePrevious}
         onNext={handleNext}
         canGoPrevious={currentSection > 1}
-        canGoNext={currentSection < sections.length}
+        canGoNext={true}
+        showComplete={isLastSection}
       />
     </motion.div>
   )

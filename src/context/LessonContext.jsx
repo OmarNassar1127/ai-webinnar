@@ -29,28 +29,40 @@ const getLocalState = () => {
 
 export function LessonProvider({ children }) {
   const { user } = useAuth();
-  const [currentSection, setCurrentSection] = useState(1);
-  const [sectionCompletion, setSectionCompletion] = useState([false, false, false, false, false, false, false, false]);
-  const [quizAnswers, setQuizAnswers] = useState([]);
-  const [quizScore, setQuizScore] = useState(null);
+  // Initialize from localStorage immediately to prevent flash of empty state
+  const initialState = getLocalState();
+  const [currentSection, setCurrentSection] = useState(initialState.currentSection);
+  const [sectionCompletion, setSectionCompletion] = useState(initialState.sectionCompletion);
+  const [quizAnswers, setQuizAnswers] = useState(initialState.quizAnswers);
+  const [quizScore, setQuizScore] = useState(initialState.quizScore);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const saveTimeoutRef = useRef(null);
   const initializedRef = useRef(false);
+  const lastUserIdRef = useRef(null);
 
   // Fetch progress from Supabase or localStorage
   const fetchProgress = useCallback(async () => {
+    // Skip fetch if user hasn't changed and we're already initialized
+    if (initializedRef.current && lastUserIdRef.current === (user?.id || null)) {
+      return;
+    }
+
     setLoading(true);
+    lastUserIdRef.current = user?.id || null;
+
+    // Always get local state as fallback
+    const localState = getLocalState();
 
     if (user) {
       try {
-        // Fetch lesson progress
+        // Fetch lesson progress (use maybeSingle to avoid error when no row exists)
         const { data: progressData } = await supabase
           .from('lesson_progress')
           .select('*')
           .eq('user_id', user.id)
           .eq('lesson_id', 1)
-          .single();
+          .maybeSingle();
 
         // Fetch quiz results
         const { data: quizData } = await supabase
@@ -58,7 +70,7 @@ export function LessonProvider({ children }) {
           .select('*')
           .eq('user_id', user.id)
           .eq('lesson_id', 1)
-          .single();
+          .maybeSingle();
 
         if (progressData) {
           setCurrentSection(progressData.current_section || 1);
@@ -67,29 +79,33 @@ export function LessonProvider({ children }) {
             if (s >= 1 && s <= 8) completion[s - 1] = true;
           });
           setSectionCompletion(completion);
-        } else {
-          const defaultState = getDefaultState();
-          setCurrentSection(defaultState.currentSection);
-          setSectionCompletion(defaultState.sectionCompletion);
+        } else if (localState.sectionCompletion.some(Boolean)) {
+          // No Supabase data but we have local progress - keep it
+          setCurrentSection(localState.currentSection);
+          setSectionCompletion(localState.sectionCompletion);
         }
+        // If neither has data, keep current state (don't reset)
 
         if (quizData) {
           setQuizAnswers(quizData.answers || []);
           setQuizScore(quizData.score);
-        } else {
-          setQuizAnswers([]);
-          setQuizScore(null);
+        } else if (localState.quizScore !== null) {
+          // Keep local quiz data
+          setQuizAnswers(localState.quizAnswers);
+          setQuizScore(localState.quizScore);
         }
       } catch (err) {
         console.error('Error fetching progress:', err);
-        const localState = getLocalState();
-        setCurrentSection(localState.currentSection);
-        setSectionCompletion(localState.sectionCompletion);
-        setQuizAnswers(localState.quizAnswers);
-        setQuizScore(localState.quizScore);
+        // On error, preserve local state - don't reset
+        if (localState.sectionCompletion.some(Boolean)) {
+          setCurrentSection(localState.currentSection);
+          setSectionCompletion(localState.sectionCompletion);
+          setQuizAnswers(localState.quizAnswers);
+          setQuizScore(localState.quizScore);
+        }
       }
-    } else {
-      const localState = getLocalState();
+    } else if (localState.sectionCompletion.some(Boolean)) {
+      // Not logged in but have local progress - use it
       setCurrentSection(localState.currentSection);
       setSectionCompletion(localState.sectionCompletion);
       setQuizAnswers(localState.quizAnswers);
@@ -137,7 +153,7 @@ export function LessonProvider({ children }) {
             is_completed: completedSections.length === 8,
             completed_at: completedSections.length === 8 ? new Date().toISOString() : null,
             updated_at: new Date().toISOString()
-          });
+          }, { onConflict: 'user_id,lesson_id' });
         } catch (err) {
           console.error('Error saving progress to Supabase:', err);
         } finally {
@@ -172,10 +188,14 @@ export function LessonProvider({ children }) {
     }
   }, []);
 
-  // Mark a section as completed
+  // Mark a section as completed (only if not already complete)
   const completeSection = useCallback((sectionNum) => {
     if (sectionNum >= 1 && sectionNum <= 8) {
       setSectionCompletion((prev) => {
+        // Only update if the section is not already complete
+        if (prev[sectionNum - 1] === true) {
+          return prev; // Return same reference, no re-render
+        }
         const updated = [...prev];
         updated[sectionNum - 1] = true;
         return updated;
@@ -212,7 +232,7 @@ export function LessonProvider({ children }) {
           total_questions: quizAnswers.length,
           answers: quizAnswers,
           completed_at: new Date().toISOString()
-        });
+        }, { onConflict: 'user_id,lesson_id' });
       } catch (err) {
         console.error('Error saving quiz results:', err);
       }
