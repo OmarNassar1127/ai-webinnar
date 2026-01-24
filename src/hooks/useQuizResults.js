@@ -21,9 +21,9 @@ export function useQuizResults(lessonId = 1) {
           .select('*')
           .eq('user_id', user.id)
           .eq('lesson_id', lessonId)
-          .single()
+          .maybeSingle()
 
-        if (error && error.code !== 'PGRST116') {
+        if (error) {
           console.error('Error fetching quiz result:', error)
         }
 
@@ -81,7 +81,7 @@ export function useQuizResults(lessonId = 1) {
             total_questions: totalQuestions,
             answers,
             completed_at: new Date().toISOString()
-          })
+          }, { onConflict: 'user_id,lesson_id' })
 
         if (error) {
           console.error('Error saving quiz result:', error)

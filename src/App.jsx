@@ -5,6 +5,7 @@ import { LessonProvider, useLesson } from './context/LessonContext'
 import { GlobalProgressProvider, useGlobalProgress } from './context/GlobalProgressContext'
 import { NavigationProvider, useNavigation } from './context/NavigationContext'
 import { unlockLesson8 } from './context/Lesson8Context'
+import { useBlockedLessons } from './hooks/useBlockedLessons'
 import Dashboard from './pages/Dashboard'
 import Lesson1 from './pages/Lesson1'
 import Lesson2 from './pages/Lesson2'
@@ -25,12 +26,16 @@ function AppContent() {
   const { user, openAuthModal } = useAuth()
   const { isLessonUnlocked } = useGlobalProgress()
   const { sectionCompletion } = useLesson()
+  const { isLessonBlocked } = useBlockedLessons()
 
   // Check if Lesson 1 is completed locally
   const isLesson1Completed = sectionCompletion?.every(Boolean) || false
 
   // Combined unlock check that uses local state for immediate feedback
+  // Also checks if lesson is blocked by admin
   const isLessonReallyUnlocked = (lessonId) => {
+    // First check if lesson is blocked by admin
+    if (isLessonBlocked(lessonId)) return false
     if (lessonId === 1) return true
     if (lessonId === 2) return isLesson1Completed // Use local state
     return isLessonUnlocked(lessonId)
@@ -97,6 +102,7 @@ function AppContent() {
               key="lesson1"
               onBack={() => setCurrentPage('dashboard')}
               onNavigateToLesson={handleNavigateToLesson}
+              isNextLessonBlocked={isLessonBlocked(2)}
             />
           )}
           {currentPage === 'lesson2' && (
