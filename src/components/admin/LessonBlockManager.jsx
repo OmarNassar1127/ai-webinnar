@@ -15,13 +15,13 @@ import { useBlockedLessons } from '../../hooks/useBlockedLessons'
 // Lesson data matching other admin components
 const lessons = [
   { id: 1, title: 'AI Thinking Foundations', icon: '🧠' },
-  { id: 2, title: 'Prompt Engineering', icon: '✍️' },
-  { id: 3, title: 'ChatGPT Mastery', icon: '💬' },
-  { id: 4, title: 'Claude & Competitors', icon: '🤖' },
-  { id: 5, title: 'AI for Email & Docs', icon: '📧' },
-  { id: 6, title: 'AI for Data Analysis', icon: '📊' },
-  { id: 7, title: 'AI for Customer Service', icon: '🎧' },
-  { id: 8, title: 'AI Workflows', icon: '⚙️' },
+  { id: 2, title: 'How Software Works', icon: '💻' },
+  { id: 3, title: 'The AI Tools Landscape', icon: '🛠️' },
+  { id: 4, title: 'AI in Action', icon: '⚡' },
+  { id: 5, title: 'Your First Build', icon: '🔨' },
+  { id: 6, title: 'Building for Operations', icon: '🏗️' },
+  { id: 7, title: 'Data & AI', icon: '📊' },
+  { id: 8, title: '???', icon: '🔮' },
   { id: 9, title: 'Final Project', icon: '🎓' },
 ]
 
