@@ -156,14 +156,14 @@ export default function Sidebar({
           <div className="flex items-center justify-between mb-2">
             <span className="text-sm text-slate-400">Progress</span>
             <span className="text-sm font-medium text-cyan-400">
-              {completedCount}/8 sections completed
+              {completedCount}/{sections.length} sections completed
             </span>
           </div>
           <div className="h-2 bg-slate-800 rounded-full overflow-hidden">
             <motion.div
               className="h-full bg-gradient-to-r from-purple-500 to-cyan-400 rounded-full"
               initial={{ width: 0 }}
-              animate={{ width: `${(completedCount / 8) * 100}%` }}
+              animate={{ width: `${sections.length > 0 ? (completedCount / sections.length) * 100 : 0}%` }}
               transition={{ duration: 0.5, ease: 'easeOut' }}
             />
           </div>

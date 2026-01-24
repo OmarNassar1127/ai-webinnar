@@ -1,181 +1,20 @@
 # Ralph Progress Log
-Started: Sat Jan 24 13:44:04 CET 2026
+Started: 2026-01-24
+Feature: Admin Dashboard & Progress Tracking
 ---
 
-## US-002: Create blocked_lessons table - COMPLETED
-- Created supabase/migrations/20260124_create_blocked_lessons_table.sql
-- Table structure: id (uuid), lesson_id (integer unique), blocked_at (timestamp), blocked_by (uuid)
-- Enabled RLS on the table
-- Created policy "Anyone can view blocked lessons" for SELECT (allows reading blocked status)
-- Created policy "Authenticated users can manage blocked lessons" for all operations (admin check in app logic)
-- Added index on lesson_id for faster lookups
-- Build passes successfully
+## Codebase Patterns
+- Lesson pages follow pattern: src/pages/Lesson{N}.jsx
+- Lesson sections in: src/sections/lesson{N}/*.jsx
+- Content data in: src/data/lesson{N}Content.js
+- Quiz data in: src/data/quiz{N}Questions.js
+- All animations use Framer Motion
+- Styling uses Tailwind CSS with glassmorphism effects (bg-slate-800/50 backdrop-blur-xl)
+- Progress saves to Supabase
+- App.jsx uses state-based navigation (`currentPage` state), not React Router
+- Colors: Purple (#7C3AED), Blue (#3B82F6), Cyan (#06B6D4), Dark (#0F172A)
+- Auth: useAuth() hook from AuthContext
+- Database: Supabase with existing tables (profiles, lesson_progress, quiz_results)
 
-## US-003: Add Admin Dashboard menu item to UserMenu - COMPLETED
-- Created src/context/NavigationContext.jsx for app-wide navigation state
-- Updated App.jsx to use NavigationProvider wrapping the app
-- Updated UserMenu.jsx to:
-  - Import Shield icon from lucide-react
-  - Import useNavigation hook
-  - Extract isAdmin from useAuth()
-  - Added Admin Dashboard menu item (conditionally rendered when isAdmin is true)
-  - Uses Shield icon with amber color for admin indicator
-  - Clicking navigates to 'admin' page via navigateTo('admin')
-- Build passes successfully
+---
 
-## US-004: Create useAdminData hook for fetching admin data - COMPLETED
-- Created src/hooks/useAdminData.js (115 lines, under 150 limit)
-- Hook fetches all profiles from Supabase
-- Hook fetches lesson_progress for all users
-- Hook fetches quiz_results for all users
-- Returns: users array, loading state, error state, refetch function
-- Each user object includes: id, name, email, lessonsCompleted, lastActive, quizScores, progress, isActive, isAdmin
-- Includes admin authorization check (returns error if non-admin)
-- Groups progress and quiz data by user for efficient processing
-- Calculates quiz score percentages and last activity dates
-- Build passes successfully
-
-## US-005: Create AdminDashboard page with user list - COMPLETED
-- Created src/pages/AdminDashboard.jsx (268 lines, under 300 limit)
-- Added admin page route in App.jsx (import and AnimatePresence case)
-- Shows table/cards of all users using useAdminData hook
-- Each user shows: name, email, lessons completed count, progress bar, quiz average, last active date
-- Shows loading spinner with message while fetching
-- Shows error state if data fetch fails
-- Responsive design with hidden elements on smaller screens
-- Non-admins redirected to dashboard via useEffect
-- Summary stats at top: Total Users, Active Learners, Completed Course, Lessons Completed
-- Matches design system (purple/blue gradients, glassmorphism cards)
-- Build passes successfully
-
-## US-006: Create UserProgressDetail component for admin view - COMPLETED
-- Created src/components/admin/UserProgressDetail.jsx (218 lines, under 250 limit)
-- Shows each lesson status with visual progress bar using ProgressBar component
-- Shows quiz scores for each completed lesson with amber highlight for passing scores
-- Expandable/collapsible from user list - clicking user row expands/collapses detail view
-- Updated AdminDashboard.jsx to use UserProgressDetail instead of simple UserRow
-- Added expandedUserId state management for accordion-style expansion (only one user expanded at a time)
-- Detail view shows:
-  - Overall progress bar with percentage
-  - Summary stats: Lessons Done, Quizzes Taken, Avg Score
-  - All 9 lessons with completion status, quiz score, and completion date
-- Matches design system (glassmorphism, purple/blue gradients, emerald for complete, amber for scores)
-- Build passes successfully
-
-## US-007: Create useBlockedLessons hook - COMPLETED
-- Created src/hooks/useBlockedLessons.js (79 lines, under 80 limit)
-- Hook fetches blocked_lessons from Supabase ordered by lesson_id
-- Returns: blockedLessons array, loading state, error state, refetch function
-- Provides isLessonBlocked(lessonId) function that checks if a lesson is blocked
-- Provides blockLesson(lessonId) function for admins to block a lesson
-- Provides unblockLesson(lessonId) function for admins to unblock a lesson
-- Both block/unblock functions verify admin status before executing
-- Returns success/error objects from mutation functions
-- Build passes successfully
-
-## US-008: Create LessonBlockManager component for admin - COMPLETED
-- Created src/components/admin/LessonBlockManager.jsx (197 lines, under 200 limit)
-- Shows all 9 lessons with toggle switches for blocking/unblocking
-- Uses useBlockedLessons hook for fetching and managing blocked lessons
-- Toggle buttons switch between block/unblock state with visual feedback
-- Blocked lessons show Lock icon and red styling
-- Unblocked lessons show BookOpen icon and purple/blue gradient
-- Changes saved to Supabase immediately on toggle
-- Shows loading spinner while toggling individual lessons
-- Displays feedback toast for success/error messages
-- Integrated into AdminDashboard.jsx (added import and rendered between stats and user list)
-- Build passes successfully
-
-## US-009: Integrate blocked lessons into Dashboard - COMPLETED
-- Updated src/pages/Dashboard.jsx to use useBlockedLessons hook
-- Modified isLessonUnlocked function to check blocked_lessons table
-- Blocked lessons show as locked regardless of user progress (isLessonBlocked check first)
-- Clicking blocked lesson shows toast message 'This lesson is not yet available'
-- Toast displays with amber styling and Lock icon, auto-dismisses after 3 seconds
-- Works alongside existing unlock logic (unblocked AND previous completed)
-- Updated lesson card badge to show "Blocked" state with error variant
-- Added "error" variant to Badge component (red-500 color scheme)
-- Build passes successfully
-
-## US-010: Create MyProgress page with overview stats - COMPLETED
-- Created src/pages/MyProgress.jsx (340 lines, under 350 limit)
-- Added 'My Progress' navigation to UserMenu.jsx (clicking navigates to 'progress' page)
-- Added progress page route in App.jsx (import and AnimatePresence case)
-- Shows overview stats: lessons completed count, total progress %, quiz average score, quizzes taken
-- Visual journey map showing all 9 lessons with completion status checkmarks
-- Each lesson shows: title, duration, quiz score, completion status, review/start buttons
-- Blocked lessons show with lock icon and reduced opacity
-- Fetches quiz history from Supabase quiz_results table
-- Displays quiz history section with score, date, pass/fail status
-- Redirects to login if user not authenticated
-- Accessible for all authenticated users via UserMenu dropdown
-- Uses existing design system (purple/blue gradients, glassmorphism cards, cyan accents)
-- Build passes successfully
-
-## US-011: Create LessonProgressCard component - COMPLETED
-- Created src/components/progress/LessonProgressCard.jsx (130 lines, under 150 limit)
-- Created src/data/lessonTakeaways.js with key takeaways for all 9 lessons
-- Each completed lesson shows key takeaways when expanded
-- Quiz score displayed per lesson with progress bar and percentage
-- 'Review Lesson' button to go back to that lesson (or 'Start Lesson' for unlocked but not completed)
-- Locked/incomplete lessons shown with different styling (opacity-60, slate colors)
-- Expandable/collapsible cards - clicking expands to show details
-- Uses existing design system components (Button, Badge, ProgressBar)
-- Matches glassmorphism style with green gradient for completed, purple for unlocked
-- Build passes successfully
-
-## US-012: Create QuizHistory component - COMPLETED
-- Created src/components/progress/QuizHistory.jsx (148 lines, under 150 limit)
-- Shows all quiz attempts from quiz_results table ordered by completed_at descending
-- Each entry shows: lesson title, score (X/Y format), percentage, date with time, pass/fail status
-- Pass/fail determined by 70% threshold - green badge for passed, amber badge for retry
-- Fetches data from Supabase quiz_results using user.id
-- Includes loading state with spinner animation
-- Includes error state with message display
-- Shows empty state with message when no quiz attempts
-- Optional props: showTitle (default true), maxItems (0 for unlimited), className
-- Shows "+N more attempts" when maxItems limits display
-- Reusable component that can be used anywhere in the app
-- Uses existing design system (Card, Badge, motion animations)
-- Build passes successfully
-
-## US-013: Ensure quiz results save to Supabase - COMPLETED
-- Verified useQuizResults hook already exists with saveQuizResult function
-- Updated src/sections/QuizTime.jsx to import and use useQuizResults hook
-- QuizTime now calls saveQuizResult when quiz completes with score, total_questions, and answers
-- Updated src/pages/Lesson1.jsx to pass lessonId={1} prop to all section components
-- Results saved to quiz_results table with: user_id, lesson_id, score, total_questions, answers, completed_at
-- useQuizResults hook properly uses upsert to update existing results
-- Build passes successfully
-
-## US-014: Final integration testing and polish - COMPLETED
-- Verified npm run dev starts without errors
-- Verified npm run build succeeds (619.80 kB bundle)
-- Admin dashboard accessibility verified:
-  - AdminDashboard.jsx checks isAdmin from useAuth and redirects non-admins
-  - UserMenu.jsx only shows Admin Dashboard link when isAdmin is true
-- User list shows correct progress data:
-  - useAdminData hook fetches all profiles, lesson_progress, and quiz_results
-  - UserProgressDetail component displays lessons completed, quiz scores, last active date
-  - Expandable/collapsible user cards with detailed progress view
-- Lesson blocking functionality verified:
-  - LessonBlockManager allows admins to toggle lesson blocking
-  - useBlockedLessons hook provides isLessonBlocked, blockLesson, unblockLesson
-  - Dashboard.jsx checks blocked status in isLessonUnlocked function
-  - Blocked lessons show toast message "This lesson is not yet available"
-- My Progress page shows accurate stats and history:
-  - StatCards show lessons completed, overall progress %, quiz average, quizzes taken
-  - LessonJourneyCard displays all 9 lessons with completion status
-  - QuizHistory section shows all attempts with pass/fail badges
-- Navigation works correctly:
-  - NavigationContext provides navigateTo function
-  - UserMenu navigates to 'admin' and 'progress' pages
-  - App.jsx renders AdminDashboard and MyProgress based on currentPage
-  - Back to Dashboard buttons work on all pages
-- Design system verified:
-  - Purple (#7C3AED) to Blue (#3B82F6) gradients throughout
-  - Dark slate background (#0F172A) via AnimatedBackground
-  - Cards use bg-slate-800/50 backdrop-blur-xl (glassmorphism)
-  - Cyan (#06B6D4) accents for highlights
-  - Consistent use of Card, Button, Badge, ProgressBar components
-- All acceptance criteria met, all user stories complete

@@ -1,6 +1,6 @@
 {
   "project": "AI Webinar Platform - Admin Dashboard & Progress Tracking",
-  "branchName": "admin-features",
+  "branchName": "ralph/admin-features",
   "description": "Add admin dashboard for tracking user progress and controlling lesson access, plus enhance the My Progress page for all users.",
   "userStories": [
     {
@@ -14,7 +14,7 @@
         "Typecheck passes"
       ],
       "priority": 1,
-      "passes": true,
+      "passes": false,
       "notes": "SQL: ALTER TABLE profiles ADD COLUMN is_admin boolean DEFAULT false; Then update src/context/AuthContext.jsx"
     },
     {
@@ -29,7 +29,7 @@
         "Typecheck passes"
       ],
       "priority": 2,
-      "passes": true,
+      "passes": false,
       "notes": "SQL migration to create table with RLS policies"
     },
     {
@@ -45,7 +45,7 @@
         "Verify in browser using dev-browser skill"
       ],
       "priority": 3,
-      "passes": true,
+      "passes": false,
       "notes": "Modify src/components/auth/UserMenu.jsx, conditional rendering based on isAdmin"
     },
     {
@@ -63,7 +63,7 @@
         "Typecheck passes"
       ],
       "priority": 4,
-      "passes": true,
+      "passes": false,
       "notes": "New file: src/hooks/useAdminData.js"
     },
     {
@@ -82,7 +82,7 @@
         "Verify in browser using dev-browser skill"
       ],
       "priority": 5,
-      "passes": true,
+      "passes": false,
       "notes": "New file: src/pages/AdminDashboard.jsx, update App.jsx routing"
     },
     {
@@ -98,7 +98,7 @@
         "Verify in browser using dev-browser skill"
       ],
       "priority": 6,
-      "passes": true,
+      "passes": false,
       "notes": "New file: src/components/admin/UserProgressDetail.jsx"
     },
     {
@@ -113,7 +113,7 @@
         "Typecheck passes"
       ],
       "priority": 7,
-      "passes": true,
+      "passes": false,
       "notes": "New file: src/hooks/useBlockedLessons.js"
     },
     {
@@ -131,7 +131,7 @@
         "Verify in browser using dev-browser skill"
       ],
       "priority": 8,
-      "passes": true,
+      "passes": false,
       "notes": "New file: src/components/admin/LessonBlockManager.jsx"
     },
     {
@@ -148,7 +148,7 @@
         "Verify in browser using dev-browser skill"
       ],
       "priority": 9,
-      "passes": true,
+      "passes": false,
       "notes": "Modify src/pages/Dashboard.jsx"
     },
     {
@@ -166,7 +166,7 @@
         "Verify in browser using dev-browser skill"
       ],
       "priority": 10,
-      "passes": true,
+      "passes": false,
       "notes": "New file: src/pages/MyProgress.jsx, update UserMenu.jsx and App.jsx"
     },
     {
@@ -183,7 +183,7 @@
         "Verify in browser using dev-browser skill"
       ],
       "priority": 11,
-      "passes": true,
+      "passes": false,
       "notes": "New file: src/components/progress/LessonProgressCard.jsx"
     },
     {
@@ -199,7 +199,7 @@
         "Verify in browser using dev-browser skill"
       ],
       "priority": 12,
-      "passes": true,
+      "passes": false,
       "notes": "New file: src/components/progress/QuizHistory.jsx"
     },
     {
@@ -214,7 +214,7 @@
         "Typecheck passes"
       ],
       "priority": 13,
-      "passes": true,
+      "passes": false,
       "notes": "Check src/components/lesson/Quiz.jsx and lesson QuizTime sections"
     },
     {
@@ -232,7 +232,7 @@
         "Build succeeds: npm run build"
       ],
       "priority": 14,
-      "passes": true,
+      "passes": false,
       "notes": "Test all features end-to-end"
     }
   ]

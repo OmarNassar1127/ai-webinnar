@@ -5,7 +5,7 @@ import { useAuth } from '../../context/AuthContext'
 import { useNavigation } from '../../context/NavigationContext'
 
 export default function UserMenu() {
-  const { user, profile, signOut, openAuthModal, isAdmin } = useAuth()
+  const { user, profile, loading, signOut, openAuthModal, isAdmin } = useAuth()
   const { navigateTo } = useNavigation()
   const [isOpen, setIsOpen] = useState(false)
   const menuRef = useRef(null)
@@ -40,6 +40,13 @@ export default function UserMenu() {
 
   const displayName = profile?.full_name || user?.email?.split('@')[0] || 'User'
   const initials = getInitials(profile?.full_name)
+
+  // Show loading state while checking auth
+  if (loading) {
+    return (
+      <div className="w-9 h-9 rounded-full bg-slate-700 animate-pulse" />
+    )
+  }
 
   if (!user) {
     return (

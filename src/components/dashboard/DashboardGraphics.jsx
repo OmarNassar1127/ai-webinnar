@@ -99,98 +99,124 @@ export const FloatingAIGraphic = () => {
   );
 };
 
-export const TimelineNode = ({ lesson, index, isUnlocked, isActive, isCompleted }) => {
+export const TimelineNode = ({ lesson, index, isUnlocked, isActive, isCompleted, onClick, totalLessons = 9 }) => {
+  const handleClick = () => {
+    if (isUnlocked && onClick) {
+      onClick(lesson.id);
+    }
+  };
+
+  const isLastNode = index === totalLessons - 1;
+
   return (
-    <motion.div
-      className="flex flex-col items-center relative"
-      initial={{ opacity: 0, scale: 0.8 }}
-      animate={{ opacity: 1, scale: 1 }}
-      transition={{ delay: 0.3 + index * 0.1, duration: 0.5 }}
-    >
-      {index < 8 && (
+    <div className="flex items-start">
+      {/* Node */}
+      <motion.div
+        className={`flex flex-col items-center relative ${isUnlocked ? 'cursor-pointer' : 'cursor-not-allowed'}`}
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.2 + index * 0.08, duration: 0.4 }}
+        onClick={handleClick}
+        whileHover={isUnlocked ? { y: -4 } : {}}
+      >
+        {/* Circle */}
         <motion.div
-          className="absolute left-full top-6 w-8 md:w-12 lg:w-16 h-0.5"
-          style={{
-            background: isUnlocked
-              ? 'linear-gradient(90deg, #8B5CF6, #3B82F6)'
-              : 'linear-gradient(90deg, #334155, #1E293B)',
-          }}
-          initial={{ scaleX: 0 }}
-          animate={{ scaleX: 1 }}
-          transition={{ delay: 0.5 + index * 0.1, duration: 0.4 }}
+          className={`relative w-14 h-14 rounded-full flex items-center justify-center shadow-lg ${
+            isCompleted
+              ? 'bg-gradient-to-br from-emerald-500 to-teal-500 shadow-emerald-500/30'
+              : isActive
+              ? 'bg-gradient-to-br from-purple-500 to-blue-500 shadow-purple-500/30'
+              : isUnlocked
+              ? 'bg-slate-700 shadow-slate-700/30'
+              : 'bg-slate-800/80 shadow-none'
+          } ${
+            isCompleted || isActive ? 'ring-2 ring-offset-2 ring-offset-slate-900' : ''
+          } ${
+            isCompleted ? 'ring-emerald-400/50' : isActive ? 'ring-purple-400/50' : ''
+          }`}
+          whileHover={isUnlocked ? { scale: 1.08 } : {}}
+          whileTap={isUnlocked ? { scale: 0.95 } : {}}
         >
-          {isUnlocked && (
+          {/* Pulse effect for active */}
+          {isActive && !isCompleted && (
             <motion.div
-              className="absolute top-1/2 -translate-y-1/2 w-2 h-2 rounded-full bg-cyan-400"
-              animate={{ x: [0, 40, 0] }}
-              transition={{ duration: 2, repeat: Infinity, ease: 'linear' }}
+              className="absolute inset-0 rounded-full bg-purple-500"
+              animate={{ scale: [1, 1.4], opacity: [0.4, 0] }}
+              transition={{ duration: 1.5, repeat: Infinity, ease: 'easeOut' }}
             />
           )}
+
+          {/* Icon/Number */}
+          {isCompleted ? (
+            <motion.svg
+              className="w-6 h-6 text-white"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+              initial={{ scale: 0 }}
+              animate={{ scale: 1 }}
+              transition={{ type: 'spring', stiffness: 300, delay: 0.1 }}
+            >
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
+            </motion.svg>
+          ) : isUnlocked ? (
+            <span className="text-white font-bold text-lg relative z-10">
+              {lesson.id}
+            </span>
+          ) : (
+            <Lock className="w-5 h-5 text-slate-500" />
+          )}
         </motion.div>
+
+        {/* Label */}
+        <motion.div
+          className="mt-3 text-center w-20 md:w-24"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 0.4 + index * 0.08 }}
+        >
+          <p className={`text-xs font-medium leading-tight line-clamp-2 ${
+            isCompleted ? 'text-emerald-300' : isActive ? 'text-white' : isUnlocked ? 'text-slate-300' : 'text-slate-500'
+          }`}>
+            {lesson.title}
+          </p>
+          <p className={`text-[10px] mt-1 ${
+            isCompleted ? 'text-emerald-400/70' : isActive ? 'text-purple-300' : isUnlocked ? 'text-slate-500' : 'text-slate-600'
+          }`}>
+            {lesson.duration}
+          </p>
+        </motion.div>
+      </motion.div>
+
+      {/* Connector Line */}
+      {!isLastNode && (
+        <div className="flex items-center h-14 mx-1 md:mx-2">
+          <motion.div
+            className="relative h-[2px] w-6 md:w-10 lg:w-14 overflow-hidden rounded-full"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.3 + index * 0.08 }}
+          >
+            {/* Background line */}
+            <div className="absolute inset-0 bg-slate-700/50" />
+
+            {/* Progress fill */}
+            <motion.div
+              className={`absolute inset-y-0 left-0 ${
+                isCompleted
+                  ? 'bg-gradient-to-r from-emerald-500 to-teal-500'
+                  : isUnlocked
+                  ? 'bg-gradient-to-r from-purple-500 to-blue-500'
+                  : ''
+              }`}
+              initial={{ width: '0%' }}
+              animate={{ width: isCompleted || isUnlocked ? '100%' : '0%' }}
+              transition={{ delay: 0.5 + index * 0.08, duration: 0.4 }}
+            />
+          </motion.div>
+        </div>
       )}
-
-      <motion.div
-        className={`relative w-12 h-12 rounded-full flex items-center justify-center ${
-          isCompleted
-            ? 'bg-gradient-to-br from-emerald-600 to-cyan-600'
-            : isActive
-            ? 'bg-gradient-to-br from-purple-600 to-blue-600'
-            : isUnlocked
-            ? 'bg-gradient-to-br from-purple-600/50 to-blue-600/50'
-            : 'bg-slate-700/50'
-        } border-2 ${
-          isCompleted
-            ? 'border-emerald-400'
-            : isActive
-            ? 'border-purple-400'
-            : isUnlocked
-            ? 'border-purple-500/50'
-            : 'border-slate-600'
-        }`}
-        whileHover={isUnlocked ? { scale: 1.1 } : {}}
-      >
-        {isActive && !isCompleted && (
-          <>
-            <motion.div
-              className="absolute inset-0 rounded-full bg-purple-500/50"
-              animate={{ scale: [1, 1.5, 1], opacity: [0.5, 0, 0.5] }}
-              transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' }}
-            />
-            <motion.div
-              className="absolute -inset-1 rounded-full"
-              style={{
-                background: 'linear-gradient(135deg, rgba(139, 92, 246, 0.4), rgba(59, 130, 246, 0.4))',
-                filter: 'blur(8px)',
-              }}
-              animate={{ opacity: [0.5, 1, 0.5] }}
-              transition={{ duration: 1.5, repeat: Infinity }}
-            />
-          </>
-        )}
-
-        {isUnlocked ? (
-          <span className="text-white font-bold text-lg relative z-10">
-            {isCompleted ? '✓' : lesson.id}
-          </span>
-        ) : (
-          <Lock className="w-5 h-5 text-slate-500" />
-        )}
-      </motion.div>
-
-      <motion.div
-        className="mt-3 text-center max-w-20 md:max-w-24"
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ delay: 0.5 + index * 0.1 }}
-      >
-        <p className={`text-xs font-medium leading-tight ${isUnlocked ? 'text-slate-300' : 'text-slate-500'}`}>
-          {lesson.title}
-        </p>
-        <p className={`text-xs mt-1 ${isUnlocked ? 'text-slate-400' : 'text-slate-600'}`}>
-          {lesson.duration}
-        </p>
-      </motion.div>
-    </motion.div>
+    </div>
   );
 };
 
