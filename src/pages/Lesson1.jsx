@@ -75,7 +75,7 @@ function Lesson1({ onBack, onNavigateToLesson, isNextLessonBlocked }) {
       completeSection(currentSection)
       // Small delay to ensure state is saved, then refresh
       setTimeout(() => {
-        window.location.href = '/'
+        window.location.href = import.meta.env.BASE_URL
       }, 300)
     }
   }, [currentSection, completeSection, goToSection, isExiting])
