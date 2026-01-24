@@ -5,6 +5,7 @@ import { LessonProvider } from './context/LessonContext'
 import { NavigationProvider, useNavigation } from './context/NavigationContext'
 import Dashboard from './pages/Dashboard'
 import Lesson1 from './pages/Lesson1'
+import AdminDashboard from './pages/AdminDashboard'
 import AnimatedBackground from './components/layout/AnimatedBackground'
 import AuthModal from './components/auth/AuthModal'
 
@@ -49,6 +50,9 @@ function AppContent() {
                 key="lesson1"
                 onBack={() => setCurrentPage('dashboard')}
               />
+            )}
+            {currentPage === 'admin' && (
+              <AdminDashboard key="admin" />
             )}
           </AnimatePresence>
         </div>
