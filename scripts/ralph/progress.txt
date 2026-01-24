@@ -1,3 +1,12 @@
 # Ralph Progress Log
-Started: Sat Jan 24 13:36:42 CET 2026
+Started: Sat Jan 24 13:44:04 CET 2026
 ---
+
+## US-002: Create blocked_lessons table - COMPLETED
+- Created supabase/migrations/20260124_create_blocked_lessons_table.sql
+- Table structure: id (uuid), lesson_id (integer unique), blocked_at (timestamp), blocked_by (uuid)
+- Enabled RLS on the table
+- Created policy "Anyone can view blocked lessons" for SELECT (allows reading blocked status)
+- Created policy "Authenticated users can manage blocked lessons" for all operations (admin check in app logic)
+- Added index on lesson_id for faster lookups
+- Build passes successfully

@@ -1,0 +1,239 @@
+{
+  "project": "AI Webinar Platform - Admin Dashboard & Progress Tracking",
+  "branchName": "admin-features",
+  "description": "Add admin dashboard for tracking user progress and controlling lesson access, plus enhance the My Progress page for all users.",
+  "userStories": [
+    {
+      "id": "US-001",
+      "title": "Add is_admin column to profiles and update AuthContext",
+      "description": "As an admin, I need the is_admin field to be available in the auth context so admin features can be conditionally shown.",
+      "acceptanceCriteria": [
+        "Add is_admin column to profiles table via Supabase migration SQL",
+        "Update AuthContext.jsx to fetch and expose isAdmin boolean from profiles table",
+        "isAdmin defaults to false for users without the field set",
+        "Typecheck passes"
+      ],
+      "priority": 1,
+      "passes": true,
+      "notes": "SQL: ALTER TABLE profiles ADD COLUMN is_admin boolean DEFAULT false; Then update src/context/AuthContext.jsx"
+    },
+    {
+      "id": "US-002",
+      "title": "Create blocked_lessons table",
+      "description": "As an admin, I need a blocked_lessons table to store which lessons are globally blocked.",
+      "acceptanceCriteria": [
+        "Create blocked_lessons table with: id (uuid), lesson_id (integer unique), blocked_at (timestamp), blocked_by (uuid references auth.users)",
+        "Enable RLS on blocked_lessons table",
+        "Create policy allowing anyone to SELECT (read blocked status)",
+        "Create policy allowing all operations (admin check in app logic)",
+        "Typecheck passes"
+      ],
+      "priority": 2,
+      "passes": true,
+      "notes": "SQL migration to create table with RLS policies"
+    },
+    {
+      "id": "US-003",
+      "title": "Add Admin Dashboard menu item to UserMenu",
+      "description": "As an admin, I want to see an Admin Dashboard link in the user menu dropdown.",
+      "acceptanceCriteria": [
+        "Add 'Admin Dashboard' menu item in UserMenu.jsx",
+        "Menu item only visible when user.isAdmin is true",
+        "Clicking navigates to admin page via setCurrentPage('admin')",
+        "Uses Shield or similar admin icon from Lucide",
+        "Typecheck passes",
+        "Verify in browser using dev-browser skill"
+      ],
+      "priority": 3,
+      "passes": false,
+      "notes": "Modify src/components/auth/UserMenu.jsx, conditional rendering based on isAdmin"
+    },
+    {
+      "id": "US-004",
+      "title": "Create useAdminData hook for fetching admin data",
+      "description": "As a developer, I need a hook to fetch all users with their progress data.",
+      "acceptanceCriteria": [
+        "Create src/hooks/useAdminData.js hook",
+        "Hook fetches all profiles from Supabase",
+        "Hook fetches lesson_progress for all users",
+        "Hook fetches quiz_results for all users",
+        "Returns: users array, loading state, error state",
+        "Each user object includes: name, email, lessonsCompleted, lastActive, quizScores",
+        "Max 150 lines",
+        "Typecheck passes"
+      ],
+      "priority": 4,
+      "passes": false,
+      "notes": "New file: src/hooks/useAdminData.js"
+    },
+    {
+      "id": "US-005",
+      "title": "Create AdminDashboard page with user list",
+      "description": "As an admin, I want to see a dashboard with a list of all users and their progress.",
+      "acceptanceCriteria": [
+        "Create src/pages/AdminDashboard.jsx (max 300 lines)",
+        "Add admin page route in App.jsx",
+        "Shows table/cards of all users using useAdminData hook",
+        "Each user shows: name, email, lessons completed count, last active date",
+        "Shows loading spinner while fetching",
+        "Responsive design for desktop",
+        "Non-admins redirected to dashboard",
+        "Typecheck passes",
+        "Verify in browser using dev-browser skill"
+      ],
+      "priority": 5,
+      "passes": false,
+      "notes": "New file: src/pages/AdminDashboard.jsx, update App.jsx routing"
+    },
+    {
+      "id": "US-006",
+      "title": "Create UserProgressDetail component for admin view",
+      "description": "As an admin, I want to see detailed progress when I click on a user.",
+      "acceptanceCriteria": [
+        "Create src/components/admin/UserProgressDetail.jsx (max 250 lines)",
+        "Shows each lesson status with visual progress bar",
+        "Shows quiz scores for each completed lesson",
+        "Expandable/collapsible from user list",
+        "Typecheck passes",
+        "Verify in browser using dev-browser skill"
+      ],
+      "priority": 6,
+      "passes": false,
+      "notes": "New file: src/components/admin/UserProgressDetail.jsx"
+    },
+    {
+      "id": "US-007",
+      "title": "Create useBlockedLessons hook",
+      "description": "As a developer, I need a hook to fetch and manage blocked lessons.",
+      "acceptanceCriteria": [
+        "Create src/hooks/useBlockedLessons.js hook (max 80 lines)",
+        "Hook fetches blocked_lessons from Supabase",
+        "Returns: blockedLessons array, isLessonBlocked(lessonId) function, blockLesson(lessonId), unblockLesson(lessonId)",
+        "blockLesson and unblockLesson update Supabase",
+        "Typecheck passes"
+      ],
+      "priority": 7,
+      "passes": false,
+      "notes": "New file: src/hooks/useBlockedLessons.js"
+    },
+    {
+      "id": "US-008",
+      "title": "Create LessonBlockManager component for admin",
+      "description": "As an admin, I want to block/unblock lessons globally from the admin dashboard.",
+      "acceptanceCriteria": [
+        "Create src/components/admin/LessonBlockManager.jsx (max 200 lines)",
+        "Shows all 9 lessons with toggle switches",
+        "Toggle to block/unblock each lesson",
+        "Blocked lessons show lock icon",
+        "Uses useBlockedLessons hook",
+        "Changes saved to Supabase immediately",
+        "Typecheck passes",
+        "Verify in browser using dev-browser skill"
+      ],
+      "priority": 8,
+      "passes": false,
+      "notes": "New file: src/components/admin/LessonBlockManager.jsx"
+    },
+    {
+      "id": "US-009",
+      "title": "Integrate blocked lessons into Dashboard",
+      "description": "As a user, I cannot access blocked lessons even if I completed previous ones.",
+      "acceptanceCriteria": [
+        "Update Dashboard.jsx to use useBlockedLessons hook",
+        "Update isLessonUnlocked to check blocked_lessons table",
+        "Blocked lessons show as locked regardless of user progress",
+        "Clicking blocked lesson shows toast/message 'This lesson is not yet available'",
+        "Works alongside existing unlock logic (unblocked AND previous completed)",
+        "Typecheck passes",
+        "Verify in browser using dev-browser skill"
+      ],
+      "priority": 9,
+      "passes": false,
+      "notes": "Modify src/pages/Dashboard.jsx"
+    },
+    {
+      "id": "US-010",
+      "title": "Create MyProgress page with overview stats",
+      "description": "As a user, I want to see my learning progress on a dedicated page.",
+      "acceptanceCriteria": [
+        "Create src/pages/MyProgress.jsx (max 350 lines)",
+        "Add 'My Progress' to UserMenu.jsx navigation",
+        "Add progress page route in App.jsx",
+        "Shows overview stats: lessons completed count, total progress %, quiz average score",
+        "Visual journey map showing completed lessons with checkmarks",
+        "Accessible for all authenticated users",
+        "Typecheck passes",
+        "Verify in browser using dev-browser skill"
+      ],
+      "priority": 10,
+      "passes": false,
+      "notes": "New file: src/pages/MyProgress.jsx, update UserMenu.jsx and App.jsx"
+    },
+    {
+      "id": "US-011",
+      "title": "Create LessonProgressCard component",
+      "description": "As a user, I want to see what I learned in each lesson on my progress page.",
+      "acceptanceCriteria": [
+        "Create src/components/progress/LessonProgressCard.jsx (max 150 lines)",
+        "Each completed lesson shows key takeaways",
+        "Quiz score displayed per lesson",
+        "'Review Lesson' button to go back to that lesson",
+        "Locked/incomplete lessons shown with different styling",
+        "Typecheck passes",
+        "Verify in browser using dev-browser skill"
+      ],
+      "priority": 11,
+      "passes": false,
+      "notes": "New file: src/components/progress/LessonProgressCard.jsx"
+    },
+    {
+      "id": "US-012",
+      "title": "Create QuizHistory component",
+      "description": "As a user, I want to see my quiz results history on my progress page.",
+      "acceptanceCriteria": [
+        "Create src/components/progress/QuizHistory.jsx (max 150 lines)",
+        "Shows all quiz attempts from quiz_results table",
+        "Each entry shows: score, date, pass/fail status",
+        "Fetches data from Supabase quiz_results",
+        "Typecheck passes",
+        "Verify in browser using dev-browser skill"
+      ],
+      "priority": 12,
+      "passes": false,
+      "notes": "New file: src/components/progress/QuizHistory.jsx"
+    },
+    {
+      "id": "US-013",
+      "title": "Ensure quiz results save to Supabase",
+      "description": "As a developer, I need to verify quizzes save results to Supabase correctly.",
+      "acceptanceCriteria": [
+        "Verify Quiz.jsx or QuizTime components call saveQuizResult",
+        "Results saved to quiz_results table with: user_id, lesson_id, score, total_questions, completed_at",
+        "Check/create useQuizResults hook if needed",
+        "All lesson quizzes save results correctly",
+        "Typecheck passes"
+      ],
+      "priority": 13,
+      "passes": false,
+      "notes": "Check src/components/lesson/Quiz.jsx and lesson QuizTime sections"
+    },
+    {
+      "id": "US-014",
+      "title": "Final integration testing and polish",
+      "description": "As a user, I want all admin and progress features to work smoothly together.",
+      "acceptanceCriteria": [
+        "Admin dashboard accessible only to admins",
+        "User list shows correct progress data",
+        "Lesson blocking works from admin and enforces on user dashboard",
+        "My Progress page shows accurate stats and history",
+        "All navigation works correctly",
+        "Design matches existing design system (purple/blue gradients, glassmorphism)",
+        "Dev server runs without errors: npm run dev",
+        "Build succeeds: npm run build"
+      ],
+      "priority": 14,
+      "passes": false,
+      "notes": "Test all features end-to-end"
+    }
+  ]
+}
