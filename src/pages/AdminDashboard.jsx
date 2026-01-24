@@ -16,6 +16,7 @@ import { useAuth } from '../context/AuthContext'
 import { useNavigation } from '../context/NavigationContext'
 import { useAdminData } from '../hooks/useAdminData'
 import UserProgressDetail from '../components/admin/UserProgressDetail'
+import LessonBlockManager from '../components/admin/LessonBlockManager'
 
 const containerVariants = {
   hidden: { opacity: 0 },
@@ -166,6 +167,11 @@ export default function AdminDashboard() {
                 value={totalLessonsCompleted}
                 color="cyan"
               />
+            </motion.div>
+
+            {/* Lesson Block Manager */}
+            <motion.div variants={itemVariants} className="mb-8">
+              <LessonBlockManager />
             </motion.div>
 
             {/* Users List */}
