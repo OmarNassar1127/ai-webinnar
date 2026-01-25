@@ -4,7 +4,7 @@ import { supabase } from '../lib/supabase'
 const AuthContext = createContext(null)
 
 const STORAGE_KEY = 'vloto-ai-academy-progress'
-const ALLOWED_DOMAINS = ['vloto.nl', 'knsf.nl', 'gmail.com']
+const ALLOWED_DOMAINS = ['vloto.nl', 'knsf.nl']
 
 export function AuthProvider({ children }) {
   const [user, setUser] = useState(null)
