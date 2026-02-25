@@ -1,8 +1,8 @@
 export { default as Introduction } from './Introduction';
-export { default as ChatbotsVsAgents } from './ChatbotsVsAgents';
-export { default as ToolsExplained } from './ToolsExplained';
-export { default as HowTheyWorkTogether } from './HowTheyWorkTogether';
-export { default as WhatsPossible } from './WhatsPossible';
-export { default as YourRole } from './YourRole';
+export { default as MeetClaude } from './MeetClaude';
+export { default as HowCoworkWorks } from './HowCoworkWorks';
+export { default as VlotoUseCases } from './VlotoUseCases';
+export { default as LiveScenarios } from './LiveScenarios';
+export { default as GettingStarted } from './GettingStarted';
 export { default as QuizTime } from './QuizTime';
 export { default as Completion } from './Completion';

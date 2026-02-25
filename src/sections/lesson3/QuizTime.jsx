@@ -251,8 +251,8 @@ const ScoreDisplay = ({ score, answers, onComplete }) => {
 
         <p className="text-sm text-slate-500">
           {passed
-            ? "You've mastered the AI tools landscape! You're ready to understand how these tools can transform your work."
-            : "Review the lessons about chatbots vs agents, MCPs, and AI tools, then try again!"}
+            ? "You've mastered Claude Cowork! You're ready to put it to work at Vloto."
+            : "Review the lessons about Claude, Cowork features, and Vloto use cases, then try again!"}
         </p>
       </motion.div>
 
@@ -337,7 +337,7 @@ const QuizTime = ({ onComplete }) => {
             <span className="gradient-text">Test Your AI Tools Knowledge!</span>
           </h1>
           <p className="text-xl text-slate-400">
-            6 questions about chatbots, agents, MCPs, and the AI tools landscape
+            6 questions about Claude, Cowork, and how it transforms Vloto operations
           </p>
         </motion.div>
 

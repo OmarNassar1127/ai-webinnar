@@ -1,39 +1,39 @@
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Trophy, Home, Bot, Network, Puzzle, Code, Zap, Sparkles } from 'lucide-react';
+import { Trophy, Home, FileText, Plug, Car, Zap, Sparkles } from 'lucide-react';
 import { useLesson3 } from '../../context/Lesson3Context';
 import { BlockedLessonButton } from '../../components/common';
 
 const recapCards = [
   {
     id: 1,
-    title: "Agents DO Things",
-    description: "Unlike chatbots that only respond with text, AI agents can take real actions - browse the web, edit files, send emails, and more",
-    icon: Bot,
+    title: "Cowork Does the Work",
+    description: "Unlike regular chatbots, Cowork creates real files — spreadsheets, presentations, documents — directly on your computer",
+    icon: FileText,
     gradient: "from-purple-500 to-violet-500",
     color: "purple"
   },
   {
     id: 2,
-    title: "MCP Connects Everything",
-    description: "Model Context Protocol is the universal translator that lets AI connect to your email, calendar, databases, and other tools",
-    icon: Network,
+    title: "Connected via MCP",
+    description: "MCP connections let Cowork talk to Gmail, Drive, DocuSign, and more — pulling data and taking action across your tools",
+    icon: Plug,
     gradient: "from-cyan-500 to-blue-500",
     color: "cyan"
   },
   {
     id: 3,
-    title: "Plugins & Skills Add Power",
-    description: "Plugins are like apps that extend AI capabilities, while skills are specialized training for specific tasks",
-    icon: Puzzle,
+    title: "50+ Vloto Use Cases",
+    description: "From contract analysis to fleet optimization to instant data reports — Cowork transforms every area of operations",
+    icon: Car,
     gradient: "from-emerald-500 to-teal-500",
     color: "emerald"
   },
   {
     id: 4,
-    title: "AI IDEs Build For You",
-    description: "AI development environments like Claude Code can create entire applications - you describe, they build",
-    icon: Code,
+    title: "Your Expertise + AI Speed",
+    description: "You bring domain knowledge and quality judgment. Cowork brings speed and execution. Together, you're unstoppable",
+    icon: Zap,
     gradient: "from-orange-500 to-amber-500",
     color: "orange"
   }
@@ -148,7 +148,7 @@ const Completion = ({ onComplete, onBack, onNavigateToLesson, isNextLessonBlocke
             </span>
           </h1>
           <p className="text-xl text-slate-400">
-            You now understand the AI tools landscape and your role in it
+            You now understand how Claude Cowork can transform Vloto operations
           </p>
         </motion.div>
 
@@ -225,7 +225,7 @@ const Completion = ({ onComplete, onBack, onNavigateToLesson, isNextLessonBlocke
             <div>
               <h3 className="text-lg font-bold text-violet-400 mb-2">Key Takeaway</h3>
               <p className="text-white text-lg leading-relaxed">
-                You're becoming an <span className="font-bold text-purple-400">AI Director</span> - someone who knows <span className="font-bold text-cyan-400">what these tools can do</span> and how to <span className="font-bold text-emerald-400">direct them with clear descriptions</span>. Your domain knowledge + clear communication is the real superpower.
+                You're not learning to code — you're becoming an <span className="font-bold text-purple-400">AI-powered operator</span>. Your knowledge of <span className="font-bold text-cyan-400">Vloto's operations</span> combined with Cowork's capabilities means you can do in <span className="font-bold text-emerald-400">minutes what used to take days</span>.
               </p>
             </div>
           </div>

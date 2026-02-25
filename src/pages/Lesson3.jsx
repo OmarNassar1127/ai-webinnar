@@ -1,6 +1,6 @@
 import { useEffect, useCallback, useRef } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { Network, Bot, Puzzle, Workflow, Sparkles, User, HelpCircle, Trophy } from 'lucide-react'
+import { Sparkles, Bot, Settings, Briefcase, PlayCircle, Rocket, HelpCircle, Trophy } from 'lucide-react'
 
 import Sidebar from '../components/layout/Sidebar'
 import Navigation from '../components/layout/Navigation'
@@ -8,11 +8,11 @@ import Header from '../components/layout/Header'
 
 import {
   Introduction,
-  ChatbotsVsAgents,
-  ToolsExplained,
-  HowTheyWorkTogether,
-  WhatsPossible,
-  YourRole,
+  MeetClaude,
+  HowCoworkWorks,
+  VlotoUseCases,
+  LiveScenarios,
+  GettingStarted,
   QuizTime,
   Completion
 } from '../sections/lesson3'
@@ -20,23 +20,23 @@ import {
 import { Lesson3Provider, useLesson3 } from '../context/Lesson3Context'
 
 const sections = [
-  { id: 1, title: 'Introduction', icon: Network },
-  { id: 2, title: 'Chatbots vs Agents', icon: Bot },
-  { id: 3, title: 'Tools Explained', icon: Puzzle },
-  { id: 4, title: 'How They Work Together', icon: Workflow },
-  { id: 5, title: "What's Possible Now", icon: Sparkles },
-  { id: 6, title: 'Your Role', icon: User },
+  { id: 1, title: 'Introduction', icon: Sparkles },
+  { id: 2, title: 'Meet Claude & Cowork', icon: Bot },
+  { id: 3, title: 'How Cowork Works', icon: Settings },
+  { id: 4, title: 'Cowork for Vloto', icon: Briefcase },
+  { id: 5, title: 'Cowork in Action', icon: PlayCircle },
+  { id: 6, title: 'Getting Started', icon: Rocket },
   { id: 7, title: 'Quiz Time', icon: HelpCircle },
   { id: 8, title: 'Completion', icon: Trophy }
 ]
 
 const sectionComponents = {
   1: Introduction,
-  2: ChatbotsVsAgents,
-  3: ToolsExplained,
-  4: HowTheyWorkTogether,
-  5: WhatsPossible,
-  6: YourRole,
+  2: MeetClaude,
+  3: HowCoworkWorks,
+  4: VlotoUseCases,
+  5: LiveScenarios,
+  6: GettingStarted,
   7: QuizTime,
   8: Completion
 }

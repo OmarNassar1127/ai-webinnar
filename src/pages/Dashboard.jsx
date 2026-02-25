@@ -12,7 +12,7 @@ import { FloatingAIGraphic, TimelineNode, CircuitPattern } from '../components/d
 const lessons = [
   { id: 1, title: 'AI Thinking Foundations', duration: '1 hour' },
   { id: 2, title: 'How Software Works', duration: '1 hour' },
-  { id: 3, title: 'The AI Tools Landscape', duration: '1 hour' },
+  { id: 3, title: 'Claude & Cowork', duration: '1 hour' },
   { id: 4, title: 'AI in Action', duration: '1 hour' },
   { id: 5, title: 'Your First Build', duration: '1 hour' },
   { id: 6, title: 'Building for Operations', duration: '1 hour' },
