@@ -268,9 +268,9 @@ const Completion = ({ onComplete, onBack, onNavigateToLesson, isNextLessonBlocke
                   </span>
                 )}
               </div>
-              <h3 className="text-xl font-bold text-white mb-2">The AI Tools Landscape</h3>
+              <h3 className="text-xl font-bold text-white mb-2">Claude & Cowork</h3>
               <p className="text-slate-400">
-                Discover the difference between chatbots and AI agents, learn about MCPs, plugins, skills, and AI IDEs - and see what's possible when they work together.
+                Meet Claude Cowork — the autonomous AI agent that creates real files, connects to your tools, and transforms Vloto operations with 50+ use cases.
               </p>
             </div>
           </div>

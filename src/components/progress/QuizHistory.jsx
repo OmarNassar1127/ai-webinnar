@@ -8,7 +8,7 @@ import { useAuth } from '../../context/AuthContext'
 const lessons = [
   { id: 1, title: 'AI Thinking Foundations' },
   { id: 2, title: 'Prompt Engineering' },
-  { id: 3, title: 'ChatGPT Mastery' },
+  { id: 3, title: 'Claude & Cowork' },
   { id: 4, title: 'Claude & Competitors' },
   { id: 5, title: 'AI for Email & Docs' },
   { id: 6, title: 'AI for Data Analysis' },

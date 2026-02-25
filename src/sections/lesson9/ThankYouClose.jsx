@@ -30,7 +30,7 @@ const feedbackQuestions = [
     options: [
       'Lesson 1: AI Thinking Foundations',
       'Lesson 2: How Software Works',
-      'Lesson 3: The AI Tools Landscape',
+      'Lesson 3: Claude & Cowork',
       'Lesson 4: AI in Action',
       'Lesson 5: Your First Build',
       'Lesson 6: Building for Operations',

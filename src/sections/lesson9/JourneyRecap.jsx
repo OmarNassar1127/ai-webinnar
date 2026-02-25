@@ -26,11 +26,11 @@ const journeyLessons = [
   },
   {
     id: 3,
-    title: 'The AI Tools Landscape',
+    title: 'Claude & Cowork',
     icon: Network,
     color: 'emerald',
-    keyLearning: 'Chatbots vs Agents, MCPs, Plugins, Skills, AI IDEs',
-    skills: ['Tool selection', 'Workflow design', 'AI capabilities'],
+    keyLearning: 'Claude Cowork, MCP connections, 50+ Vloto use cases',
+    skills: ['Cowork prompting', 'Operations automation', 'AI-powered workflows'],
   },
   {
     id: 4,

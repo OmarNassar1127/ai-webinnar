@@ -27,7 +27,7 @@ import { supabase } from '../lib/supabase'
 const lessons = [
   { id: 1, title: 'AI Thinking Foundations', duration: '1 hour', icon: '🧠' },
   { id: 2, title: 'How Software Works', duration: '1 hour', icon: '💻' },
-  { id: 3, title: 'The AI Tools Landscape', duration: '1 hour', icon: '🛠️' },
+  { id: 3, title: 'Claude & Cowork', duration: '1 hour', icon: '🤖' },
   { id: 4, title: 'AI in Action', duration: '1 hour', icon: '⚡' },
   { id: 5, title: 'Your First Build', duration: '1 hour', icon: '🔨' },
   { id: 6, title: 'Building for Operations', duration: '1 hour', icon: '🏗️' },

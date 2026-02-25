@@ -16,7 +16,7 @@ import { useBlockedLessons } from '../../hooks/useBlockedLessons'
 const lessons = [
   { id: 1, title: 'AI Thinking Foundations', icon: '🧠' },
   { id: 2, title: 'How Software Works', icon: '💻' },
-  { id: 3, title: 'The AI Tools Landscape', icon: '🛠️' },
+  { id: 3, title: 'Claude & Cowork', icon: '🤖' },
   { id: 4, title: 'AI in Action', icon: '⚡' },
   { id: 5, title: 'Your First Build', icon: '🔨' },
   { id: 6, title: 'Building for Operations', icon: '🏗️' },

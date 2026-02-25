@@ -210,7 +210,7 @@ const ScoreDisplay = ({ score, answers, onComplete }) => {
 
         <h2 className="text-3xl font-bold mb-2">
           {passed ? (
-            <span className="gradient-text">AI Tools Expert!</span>
+            <span className="gradient-text">Cowork Expert!</span>
           ) : (
             <span className="text-amber-400">Good Effort!</span>
           )}
@@ -334,7 +334,7 @@ const QuizTime = ({ onComplete }) => {
           </motion.div>
 
           <h1 className="text-4xl md:text-5xl font-bold mb-4">
-            <span className="gradient-text">Test Your AI Tools Knowledge!</span>
+            <span className="gradient-text">Test Your Cowork Knowledge!</span>
           </h1>
           <p className="text-xl text-slate-400">
             6 questions about Claude, Cowork, and how it transforms Vloto operations
